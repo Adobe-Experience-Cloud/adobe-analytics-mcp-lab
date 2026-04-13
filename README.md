@@ -59,26 +59,7 @@ This lab shows you how to solve both.
 
 Two capabilities, two data flows:
 
-```
-DATA MIRROR — keeping CJA in sync with your warehouse
-─────────────────────────────────────────────────────
-  Source Warehouse                AEP                    CJA
-  ┌─────────────┐    CDC     ┌──────────┐  Dataset  ┌─────────┐
-  │  BigQuery   │──────────▶│ Source   │──────────▶│         │
-  │  Azure Blob │  (insert/ │ Connector │           │  Data   │
-  │  Amazon S3  │  update/  │    +      │           │  View   │
-  └─────────────┘   delete) │ Relational│           │         │
-                            │  Schema  │           └─────────┘
-                            └──────────┘
-
-CJA MCP SERVER — natural language access to your CJA data
-──────────────────────────────────────────────────────────
-  AI Client                MCP Server              CJA APIs
-  ┌────────┐   MCP/HTTPS  ┌──────────┐   REST    ┌─────────┐
-  │ Cursor │◀────────────▶│  CJA MCP │◀─────────▶│  CJA    │
-  │        │   (tools,    │  Server  │           │  APIs   │
-  └────────┘    results)  └──────────┘           └─────────┘
-```
+![1776090399107](image/README/1776090399107.png)
 
 > **Note:** Data Mirror requires a one-time setup in AEP (schema, dataset, source connector). Once configured, it runs continuously. The CJA MCP Server is already hosted — you connect to it in Lesson 2 with a single JSON config entry.
 
@@ -172,7 +153,7 @@ If Cursor returns a small list including the L611 data view, then you are ready!
 
 <img width="461" height="151" alt="AdobeExpressPhotos_bfd296436c9d4730b877c53442b6d399_CopyEdited" src="https://github.com/user-attachments/assets/e4ff7d01-62d5-4630-9813-55ce9d40e013" />
 
-### Manual setup instructions ###
+### Manual setup instructions
 
 **Problems connecting?**
 If any of the steps above didn't work, here are the manual click instructions to ensure you are setup for Cursor.
@@ -190,7 +171,6 @@ If any of the steps above didn't work, here are the manual click instructions to
      }
    }
    ```
-
 3. Back in **Settings → Tools & MCP**, find the **cja** server entry and click **Connect**.
 4. A dialog asks for permission to open the authentication page — click **Open**.
 5. Your browser opens the Adobe Experience Platform login. Sign in with your credentials, select your organization when prompted, and click **Allow access**.
@@ -206,7 +186,6 @@ Are my CJA tools connected?
 ```
 
 The agent should respond with a list of available tools. If it does, you're all set.
-
 
 ---
 
@@ -253,14 +232,12 @@ Standard XDM schemas in AEP are append-only — you can add rows but not update 
 
 The lab data set is a fictional retail brand called **Luma**. It spans four tables across three cloud sources:
 
-
-| Table               | Type                  | Source             | Records | Purpose                                                  |
-| ------------------- | --------------------- | ------------------ | ------- | -------------------------------------------------------- |
+| Table                 | Type                  | Source             | Records | Purpose                                                  |
+| --------------------- | --------------------- | ------------------ | ------- | -------------------------------------------------------- |
 | `web_traffic`       | Time Series / Event   | Google BigQuery    | 1,000   | Clickstream events (page views, purchases, cart actions) |
 | `customer_profiles` | Record / Profile      | Google BigQuery    | 200     | Customer identity, loyalty tier, region                  |
 | `products`          | Record / Lookup       | Azure Blob Storage | 50      | Product catalog with category and price                  |
-| `campaigns`         | Time Series / Summary | Amazon S3          | 5       | Campaign windows, Jan–Feb 2026                           |
-
+| `campaigns`         | Time Series / Summary | Amazon S3          | 5       | Campaign windows, Jan–Feb 2026                          |
 
 **How the tables relate:**
 
@@ -272,14 +249,12 @@ The lab data set is a fictional retail brand called **Luma**. It spans four tabl
 
 Each table carries the fields Data Mirror needs to track changes:
 
-
-| Table               | Primary Key   | Version Field                            | Notes                                             |
-| ------------------- | ------------- | ---------------------------------------- | ------------------------------------------------- |
-| `web_traffic`       | `event_id`    | `version_no` (integer, increments 0→1→2) | BigQuery native CDC                               |
-| `customer_profiles` | `person_id`   | `version_time` (datetime)                | BigQuery native CDC                               |
-| `products`          | `product_id`  | `last_modified_time` (datetime)          | Cloud storage: uses `_change_request_type` column |
-| `campaigns`         | `campaign_id` | `campaign_version` (datetime)            | Cloud storage: uses `_change_request_type` column |
-
+| Table                 | Primary Key     | Version Field                                | Notes                                               |
+| --------------------- | --------------- | -------------------------------------------- | --------------------------------------------------- |
+| `web_traffic`       | `event_id`    | `version_no` (integer, increments 0→1→2) | BigQuery native CDC                                 |
+| `customer_profiles` | `person_id`   | `version_time` (datetime)                  | BigQuery native CDC                                 |
+| `products`          | `product_id`  | `last_modified_time` (datetime)            | Cloud storage: uses `_change_request_type` column |
+| `campaigns`         | `campaign_id` | `campaign_version` (datetime)              | Cloud storage: uses `_change_request_type` column |
 
 ### 1.4 Exercise: See Data Mirror in Action
 
@@ -323,13 +298,11 @@ This is the end state the live setup will reach once its propagation completes.
 
 Not every ingestion scenario calls for Data Mirror. Here's how it compares:
 
-
-| Method                        | Best For                             | Latency            | Supports Updates/Deletes            |
-| ----------------------------- | ------------------------------------ | ------------------ | ----------------------------------- |
-| Flat file / CSV upload        | One-time or ad-hoc loads             | Manual             | No                                  |
-| Incremental source connectors | Append-only data streams             | Minutes–hours      | Inserts only                        |
-| **Data Mirror (CDC)**         | **Live sync with mutation tracking** | **Near real-time** | **Yes — inserts, updates, deletes** |
-
+| Method                        | Best For                                   | Latency                  | Supports Updates/Deletes                   |
+| ----------------------------- | ------------------------------------------ | ------------------------ | ------------------------------------------ |
+| Flat file / CSV upload        | One-time or ad-hoc loads                   | Manual                   | No                                         |
+| Incremental source connectors | Append-only data streams                   | Minutes–hours           | Inserts only                               |
+| **Data Mirror (CDC)**   | **Live sync with mutation tracking** | **Near real-time** | **Yes — inserts, updates, deletes** |
 
 ### 1.6 Checkpoint
 
@@ -366,7 +339,6 @@ MCP is like an API for AI/LLM agents. You chat conversationally with AI tool lik
 
 **What the CJA MCP Server exposes:**
 
-
 | Category      | What you can do                                                                   |
 | ------------- | --------------------------------------------------------------------------------- |
 | Discovery     | Find data views, dimensions, metrics, segments, date ranges, projects             |
@@ -375,7 +347,6 @@ MCP is like an API for AI/LLM agents. You chat conversationally with AI tool lik
 | Governance    | List component usage, find similar components, find frequently co-used components |
 | Configuration | Set session defaults (data view, context)                                         |
 
-
 Instead of navigating Analysis Workspace manually, you describe what you want: *"Show me mobile revenue by product category for the last 30 days"* — the agent runs the query and returns results directly.
 
 **How it differs from Data Insights Agent in CJA/AEP**
@@ -383,9 +354,10 @@ Instead of navigating Analysis Workspace manually, you describe what you want: *
 In the CJA UI, there is a feature called Data Insights Agent or AI Assistant. It will answer simple information requests, report updates, etc. but only within your CJA/AEP context. The MCP server facilitates those too, but it is the power of the chat agent you use which takes it farther. You can give an AI like ChatGPT a complex prompt, with external references, instructing it to generate a unique CJA report app for you. This lab will explore the possibilities.
 
 AI Assistant and Data Insights Agent in CJA:
-<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="https://github.com/user-attachments/assets/0bdd9adf-0ae1-46de-a34d-c8c0471e85fc" />
+`<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="https://github.com/user-attachments/assets/0bdd9adf-0ae1-46de-a34d-c8c0471e85fc" />`
 
 ### 2.3 What are **skills**?
+
 **Skills** represents the way you can share task or context knowledge across instances of an AI chat. After wrestling an AI to doing something just the way you want it, you can ask it to save the capability as a skill, in hopes that it will be repeatable and shareable when you or another opens a brand new AI conversation.
 
 Skills are the sheet of notes that you give to an AI to help it replicate a scenario it doesn't know.
@@ -394,7 +366,7 @@ Skills are the sheet of notes that you give to an AI to help it replicate a scen
 
 With the MCP server connected, you can describe what you want to analyze and let the agent build it. The server provides a minimal framework to the LLM that connects to it: pull reports like this, update projects like that, etc. No additional context is needed - yet there are nuances that experienced analysts know that AI might miss.
 
-So, to aid repeatability and demonstrations in our lab, we have defined the `cja-project-builder` **skill**. It guides the agent through a structured workflow: it discovers your available components, assembles a complete project definition, and calls `upsertProject` to create the workspace in CJA. For advanced, specific, repeatable tasks, skills can give us helpful guardrails and *repeatability* (usually). To show cool things and keep attendees' instances on the same track, we will use skills. 
+So, to aid repeatability and demonstrations in our lab, we have defined the `cja-project-builder` **skill**. It guides the agent through a structured workflow: it discovers your available components, assembles a complete project definition, and calls `upsertProject` to create the workspace in CJA. For advanced, specific, repeatable tasks, skills can give us helpful guardrails and *repeatability* (usually). To show cool things and keep attendees' instances on the same track, we will use skills.
 
 > **Note:** For our lab today, we suggest using the prompts listed and following along. If you want to try something additional, use a separate agent chat so that you can still explore the prepared skills and ideas we have. The lab goal is to show a breadth of possibilities with *reasonably consistent* exercises, but in practice, iterations are typically required.
 
@@ -403,6 +375,7 @@ So, to aid repeatability and demonstrations in our lab, we have defined the `cja
 <img width="155" height="152" alt="AdobeExpressPhotos_a9aeb23ad3c14d3c85fd6ebfcc3cdfd5_CopyEdited" src="https://github.com/user-attachments/assets/584a0ad2-38ca-4131-9264-afab80fd42ed" />
 
 2. Specify the data view for our session with this prompt:
+
 ```
 Set L611 as my default data view for this session.
 ```
@@ -412,6 +385,7 @@ Set L611 as my default data view for this session.
 The agent calls `setDefaultSessionDataViewId` — now every subsequent tool call uses this data view by default. This is a proactive call, as the AI would have asked us directly as needed.
 
 3. Create a basic CJA project with this prompt:
+
 ```
 Make a simple CJA project.
 ```
@@ -423,6 +397,7 @@ Make a simple CJA project.
 The agent uses a basic definition framework to create a project and return its link.
 
 4. Let's ask a data question:
+
 ```
 How many people saw each azb product in March?
 ```
@@ -436,18 +411,20 @@ Your results will likely include a text representation of the product names and 
 <img width="855" height="305" alt="image" src="https://github.com/user-attachments/assets/85817e12-394d-4428-a969-104aa8ec0349" />
 
 5. Save that report into a new project:
+
 ```
 Save this in a project and give me the link.
 ```
 
 <img width="1074" height="565" alt="AdobeExpressPhotos_0f2f44fbabe24d8bbf8614199feaa187_CopyEdited" src="https://github.com/user-attachments/assets/f1643179-05a4-4a97-b35f-effc14b5d836" />
-   
+
 6. Let it create a more interesting CJA project:
+
 ```
 Create an e-commerce performance dashboard for the Luma retail data. Show revenue, orders, and conversion rate for the last 30 days, broken down by product category. Include a line chart for the daily revenue trend.
 ```
 
-The agent responds with a proposed structure and builds it. It uses context from your skills, chat, common reporting and ecommerce knowledge, and existing components in CJA. Panels, visualizations, dimensions, metrics are all driven through that lens. 
+The agent responds with a proposed structure and builds it. It uses context from your skills, chat, common reporting and ecommerce knowledge, and existing components in CJA. Panels, visualizations, dimensions, metrics are all driven through that lens.
 
 Hopefully, your result takes only a minute or two. The timing and result will vary with AI. If something looks wrong or your want a change, you would continue the conversation. Most often, even skill-based results require iterations to reach your exact goal.
 
@@ -456,6 +433,7 @@ Hopefully, your result takes only a minute or two. The timing and result will va
 7. Prepare a component survey project:
 
 > **Note:** This will take a few minutes to run. We will continue into the lab, so you may open a new agent chat while this runs.
+
 ```
 Build a survey for the top 15 dimensions in L611.
 ```
@@ -467,7 +445,6 @@ I always wanted to build something like this. However, the volume of manual and 
 It may take a few minutes but when running in the background it feels fast. This skill was the product of *many* iterative conversations, as is common.
 
 > **Tip:** What manual or tedious tasks could this system build for you? Don't force a use case onto the feature, but dream big when scale and manual tasks are a blocker.
-
 
 ### 2.5 Checkpoint
 
@@ -502,31 +479,36 @@ Over time, every CJA org accumulates component debt: segments nobody uses, calcu
 
 1. Open a new Agent chat
 2. Load the skill:
-  ```
+
+```
    @cja-component-audit
-  ```
+```
+
 3. **Prompt:**
-  ```
+
+```
    Audit all my components on the [Data View Name] data view.
    Include segments and calculated metrics.
-  ```
+```
+
 4. The agent works through seven phases:
 
-  | Phase            | What happens                                                          |
-  | ---------------- | --------------------------------------------------------------------- |
-  | 0 — Setup        | Confirms data view and component types                                |
-  | 1 — Inventory    | Pulls full component lists with metadata, definitions, and timestamps |
-  | 2 — Usage        | Classifies each component as Active, Stale, or Unused                 |
-  | 3 — Duplicates   | Compares definitions; flags near-identical formulas and names         |
-  | 4 — Dependencies | Maps which calculated metrics reference which segments                |
-  | 5 — Ownership    | Identifies who owns what and flags high concentrations                |
-  | 6 — Health       | Calculates a health score (0–100) per component type                  |
-  | 7 — Report       | Generates an HTML dashboard or markdown report                        |
+| Phase             | What happens                                                          |
+| ----------------- | --------------------------------------------------------------------- |
+| 0 — Setup        | Confirms data view and component types                                |
+| 1 — Inventory    | Pulls full component lists with metadata, definitions, and timestamps |
+| 2 — Usage        | Classifies each component as Active, Stale, or Unused                 |
+| 3 — Duplicates   | Compares definitions; flags near-identical formulas and names         |
+| 4 — Dependencies | Maps which calculated metrics reference which segments                |
+| 5 — Ownership    | Identifies who owns what and flags high concentrations                |
+| 6 — Health       | Calculates a health score (0–100) per component type                 |
+| 7 — Report       | Generates an HTML dashboard or markdown report                        |
 
 5. When the report is ready, review:
-  - **Active / Stale / Unused** counts for segments and calculated metrics
-  - **Duplicate flags** — pairs with identical or near-identical definitions
-  - **Top recommendations** — what to delete, merge, rename, or archive
+
+- **Active / Stale / Unused** counts for segments and calculated metrics
+- **Duplicate flags** — pairs with identical or near-identical definitions
+- **Top recommendations** — what to delete, merge, rename, or archive
 
 > **Note:** The audit is strictly read-only. It inventories and reports. It never deletes, modifies, or archives components.
 
@@ -537,19 +519,24 @@ Over time, every CJA org accumulates component debt: segments nobody uses, calcu
 The `cja-dimension-analysis` skill gives you a deep view into a single dimension — how many unique values it has, how skewed the distribution is, whether there are anomalies, and whether there are data quality issues like unexpected gaps or high-cardinality spikes.
 
 1. In the same or a new Agent chat:
-  ```
+
+```
    @cja-dimension-analysis
-  ```
+```
+
 2. **Prompt:**
-  ```
+
+```
    Analyze the Product Category dimension.
    Show me cardinality, the top values by event count, and any data quality issues.
-  ```
+```
+
 3. The agent returns:
-  - **Cardinality** — how many distinct values exist
-  - **Top-N distribution** — which values dominate and by how much
-  - **Skew** — Gini coefficient and top-N concentration
-  - **Data quality flags** — unexpected gaps, anomalous spikes, new/disappeared values
+
+- **Cardinality** — how many distinct values exist
+- **Top-N distribution** — which values dominate and by how much
+- **Skew** — Gini coefficient and top-N concentration
+- **Data quality flags** — unexpected gaps, anomalous spikes, new/disappeared values
 
 > **Tip:** You can ask follow-up questions: *"Which product categories have the most purchases?"* or *"Are there any category values that appeared recently and might be data quality issues?"*
 
@@ -558,20 +545,26 @@ The `cja-dimension-analysis` skill gives you a deep view into a single dimension
 Before you can safely retire or replace a segment or calculated metric, you need to know which projects use it. The `cja-component-find-replace` skill finds every project that references a specific component, so you have a complete picture before making any changes.
 
 1. Open a new Agent chat:
-  ```
+
+```
    @cja-component-find-replace
-  ```
+```
+
 2. **Prompt — find affected projects:**
-  ```
+
+```
    Find all projects that use the segment "[Segment Name]"
-  ```
+```
+
    Use a segment name from your audit report in Exercise 3.2 — ideally one flagged as stale or a duplicate.
 3. Review the list of affected projects. Note how many projects would be impacted.
 4. **Prompt — plan the replacement:**
-  ```
+
+```
    What would I need to change if I wanted to replace it
    with the segment "[Better Segment Name]"?
-  ```
+```
+
    The agent describes the replacement plan: which projects to update and what the component swap looks like. Actual replacement happens only after your explicit confirmation.
 
 > **Tip:** Combine with the audit: use the health report to identify a consolidation candidate (two near-duplicate segments), find all projects using the weaker one, then plan the migration to the better one.
@@ -609,25 +602,33 @@ By the end of this lesson you will be able to:
 A general segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type.
 
 1. Open a new Agent chat:
-  ```
+
+```
    @cja-segment-builder
-  ```
+```
+
 2. **Prompt:**
-  ```
+
+```
    Create a segment for mobile visitors who viewed a product
    but didn't complete a purchase in the same session.
-  ```
+```
+
 3. The agent first **checks for similar existing segments** using `findSegments` and `listSimilarTo`. Review what it finds — if a suitable segment already exists, you may not need to create a new one.
 4. The agent then proposes the segment. It will show you:
-  - **Name** — a suggested name based on your description
-  - **Scope** — Visitor, Visit, or Hit level
-  - **Plain-language rules summary** — *"Visitor where: Device Type = Mobile AND visits containing at least one product view event AND no purchase events"*
-  - **Components referenced** — a table of dimensions and metrics with their IDs and how they're used
+
+- **Name** — a suggested name based on your description
+- **Scope** — Visitor, Visit, or Hit level
+- **Plain-language rules summary** — *"Visitor where: Device Type = Mobile AND visits containing at least one product view event AND no purchase events"*
+- **Components referenced** — a table of dimensions and metrics with their IDs and how they're used
+
 5. Review the proposal carefully. Ask for changes if needed: *"Change the scope to Visit level"* or *"Exclude cases where they removed the item from cart."*
 6. When it looks right, confirm:
-  ```
+
+```
    Looks good, create it.
-  ```
+```
+
 7. Note the segment ID the agent returns. You'll need it if you want to use this segment in a report or workspace.
 
 > **Tip:** The more specific you are, the less the agent needs to ask. Include scope ("visit-level"), time windows ("within 7 days"), and explicit exclusions ("but not if they also completed a purchase later").
@@ -640,35 +641,41 @@ Sequential segments use THEN logic — *"first X happened, then Y happened."* Th
 
 1. In the same or a new Agent chat (the skill is already loaded):
 2. **Prompt:**
-  ```
+
+```
    Create a segment for visitors who viewed the Collections page
    and then made a purchase within 2 days.
-  ```
+```
+
 3. The agent identifies this as a sequential segment. It proposes:
-  - **Scope:** Visitor level
-  - **Sequence:** Checkpoint 1 → Page Name contains "collections" → THEN within 2 days → Checkpoint 2 → Event Type = purchase
-  - The underlying API structure uses `sequence` with a `time-restriction` element between checkpoints
+
+- **Scope:** Visitor level
+- **Sequence:** Checkpoint 1 → Page Name contains "collections" → THEN within 2 days → Checkpoint 2 → Event Type = purchase
+- The underlying API structure uses `sequence` with a `time-restriction` element between checkpoints
+
 4. Review the logic, then confirm:
-  ```
+
+```
    Yes, create it.
-  ```
+```
+
 5. **Optional — test the segment:**
-  ```
+
+```
    Run a quick report with this segment to see how many visitors qualify over the last 30 days.
-  ```
+```
+
    The agent calls `runReport` with the new segment applied.
 
 > **Sequential pattern reference:**
 >
->
-> | Pattern                 | What it means                                                  |
-> | ----------------------- | -------------------------------------------------------------- |
-> | **THEN**                | `sequence` — checkpoint A happened, then checkpoint B          |
+> | Pattern                       | What it means                                                    |
+> | ----------------------------- | ---------------------------------------------------------------- |
+> | **THEN**                | `sequence` — checkpoint A happened, then checkpoint B         |
 > | **THEN within X days**  | `time-restriction` element between checkpoints in the sequence |
-> | **Everything before X** | `sequence-suffix` — "only before X occurred"                   |
-> | **Everything after X**  | `sequence-prefix` — "only after X occurred"                    |
-> | **A not followed by B** | `sequence` with `exclude-next-checkpoint` — A then "not B"     |
->
+> | **Everything before X** | `sequence-suffix` — "only before X occurred"                  |
+> | **Everything after X**  | `sequence-prefix` — "only after X occurred"                   |
+> | **A not followed by B** | `sequence` with `exclude-next-checkpoint` — A then "not B"  |
 
 ### 4.4 Exercise: Complex Segment Challenge
 
@@ -752,14 +759,12 @@ Pull the data live through the CJA MCP tools and render it in the browser.
 
 The CJA MCP Server and Adobe's Digital Insights Agent (DIA) are complementary — not competing.
 
-
-|                   | Digital Insights Agent (DIA)                                   | CJA MCP Server                                                               |
-| ----------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+|                         | Digital Insights Agent (DIA)                                   | CJA MCP Server                                                               |
+| ----------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | **What it is**    | Pre-built AI-guided analysis workflows within Experience Cloud | Open protocol layer that connects any MCP-capable AI client to live CJA data |
 | **Best for**      | Guided, repeatable analysis flows for business users           | Custom, programmatic, and agentic workflows for analysts and developers      |
 | **Client**        | Adobe Experience Cloud UI                                      | Cursor, Claude.ai, ChatGPT, or any MCP-compatible client                     |
 | **Extensibility** | Adobe-managed                                                  | Scriptable, skill-based, fully extensible                                    |
-
 
 Use DIA for structured guided analysis within Adobe's UI. Use the MCP Server when you want to write your own skills, combine CJA with other data sources, or drive workflows from an AI coding environment.
 

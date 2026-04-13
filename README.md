@@ -177,7 +177,35 @@ If Cursor returns a small list including the L611 data view, then you are ready!
 **Problems connecting?**
 If any of the steps above didn't work, here are the manual click instructions to ensure you are setup for Cursor.
 
-.... INSTRUCTIONS WILL GO HERE - SETTINGS > MCP, CONNECT, ETC. ....
+1. In Cursor, go to **Settings → Tools & MCP → Add New MCP Server**.
+2. An editor opens with `mcp.json`. Paste the following configuration and save:
+
+   ```json
+   {
+     "mcpServers": {
+       "cja": {
+         "type": "streamable-http",
+         "url": "https://mcp-gateway.adobe.io/cja/mcp"
+       }
+     }
+   }
+   ```
+
+3. Back in **Settings → Tools & MCP**, find the **cja** server entry and click **Connect**.
+4. A dialog asks for permission to open the authentication page — click **Open**.
+5. Your browser opens the Adobe Experience Platform login. Sign in with your credentials, select your organization when prompted, and click **Allow access**.
+6. After authentication, the browser shows a dialog asking to open Cursor — click **Open Cursor.app**.
+7. The CJA server should now show as connected, with tools listed below it.
+
+> **Troubleshoot:** If CJA tools don't appear after authentication, go back to **Settings → Tools & MCP**, click **Disable** on the CJA server, then click **Enable**. The tools will be available in your next Agent chat.
+
+To verify the connection, open a new Agent chat and type:
+
+```
+Are my CJA tools connected?
+```
+
+The agent should respond with a list of available tools. If it does, you're all set.
 
 
 ---

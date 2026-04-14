@@ -1,0 +1,12 @@
+{
+  "variables/lab.dimension.page_name": "Page name (lab)",
+  "variables/lab.dimension.traffic_source": "Traffic source (lab)",
+  "variables/lab.dimension.campaign": "Campaign (lab)",
+  "metrics/lab.metric.orders": "Orders (lab)",
+  "metrics/lab.metric.revenue": "Revenue (lab)",
+  "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010001": "Orders per visit (lab calc)",
+  "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010002": "AOV (lab calc)",
+  "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001": "Registered visitors (lab segment)",
+  "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020002": "Campaign responders (lab segment)",
+  "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020003": "High-value sessions (lab segment)"
+}

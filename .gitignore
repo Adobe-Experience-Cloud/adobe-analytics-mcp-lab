@@ -1,0 +1,6 @@
+# Ephemeral skill run artifacts (component network HTML/JS, MCP dumps, etc.)
+.cursor/skills/cja-component-visualizer/outputs/
+
+# Python bytecode (local runs; do not commit)
+__pycache__/
+*.py[cod]

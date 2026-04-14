@@ -1,0 +1,18 @@
+[
+  {"Source": "variables/lab.dimension.page_name", "Target": "metrics/lab.metric.orders", "Count": 120},
+  {"Source": "variables/lab.dimension.page_name", "Target": "metrics/lab.metric.revenue", "Count": 95},
+  {"Source": "variables/lab.dimension.page_name", "Target": "variables/lab.dimension.campaign", "Count": 60},
+  {"Source": "variables/lab.dimension.traffic_source", "Target": "metrics/lab.metric.orders", "Count": 88},
+  {"Source": "variables/lab.dimension.traffic_source", "Target": "metrics/lab.metric.revenue", "Count": 72},
+  {"Source": "variables/lab.dimension.campaign", "Target": "metrics/lab.metric.orders", "Count": 55},
+  {"Source": "metrics/lab.metric.orders", "Target": "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010001", "Count": 40},
+  {"Source": "metrics/lab.metric.revenue", "Target": "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010001", "Count": 38},
+  {"Source": "metrics/lab.metric.orders", "Target": "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010002", "Count": 30},
+  {"Source": "variables/lab.dimension.page_name", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001", "Count": 200},
+  {"Source": "variables/lab.dimension.traffic_source", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001", "Count": 150},
+  {"Source": "metrics/lab.metric.orders", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001", "Count": 90},
+  {"Source": "variables/lab.dimension.campaign", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020002", "Count": 45},
+  {"Source": "metrics/lab.metric.revenue", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020002", "Count": 42},
+  {"Source": "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010001", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001", "Count": 35},
+  {"Source": "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010002", "Target": "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020003", "Count": 22}
+]

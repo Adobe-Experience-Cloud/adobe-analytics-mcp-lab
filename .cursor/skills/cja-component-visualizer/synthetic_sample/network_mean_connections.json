@@ -1,0 +1,27 @@
+﻿[
+    {
+        "Source":  "metrics/lab.metric.orders",
+        "Target":  "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001",
+        "Count":  90
+    },
+    {
+        "Source":  "variables/lab.dimension.page_name",
+        "Target":  "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001",
+        "Count":  200
+    },
+    {
+        "Source":  "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010001",
+        "Target":  "s0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000020001",
+        "Count":  35
+    },
+    {
+        "Source":  "variables/lab.dimension.page_name",
+        "Target":  "metrics/lab.metric.orders",
+        "Count":  120
+    },
+    {
+        "Source":  "metrics/lab.metric.orders",
+        "Target":  "cm0FADEFADEFADEFADEFADEFAD@AdobeOrg_0000000000010001",
+        "Count":  40
+    }
+]

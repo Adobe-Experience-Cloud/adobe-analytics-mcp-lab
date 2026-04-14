@@ -191,7 +191,7 @@ The agent should respond with a list of available tools. If it does, you're all 
 
 ## Lesson 1 of 4 — Data Mirror
 
-est completion: 10 min *(No Cursor needed for this lesson)*
+Est. completion: 10 min *(No Cursor needed for this lesson)*
 
 ---
 
@@ -200,37 +200,28 @@ est completion: 10 min *(No Cursor needed for this lesson)*
 By the end of this lesson you will be able to:
 
 - Explain what Data Mirror does and the problem it solves
-- Describe how CDC-based ingestion differs from batch and incremental connectors
-- Identify the three descriptor fields a relational schema requires for CDC
-- Recognize when Data Mirror is the right tool vs. other AEP ingestion options
+- Identify the descriptor fields a relational schema requires for CDC
+- Follow a complete Data Mirror pipeline: source data → schema → dataflow → CJA
 
 ### 1.2 What is Data Mirror?
 
 Most analytics teams have the same problem: data in CJA goes stale. A product price changes in the warehouse, a campaign ends, a customer profile updates — but CJA doesn't know until someone runs an export script and re-uploads a file. By then the data is hours or days old.
 
-**Data Mirror** is an Adobe Experience Platform capability that solves this by ingesting row-level changes from external databases into the AEP data lake automatically, using **Change Data Capture (CDC)**. When a record is inserted, updated, or deleted at the source, that change flows through to AEP — and from there to CJA — without any manual intervention.
+**Data Mirror** is an Adobe Experience Platform capability that solves this by enabling row-level change ingestion from external databases into the AEP data lake using **relational schemas** and **Change Data Capture (CDC)** [1]. When a record is inserted, updated, or deleted at the source, that change flows through to AEP — and from there to CJA — without any manual intervention.
 
-**How it works:**
+<img src="assets/lesson-1/00-change-feed-example.png" alt="Change feed example — before and after states with change operations" height="300" />
 
-1. The source database or cloud storage emits a change record (an insert, update, or delete)
-2. An **AEP Source Connector** picks it up and passes it to AEP ingestion
-3. A **relational schema** (a newer AEP schema type) matches the incoming record to the existing row by primary key, applies the change, and updates the version
-4. The AEP **data lake** reflects the latest state of the data
-5. **CJA** reads from the data lake — reports now reflect the current source of truth
+| Method                        | Best For                                   | Supports Updates/Deletes                   |
+| ----------------------------- | ------------------------------------------ | ------------------------------------------ |
+| Flat file / CSV upload        | One-time or ad-hoc loads                   | No                                         |
+| Incremental source connectors | Append-only data streams                   | Inserts only                               |
+| **Data Mirror (CDC)**   | **Live sync with mutation tracking** | **Yes — inserts, updates, deletes** |
 
-**What makes relational schemas different:**
-Standard XDM schemas in AEP are append-only — you can add rows but not update or delete them. Relational schemas enforce a **primary key**, track a **version field** (timestamp or integer), and support deletes via a **CDC operation type**. This is what enables Data Mirror to propagate mutations, not just inserts.
+A complete Data Mirror pipeline has been set up for this lab. This lesson walks through each layer so you can see how the pieces connect.
 
-**Key capabilities:	**
+### 1.3 The Source Data
 
-- Primary key enforcement — each row has a unique, stable identifier
-- CDC: inserts, updates, and deletes all propagate
-- Out-of-order handling — late-arriving records are reconciled by version field
-- Direct integration with BigQuery, Azure Blob Storage, Amazon S3, Snowflake, and other sources
-
-### 1.3 Background: The Luma Retail Data Set
-
-The lab data set is a fictional retail brand called **Luma**. It spans four tables across three cloud sources:
+The lab dataset is built around **Luma**, a fictional retail brand. Four tables across three cloud sources:
 
 | Table                 | Type                  | Source             | Records | Purpose                                                  |
 | --------------------- | --------------------- | ------------------ | ------- | -------------------------------------------------------- |
@@ -239,77 +230,226 @@ The lab data set is a fictional retail brand called **Luma**. It spans four tabl
 | `products`          | Record / Lookup       | Azure Blob Storage | 50      | Product catalog with category and price                  |
 | `campaigns`         | Time Series / Summary | Amazon S3          | 5       | Campaign windows, Jan–Feb 2026                          |
 
-**How the tables relate:**
+**Entity Relationship Diagram:**
 
-- Every event in `web_traffic` links to a customer via `person_id`
-- Every event links to a product via `product_id`
-- Events that occurred during an active campaign carry a `campaign_id`
+```
+┌──────────────────────────────────────┐
+│         customer_profiles            │
+│  (Record/Profile — Google BigQuery)  │
+├──────────────────────────────────────┤
+│ PK  person_id         VARCHAR        │
+│     first_name        VARCHAR        │
+│     last_name         VARCHAR        │
+│     email             VARCHAR        │
+│     loyalty_tier      VARCHAR        │
+│     region            VARCHAR        │
+│     signup_date       DATE           │
+│  V  version_time      DATETIME       │
+└───────────────▲──────────────────────┘
+                │
+                │ person_id (N:1)
+                │
+┌───────────────┴──────────────────────┐                ┌───────────────────────────────────────┐
+│           web_traffic                │                │          products                     │
+│  (Time Series/Event — Google BigQuery)     │                │  (Record/Lookup — Blob Storage)       │
+├──────────────────────────────────────┤                ├───────────────────────────────────────┤
+│ PK  event_id          VARCHAR        │  product_id    │ PK  product_id        VARCHAR         │
+│  V  version_no        INT            │   (N:1)        │     product_name      VARCHAR         │
+│  T  event_timestamp   DATETIME       ├───────────────►│     category          VARCHAR         │
+│ FK  person_id         VARCHAR        │                │     price             DECIMAL         │
+│     event_type        VARCHAR        │                │     description       VARCHAR         │
+│ FK  product_id        VARCHAR        │                │  V  last_modified_time DATETIME       │
+│     page_url          VARCHAR        │                └───────────────────────────────────────┘
+│     device_type       VARCHAR        │
+│     browser           VARCHAR        │
+│ FK  campaign_id       VARCHAR        │
+└───────────────┬──────────────────────┘
+                │
+                │ campaign_id (N:1, nullable)
+                │
+┌───────────────▼──────────────────────┐
+│           campaigns                  │                ╔═══════════════════════════════════════╗
+│  (Time Series/Summary — Amazon S3)   │                ║  LEGEND                               ║
+├──────────────────────────────────────┤                ║  PK  Primary Key                      ║
+│ PK  campaign_id       VARCHAR        │                ║  V   Record Version                   ║
+│  V  campaign_version  DATETIME       │                ║  T   Record Timestamp (time series)   ║
+│  T  timestamp         DATETIME       │                ║  FK  Foreign Key                      ║
+│     campaign_name     VARCHAR        │                ╚═══════════════════════════════════════╝
+│     campaign_description VARCHAR     │
+│     start_time        DATETIME       │
+│     end_time          DATETIME       │
+└──────────────────────────────────────┘
+```
 
-**CDC fields in the data model:**
+| Relationship | From | To | Cardinality | Join Key |
+|---|---|---|---|---|
+| Event → Person | `web_traffic` | `customer_profiles` | N : 1 | `person_id` |
+| Event → Product | `web_traffic` | `products` | N : 1 | `product_id` |
+| Event → Campaign | `web_traffic` | `campaigns` | N : 1 (nullable) | `campaign_id` |
 
-Each table carries the fields Data Mirror needs to track changes:
+### 1.4 The Source Tables
 
-| Table                 | Primary Key     | Version Field                                | Notes                                               |
-| --------------------- | --------------- | -------------------------------------------- | --------------------------------------------------- |
-| `web_traffic`       | `event_id`    | `version_no` (integer, increments 0→1→2) | BigQuery native CDC                                 |
-| `customer_profiles` | `person_id`   | `version_time` (datetime)                  | BigQuery native CDC                                 |
-| `products`          | `product_id`  | `last_modified_time` (datetime)            | Cloud storage: uses `_change_request_type` column |
-| `campaigns`         | `campaign_id` | `campaign_version` (datetime)              | Cloud storage: uses `_change_request_type` column |
+Each source table contains fields that Data Mirror uses as descriptors.
 
-### 1.4 Exercise: See Data Mirror in Action
+Descriptor fields per table:
 
-Two Data Mirror setups are running during this session: a **live setup** where a change is being applied now, and a **pre-run setup** where the same change was applied earlier and has already fully propagated. CDC propagation takes longer than the lab window, so the pre-run setup lets you observe the end result without waiting.
+| Table                 | Primary Key     | Version Descriptor                           | Timestamp Descriptor      | Notes                                               |
+| --------------------- | --------------- | -------------------------------------------- | ------------------------- | --------------------------------------------------- |
+| `web_traffic`       | `event_id`    | `version_no` (integer, increments 0→1→2) | `event_timestamp`       | BigQuery native CDC                                 |
+| `customer_profiles` | `person_id`   | `version_time` (datetime)                  | —                        | BigQuery native CDC                                 |
+| `products`          | `product_id`  | `last_modified_time` (datetime)            | —                        | Cloud storage: uses `_change_request_type` column |
+| `campaigns`         | `campaign_id` | `campaign_version` (datetime)              | `timestamp`             | Cloud storage: uses `_change_request_type` column |
 
-**Part 1 — How the change is applied**
+Two versioning patterns are in use:
+- **Integer** — `web_traffic` uses `version_no` (0→1→2)
+- **DateTime** — `customer_profiles` uses `version_time`, `products` uses `last_modified_time`, `campaigns` uses `campaign_version`
 
-**Step 1 — The source data**
+Both patterns are supported by Data Mirror.
 
-The source `products` table lives in Azure Blob Storage. The current price for **PROD-1001 (Classic Cotton T-Shirt) is $29.99**.
+### 1.5 The Relational Schemas
 
-**Step 2 — The change**
+Standard XDM schemas in AEP are append-only. The schemas for this lab use **relational schemas**, which enable mutation tracking through descriptors [1]:
 
-A CDC file — `products_update.json` — is being uploaded to Azure Blob. It contains two records:
+- **Primary key** — unique row identifier
+- **Version descriptor** — integer or timestamp used to reconcile out-of-order changes
+- **Timestamp descriptor** — required for time-series schemas
 
-- **DELETE** (`d`): PROD-1003 (Lightweight Running Jacket) — removing this product from the catalog
-- **UPDATE** (`u`): PROD-1001 (Classic Cotton T-Shirt) — price changed from $29.99 to **$24.99**
+Each relational schema is created with a behavior type — **Record** or **Time series**:
 
-> **Note:** For cloud storage sources (Azure Blob, S3), CDC is signaled by a `_change_request_type` column on each row: `"u"` for upsert (insert or update, matched by primary key) and `"d"` for delete. This column is processed by Data Mirror during ingestion and is not stored in the AEP dataset. Database sources like BigQuery handle CDC natively through a change feed.
+<img src="assets/lesson-1/30-aep-relational-xdm-behaviour-types.png" alt="AEP — Create relational schema with behavior type selection" height="410" />
 
-**Step 3 — How it travels through the pipeline**
+**Time series example: `web_traffic`** — uses all three descriptors.
 
-Once the file lands in Azure Blob, here is what happens:
+BigQuery source schema:
 
-1. The AEP Source Connector detects the new file
-2. Data Mirror reads `_change_request_type` and matches each row by primary key (`product_id`)
-3. The relational schema applies the upsert: the version field (`last_modified_time`) is newer, so the record is updated
-4. The delete removes PROD-1003 from the dataset
-5. CJA reflects the updated catalog once ingestion completes
+<img src="assets/lesson-1/20-gbq-table-schema.png" alt="BigQuery — web_traffic table schema" height="300" />
 
-**Part 2 — See the completed result**
+AEP relational schema:
 
-The pre-run setup has already completed this same pipeline. Open CJA on your lab computer and find a freeform table showing products and prices. Observe:
+- **Primary key** — `event_id`
+- **Version descriptor** — `version_no`
+- **Timestamp descriptor** — `event_timestamp`
 
-- **PROD-1001 (Classic Cotton T-Shirt)** shows **$24.99** — the update has propagated
-- **PROD-1003 (Lightweight Running Jacket)** no longer appears — the delete took effect
+<img src="assets/lesson-1/31-aep-relational-xdm-web-traffic-schema.png" alt="AEP — Relational schema for web_traffic showing primary key, version descriptor, and timestamp descriptor" height="430" />
+
+**Record example: `products`** — uses only two descriptors (no timestamp descriptor needed):
+
+- **Primary key** — `product_id`
+- **Version descriptor** — `last_modified_time`
+
+<img src="assets/lesson-1/32-aep-relational-xdm-products-schema.png" alt="AEP — Relational schema for products showing primary key and version descriptor" height="520" />
+
+### 1.6 The CDC Dataflows
+
+With schemas in place, source connectors move the data. All three are configured for this lab in AEP:
+
+<img src="assets/lesson-1/10-aep-sources-accounts.png" alt="AEP Sources — Accounts tab showing BigQuery, Azure Blob Storage, and S3 source accounts" height="250" />
+
+Each dataflow has **Enable change data capture** toggled on. This requires a relational schema with primary key and version descriptor on the target dataset:
+
+<img src="assets/lesson-1/41-aep-sources-cdc-enable.png" alt="AEP — Dataflow detail showing the Enable change data capture toggle and CDC requirements" height="490" />
+
+**CDC behavior by source type:**
+
+- **Database sources** (BigQuery) — CDC is handled natively. Change history was enabled once per table:
+
+  ```sql
+  ALTER TABLE `<gcp_project>.adobesummit26lab611.web_traffic`
+    SET OPTIONS (enable_change_history = true);
+  ALTER TABLE `<gcp_project>.adobesummit26lab611.customer_profiles`
+    SET OPTIONS (enable_change_history = true);
+  ```
+
+- **Cloud storage sources** (Azure Blob, S3) — signal operations via a `_change_request_type` column: `"u"` for upsert, `"d"` for delete. Evaluated during ingestion only; not stored or mapped to XDM fields [2].
+
+Once configured, the dataflows run continuously. Here are the active flows for this lab:
+
+<img src="assets/lesson-1/40-aep-sources-cdc-flows.png" alt="AEP Sources — Dataflows tab showing active CDC dataflows for all sources" height="250" />
+
+### 1.7 The Changes
+
+With the dataflows running, the following changes were applied at the source for this lab session.
+
+**Database changes (BigQuery):**
+
+```sql
+-- 1. DELETE all events on March 15
+DELETE FROM `<gcp_project>.adobesummit26lab611.web_traffic`
+WHERE CAST(event_timestamp AS DATE) = '2026-03-15';
+
+-- 2. INSERT 3 new events on March 18
+INSERT INTO `<gcp_project>.adobesummit26lab611.web_traffic`
+  (event_id, version_no, person_id, event_timestamp, event_type,
+   product_id, page_url, device_type, browser, campaign_id)
+VALUES
+  ('EVT-200001', 0, 'daniel.thompson10001@example.com', '2026-03-18T09:15:00Z',
+   'page_view', 'PROD-1005', 'https://luma.retail.example.com/', 'desktop', 'Chrome', ''),
+  ('EVT-200002', 0, 'paul.davis10002@example.com', '2026-03-18T09:32:00Z',
+   'product_view', 'PROD-1012', 'https://luma.retail.example.com/shop/footwear', 'mobile', 'Safari', ''),
+  ('EVT-200003', 0, NULL, '2026-03-18T10:05:00Z',
+   'search', 'PROD-1023', 'https://luma.retail.example.com/search', 'desktop', 'Firefox', '');
+
+-- 3. Rename Anthony Harris → Anthony Harris Jr.
+UPDATE `<gcp_project>.adobesummit26lab611.customer_profiles`
+SET last_name = 'Harris Jr.',
+    version_time = CURRENT_TIMESTAMP()
+WHERE person_id = 'PER-10091';
+```
+
+BigQuery's [change history](https://docs.cloud.google.com/bigquery/docs/change-history) captures these automatically — no `_change_request_type` column needed.
+
+**Cloud storage changes (Azure Blob)** — A CDC file `products_update.json` was uploaded:
+
+```json
+[{
+  "product_id": "PROD-1001",
+  "product_name": "Classic Cotton T-Shirt",
+  "category": "Apparel",
+  "price": 24.99,
+  "description": "Soft 100% cotton crew-neck tee in assorted colors",
+  "last_modified_time": "2026-03-24T12:00:00Z",
+  "_change_request_type": "u"
+},
+{
+  "product_id": "PROD-1003",
+  "product_name": "Lightweight Running Jacket",
+  "category": "Apparel",
+  "price": 119.99,
+  "description": "Water-resistant jacket with reflective trim",
+  "last_modified_time": "2026-03-24T12:00:00Z",
+  "_change_request_type": "d"
+}]
+```
+
+Data Mirror matches on `product_id` and reads `_change_request_type`:
+- `"u"` — upsert: the newer `last_modified_time` replaces the existing record
+- `"d"` — delete: the row is removed
+
+Across both sources, these operations exercise every CDC mutation type: **delete**, **insert**, **update**.
+
+### 1.8 See the Results in CJA
+
+Two setups are running during this session:
+- **Live setup** — changes are being applied now
+- **Pre-run setup** — same changes applied earlier, already fully propagated
+
+Open CJA on your lab computer and find the pre-run freeform table. Observe:
+
+- **March 15** shows **0 events** — the delete propagated
+- **PROD-1001 (Classic Cotton T-Shirt)** shows **$24.99** — the price update propagated
+- **PROD-1003 (Lightweight Running Jacket)** no longer appears — the product delete took effect
+- **PER-10091** shows **Harris Jr.** — the customer profile update propagated
+
+<img src="assets/lesson-1/50-cja-changes-propagated.png" alt="CJA — Freeform table showing propagated Data Mirror changes" height="400" />
 
 This is the end state the live setup will reach once its propagation completes.
 
-### 1.5 Where Data Mirror Fits
+### 1.9 Checkpoint
 
-Not every ingestion scenario calls for Data Mirror. Here's how it compares:
-
-| Method                        | Best For                                   | Latency                  | Supports Updates/Deletes                   |
-| ----------------------------- | ------------------------------------------ | ------------------------ | ------------------------------------------ |
-| Flat file / CSV upload        | One-time or ad-hoc loads                   | Manual                   | No                                         |
-| Incremental source connectors | Append-only data streams                   | Minutes–hours           | Inserts only                               |
-| **Data Mirror (CDC)**   | **Live sync with mutation tracking** | **Near real-time** | **Yes — inserts, updates, deletes** |
-
-### 1.6 Checkpoint
-
-Take a moment to answer these before moving on:
+Before moving on, consider:
 
 - What happens in CJA when a record is **deleted** at the source? Does it disappear from reports?
-- What are the three descriptor fields a relational schema must mark for CDC to work? *(Hint: you saw them in the data model table above)*
+- What are the three descriptor fields a relational schema must define for CDC to work?
 - Name a data scenario in your own work where Data Mirror would be more useful than a batch connector.
 
 ---
@@ -318,7 +458,7 @@ Take a moment to answer these before moving on:
 
 ## 2 — Intro to CJA MCP Server and project builder
 
-est completion: 10 min
+Est. completion: 10 min
 
 ---
 
@@ -458,7 +598,7 @@ Discuss or reflect:
 
 ## Lesson 3 of 4 — Component Management
 
-est completion: 15 min *(Hands-on in Cursor — three skills)*
+Est. completion: 15 min *(Hands-on in Cursor — three skills)*
 
 All operations in this lesson are **read-only** — the skills report and recommend but never modify anything without your explicit confirmation.
 
@@ -581,7 +721,7 @@ Before you can safely retire or replace a segment or calculated metric, you need
 
 ## Lesson 4 of 4 — Segment Builder
 
-est completion: 15 min *(Hands-on in Cursor — deep dive on segmentation)*
+Est. completion: 15 min *(Hands-on in Cursor — deep dive on segmentation)*
 
 You'll build a simple segment, a sequential segment, and attempt a challenge segment on your own. The `cja-segment-builder` skill handles the full workflow — finding existing duplicates, clarifying your intent, validating the definition, and creating — all with your confirmation before anything is saved.
 
@@ -713,7 +853,7 @@ Reflect on what you built:
 
 ## Bonus — Explore More
 
-est completion: 10 min *(Optional — try what interests you)*
+Est. completion: 10 min *(Optional — try what interests you)*
 
 ---
 
@@ -774,7 +914,7 @@ Use DIA for structured guided analysis within Adobe's UI. Use the MCP Server whe
 
 ## Wrap-up and Q&A
 
-est completion: 10 min
+Est. completion: 10 min
 
 ---
 
@@ -801,3 +941,10 @@ Open `.cursor/skills/` in this repository. Skills available include: `cja-projec
 ---
 
 *Adobe Summit 2026 — Lab L611 — Data Mirror and MCP: Modern Connectivity for Customer Journey Analytics*
+
+---
+
+**References**
+
+[1]: [Data Mirror Overview — Adobe Experience Platform XDM](https://experienceleague.adobe.com/en/docs/experience-platform/xdm/data-mirror/overview)
+[2]: [Change Data Capture — Adobe Experience Platform Sources](https://experienceleague.adobe.com/en/docs/experience-platform/sources/api-tutorials/change-data-capture#data-mirror-with-relational-schemas)

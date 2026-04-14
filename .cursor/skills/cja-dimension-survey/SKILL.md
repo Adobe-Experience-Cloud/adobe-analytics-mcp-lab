@@ -286,9 +286,9 @@ Grid **subpanel height** and **slot `y`** offsets match this skill (**325** px r
 
 ## Demo example (L611 N=M=10)
 
-Optional **lab bundle** under [`demo_example/`](demo_example/) for the **L611 MCP & Data Mirror** data view with **N=M=10**: editable survey config ([`demo_example/l611_n10_m10_survey_config.json`](demo_example/l611_n10_m10_survey_config.json)), [`demo_example/build_demo_project.py`](demo_example/build_demo_project.py), and a **gitignored** [`demo_example/outputs/`](demo_example/outputs/) tree for MCP responses, last `upsertProject` envelope, and rebuilt `projectBody` JSON while iterating until the Workspace project is correct.
+Optional **lab bundle** under [`demo_example/`](demo_example/) for the **L611 MCP & Data Mirror** data view with **N=M=10**: editable survey config ([`demo_example/l611_n10_m10_survey_config.json`](demo_example/l611_n10_m10_survey_config.json)), [`demo_example/build_demo_project.py`](demo_example/build_demo_project.py), and a **gitignored** [`demo_example/outputs/`](demo_example/outputs/) tree for MCP responses, rebuilt `projectBody` JSON, and **`upsert_project_args*.json`** (ready-shaped **`expansions` + `projectBody`** for the Cursor CJA MCP `upsertProject` tool — stdlib-only file prep; **no** direct gateway HTTP or token env vars). Iterate until the Workspace project is correct.
 
-See [`demo_example/README.txt`](demo_example/README.txt). The same **`demo_example/`** folder name is used in [`cja-component-visualizer`](../cja-component-visualizer/demo_example/README.txt) (static fake preview there vs **live org** iteration here).
+See [`demo_example/README.txt`](demo_example/README.txt) for the **replication** checklist (fresh Cursor + Python only). The same **`demo_example/`** folder name is used in [`cja-component-visualizer`](../cja-component-visualizer/demo_example/README.txt) (static fake preview there vs **live org** iteration here).
 
 ---
 

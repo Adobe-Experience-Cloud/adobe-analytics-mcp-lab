@@ -1,3 +1,6 @@
+**/.idea
+**/.DS_Store
+
 # Ephemeral skill run artifacts (component network HTML/JS, MCP dumps, etc.)
 .cursor/skills/cja-component-visualizer/outputs/
 

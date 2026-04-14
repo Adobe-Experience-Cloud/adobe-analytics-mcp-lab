@@ -4,8 +4,8 @@ Build a CJA Workspace project body (JSON) for the cja-dimension-survey skill.
 Reads a survey config JSON (see example_survey_config.json). Writes UTF-8 JSON
 to --out or stdout. Not tied to any data view; all ids and copy come from config.
 
-Grid cells use **[`subPanel_snippet_trimmed.json`](../subPanel_snippet_trimmed.json)** in the skill
-folder: placeholders ``<<<KEY>>>`` are replaced per cell (``X``, ``Y``, ``VISUALIZATION_INDEX`` must be
+Grid cells use **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** next to this script:
+placeholders ``<<<KEY>>>`` are replaced per cell (``X``, ``Y``, ``VISUALIZATION_INDEX`` must be
 numeric). Optional ``--cell-template`` may point at another JSON file with the **same** placeholder
 pattern (forked snippet); do not use a different freeform shape.
 Grid geometry: row height 325px, 3×3 slot map; summary table uses All_Visits (configurable).
@@ -69,7 +69,8 @@ def quill_plain(text: str) -> str:
 
 
 _SKILL_DIR = Path(__file__).resolve().parent.parent
-_DEFAULT_SNIPPET_PATH = _SKILL_DIR / "subPanel_snippet_trimmed.json"
+_SCRIPT_DIR = Path(__file__).resolve().parent
+_DEFAULT_SNIPPET_PATH = _SCRIPT_DIR / "subPanel_snippet_trimmed.json"
 _template_base_cache: dict[str, dict[str, Any]] = {}
 
 
@@ -355,9 +356,12 @@ def resolve_cell_template_path(p: Path | None) -> Path:
         return _DEFAULT_SNIPPET_PATH.resolve()
     if p.is_file():
         return p.resolve()
-    cand = _SKILL_DIR / p
-    if cand.is_file():
-        return cand.resolve()
+    cand_script = _SCRIPT_DIR / p
+    if cand_script.is_file():
+        return cand_script.resolve()
+    cand_skill = _SKILL_DIR / p
+    if cand_skill.is_file():
+        return cand_skill.resolve()
     raise FileNotFoundError(f"Cell template not found: {p}")
 
 
@@ -478,7 +482,7 @@ def main() -> None:
         default=None,
         help=(
             "Grid subpanel JSON using the same <<<PLACEHOLDER>>> pattern as "
-            "subPanel_snippet_trimmed.json. Default: that file in the skill root."
+            "subPanel_snippet_trimmed.json. Default: scripts/subPanel_snippet_trimmed.json beside this script."
         ),
     )
     args = ap.parse_args()

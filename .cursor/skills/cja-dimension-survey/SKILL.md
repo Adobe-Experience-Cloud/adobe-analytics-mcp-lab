@@ -1,7 +1,7 @@
 ---
 name: cja-dimension-survey
 description: >
-  CJA dimension survey from usage-ranked dimensions and metrics (standard metrics only; no calculated metrics, no segments in usage lists). Hardcodes Events as metrics/occurrences and All Data as segment All_Visits. After qualification, groups ordered lexicographically by component id; panel/subpanel titles use friendly names; grid subpanel descriptions are stringified Quill (Y/Z from dimension id). 3x3 grid clones subPanel_snippet_trimmed.json (trimmed genericSubPanel+FreeformReportlet). runReport under All_Visits for metric zero vs non-zero. Final panel: three text reportlets plus one non-zero-metrics table. User supplies N and/or M (single number applies to both). Prompt for data view unless already established.
+  CJA dimension survey from usage-ranked dimensions and metrics (standard metrics only; no calculated metrics, no segments in usage lists). Hardcodes Events as metrics/occurrences and All Data as segment All_Visits. After qualification, groups ordered lexicographically by component id; panel/subpanel titles use friendly names; grid subpanel descriptions are stringified Quill (Y/Z from dimension id). 3x3 grid clones scripts/subPanel_snippet_trimmed.json (trimmed genericSubPanel+FreeformReportlet). runReport under All_Visits for metric zero vs non-zero. Final panel: three text reportlets plus one non-zero-metrics table. User supplies N and/or M (single number applies to both). Prompt for data view unless already established.
 ---
 
 # CJA Dimension Survey
@@ -195,7 +195,7 @@ The grid uses **one fixed `genericSubPanel` + `FreeformReportlet` shape** for ev
 
 **What must change per cell for uniqueness (structure unchanged)**
 
-Use **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** (same folder as this skill)—a trimmed **`genericSubPanel` + `FreeformReportlet`** with only the nodes needed for upsert, not a full Workspace export. Do not hand-author a different freeform shape for these cells. **[`scripts/build_dimension_survey_project.py`](scripts/build_dimension_survey_project.py)** deep-clones it by default; **`--cell-template`** may point at another file that uses the **same `<<<PLACEHOLDER>>>`** pattern (for example a maintained fork of the snippet).
+Use **[`scripts/subPanel_snippet_trimmed.json`](scripts/subPanel_snippet_trimmed.json)** (next to the builder in **`scripts/`**)—a trimmed **`genericSubPanel` + `FreeformReportlet`** with only the nodes needed for upsert, not a full Workspace export. Do not hand-author a different freeform shape for these cells. **[`scripts/build_dimension_survey_project.py`](scripts/build_dimension_survey_project.py)** deep-clones it by default; **`--cell-template`** may point at another file that uses the **same `<<<PLACEHOLDER>>>`** pattern (for example a maintained fork of the snippet).
 
 Every string value that is exactly **`<<<PLACEHOLDER>>>`** is replaced for each clone. **Guids** → new RFC4122-style UUID strings. **`<<<X>>>`**, **`<<<Y>>>`**, and **`<<<VISUALIZATION_INDEX>>>`** must become **JSON numbers** (floats/ints), not quoted strings, before `upsertProject`.
 
@@ -232,14 +232,14 @@ Always keep **`position.autoSize`:** **`false`**, **`fixedHeight`:** **`325`**, 
 
 **`upsertProject` assembly**
 
-1. Deep-clone **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** (or the same-shape file passed as **`--cell-template`** to the builder) for each dimension that belongs on the grid.
+1. Deep-clone **[`scripts/subPanel_snippet_trimmed.json`](scripts/subPanel_snippet_trimmed.json)** (or the same-shape file passed as **`--cell-template`** to the builder) for each dimension that belongs on the grid.
 2. Apply the **content** table (friendly **`name`**, **`description`** = Quill from **Dimension id → subpanel description (Quill)**, **`dimension.id`**) and the **slot** table (position + swatch + `visualizationIndex`). Dimension cells must follow the **id-sorted All others** order so slot `0` is the lexicographically smallest id in that panel chunk.
 3. Replace **snippet placeholders** with new ids and values per clone; ensure **`x` / `y` / `visualizationIndex`** are numeric.
 4. Wrap clones in `panels[].subPanels[]` (and panel ids / dates / `reportSuite`) per [`cja-project-builder`](../cja-project-builder/SKILL.md). Do not hand-author a different freeform shape for these cells.
 
 ### Canonical `genericSubPanel` object (dimension freeform cell)
 
-The machine-readable shape lives in **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** next to this skill—**do not** duplicate full cell JSON in this markdown.
+The machine-readable shape lives in **[`scripts/subPanel_snippet_trimmed.json`](scripts/subPanel_snippet_trimmed.json)** in **`scripts/`**—**do not** duplicate full cell JSON in this markdown.
 
 **[`scripts/build_dimension_survey_project.py`](scripts/build_dimension_survey_project.py)** deep-clones that file for each grid cell (substitutions + slot geometry; coerces **`x` / `y` / `visualizationIndex`** to numbers). **`--cell-template`** may point at another JSON file with the **same placeholder contract** if you maintain a forked snippet.
 
@@ -264,7 +264,7 @@ Single closing panel **after** all 3×3 table panels. Lay out subpanels in a sen
 
 After qualification and naming, you may emit a **small JSON config** (no Adobe calls) and run the generic builder next to this skill:
 
-- **Grid cell JSON:** [`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json); optional **`--cell-template`** path to another file with the same **`<<<PLACEHOLDER>>>`** pattern
+- **Grid cell JSON:** [`scripts/subPanel_snippet_trimmed.json`](scripts/subPanel_snippet_trimmed.json); optional **`--cell-template`** path to another file with the same **`<<<PLACEHOLDER>>>`** pattern
 - **Script:** [`scripts/build_dimension_survey_project.py`](scripts/build_dimension_survey_project.py)
 - **Example config:** [`scripts/example_survey_config.json`](scripts/example_survey_config.json)
 - **Pinned lab fixture (N=M=10, snippet):** [`scripts/snippet_survey_lab_fixture_n10_m10.json`](scripts/snippet_survey_lab_fixture_n10_m10.json) — org-specific `dataViewId` / component ids; copy and edit for your data view. Built body: [`scripts/snippet_survey_lab_fixture_projectBody.min.json`](scripts/snippet_survey_lab_fixture_projectBody.min.json)
@@ -292,7 +292,7 @@ Grid **subpanel height** and **slot `y`** offsets match this skill (**325** px r
 4. **Dimension classification:** per-dimension **`runReport`** with **Events only** on columns → three groups.
 5. **Metric qualification:** **`runReport`(s)** with **`All_Visits`** row + **all M metrics** on columns → zero vs non-zero lists.
 6. **Order and name:** apply **Ordering and naming** — sort each qualified group by **id**; resolve **friendly names** for panel and subpanel titles; set **`panels[].name`** for each dimension-table panel; set each grid subpanel’s **`name`** and stringified-Quill **`description`** per **Dimension id → subpanel description (Quill)**.
-7. **Build** 3×3 panels (**All others** only) by cloning **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** per cell (fresh ids; numeric **`x` / `y` / `visualizationIndex`**; slot **`swatchColor`**; friendly **`name`**, **`description`**, **`dimension.id`** per cell in **sorted** order).
+7. **Build** 3×3 panels (**All others** only) by cloning **[`scripts/subPanel_snippet_trimmed.json`](scripts/subPanel_snippet_trimmed.json)** per cell (fresh ids; numeric **`x` / `y` / `visualizationIndex`**; slot **`swatchColor`**; friendly **`name`**, **`description`**, **`dimension.id`** per cell in **sorted** order).
 8. **Build** final panel: **three** text reportlets + **one** non-zero-metrics table (lists / rows in **id** order per step 6).
 9. **`upsertProject`**; use [`large-json-workflow`](../large-json-workflow/SKILL.md) when needed. Return the Workspace link.
 
@@ -313,5 +313,5 @@ Grid **subpanel height** and **slot `y`** offsets match this skill (**325** px r
 - Do not put **No data** or **One element** dimensions on the **3×3** grid.
 - **3×3** applies only to **dimension** table panels; the final panel mixes **three** texts + **one** table.
 - Do not default a **data view** without user confirmation (unless already established in-session as above).
-- Do **not** query CJA for **“temporary grid sample”** (or any named template project) while executing this skill; dimension grid cells **must** follow **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** (or a fork with the **same** placeholder-driven shape via **`--cell-template`**)—no alternate freeform layouts for those cells.
+- Do **not** query CJA for **“temporary grid sample”** (or any named template project) while executing this skill; dimension grid cells **must** follow **[`scripts/subPanel_snippet_trimmed.json`](scripts/subPanel_snippet_trimmed.json)** (or a fork with the **same** placeholder-driven shape via **`--cell-template`**)—no alternate freeform layouts for those cells.
 - Do **not** call **`findSegments`** solely to resolve **All Data**; use **`All_Visits`** per **Hardcoded metric and segment**.

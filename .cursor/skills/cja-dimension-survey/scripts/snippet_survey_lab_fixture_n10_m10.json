@@ -3,7 +3,7 @@
   "dataViewName": "L611 MCP & Data Mirror",
   "counts": { "n": 10, "m": 10 },
   "projectName": "Top 10 / 10 (snippet cell) — dimension survey lab fixture",
-  "projectDescription": "Pinned lab fixture: N=M=10 usage slice; snippet cells from subPanel_snippet_trimmed.json (<<<>>> placeholders → numbers for x, y, visualizationIndex). dataViewId is org-specific.",
+  "projectDescription": "Pinned lab fixture: N=M=10 usage slice; snippet cells from scripts/subPanel_snippet_trimmed.json (<<<>>> placeholders → numbers for x, y, visualizationIndex). dataViewId is org-specific.",
   "gridDimensions": [
     {
       "id": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",

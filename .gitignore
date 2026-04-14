@@ -7,6 +7,9 @@
 # Dimension survey: chat/run-only payloads and MCP scratch (keep scripts/ for committed configs)
 .cursor/skills/cja-dimension-survey/outputs/
 
+# Dimension survey demo: MCP captures and built bodies while iterating upsertProject
+.cursor/skills/cja-dimension-survey/demo_example/outputs/
+
 # Python bytecode (local runs; do not commit)
 __pycache__/
 *.py[cod]

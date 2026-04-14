@@ -1,0 +1,58 @@
+{
+  "dataViewId": "dv_69b9b1ab3d60bb87c5701251",
+  "dataViewName": "L611 MCP & Data Mirror",
+  "counts": { "n": 10, "m": 10 },
+  "projectName": "Top 10 / 10 (snippet cell) — dimension survey lab fixture",
+  "projectDescription": "Pinned lab fixture: N=M=10 usage slice; snippet cells from subPanel_snippet_trimmed.json (<<<>>> placeholders → numbers for x, y, visualizationIndex). dataViewId is org-specific.",
+  "gridDimensions": [
+    {
+      "id": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+      "friendlyName": "Loyalty Tier [Data Mirror GBQ]"
+    },
+    {
+      "id": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+      "friendlyName": "Campaign Name [Data Mirror S3]"
+    },
+    {
+      "id": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+      "friendlyName": "Product ID [DataMirror AZB]"
+    },
+    {
+      "id": "variables/eventType",
+      "friendlyName": "Event Type [core]"
+    },
+    {
+      "id": "variables/platformdatasetid",
+      "friendlyName": "Platform Dataset ID [core]"
+    },
+    {
+      "id": "variables/productListItems.name",
+      "friendlyName": "Product Name [multi]"
+    }
+  ],
+  "summary": {
+    "noDataDimensions": [
+      {
+        "id": "variables/string_campaign_id",
+        "friendlyName": "Campaign ID [Data Mirror GBQ]"
+      },
+      {
+        "id": "variables/web.webPageDetails.name",
+        "friendlyName": "Page Name [web,app]"
+      }
+    ],
+    "singleValueNote": "None in this pass.",
+    "zeroMetrics": [{ "id": "metrics/69c3d8faf826a7df98006eb2.string_campaign_name" }],
+    "nonZeroMetrics": [
+      { "id": "metrics/adobe_firsttimesessions", "name": "First-Time Sessions" },
+      { "id": "metrics/adobe_returnsessions", "name": "Return Sessions" },
+      { "id": "metrics/commerce.order.priceTotal", "name": "Revenue" },
+      { "id": "metrics/commerce.productViews.value", "name": "Product Views" },
+      { "id": "metrics/commerce.purchases.value", "name": "Orders" },
+      { "id": "metrics/occurrences", "name": "Events" },
+      { "id": "metrics/visits", "name": "Sessions" },
+      { "id": "metrics/visitors", "name": "People" },
+      { "id": "metrics/web.webPageDetails.pageViews.value", "name": "Page Views" }
+    ]
+  }
+}

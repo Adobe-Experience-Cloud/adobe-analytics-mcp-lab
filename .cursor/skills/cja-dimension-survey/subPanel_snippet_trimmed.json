@@ -1,0 +1,98 @@
+{
+	"collapsed": false,
+	"description": "<<<SUBPANEL_DESCRIPTION_QUILL>>>",
+	"id": "<<<SUBPANEL_GUID>>>",
+	"name": "<<<SUBPANEL_NAME>>>",
+	"position": {
+		"autoHeight": 325,
+		"autoSize": false,
+		"fixedHeight": 325,
+		"width": 33.33,
+		"x": "<<<X>>>",
+		"y": "<<<Y>>>"
+	},
+	"reportlet": {
+		"columnTree": {
+			"id": "<<<COLUMN_GUID>>>",
+			"nodes": [
+				{
+					"component": {
+						"id": "metrics/occurrences",
+						"__entity__": true,
+						"type": "Metric",
+						"__metaData__": {
+							"name": "Events"
+						}
+					},
+					"id": "<<<METRIC_COLUMN_GUID>>>",
+					"name": "Events",
+					"nodes": [],
+					"tableCellDisplay": {
+						"location": "behindNumber",
+						"type": {
+							"background": true,
+							"backgroundType": "bar",
+							"comparison": "none",
+							"interpretZeroAsNoValue": true,
+							"number": true,
+							"percent": true,
+							"showAnomaly": false,
+							"showForecasting": false,
+							"showGrandTotal": true,
+							"showSparklines": false,
+							"showTotals": true,
+							"wrapHeaderText": true
+						}
+					},
+					"visible": true
+				}
+			],
+			"visible": true
+		},
+		"freeformTable": {
+			"collapsed": false,
+			"columnWidths": [
+				68,
+				32
+			],
+			"dimensionSettings": [
+				{
+					"dimension": {
+						"id": "<<<DIMENSION_COMPONENT_ID>>>",
+						"__entity__": true,
+						"type": "Dimension",
+						"__metaData__": {
+							"name": "<<<DIMENSION_COMPONENT_NAME>>>"
+						}
+					},
+					"id": "<<<DIMENSION_GUID>>>"
+				}
+			],
+			"pagination": {
+				"currentPage": 0,
+				"viewBy": 5
+			},
+			"settings": {
+				"breakdownByPosition": false,
+				"rowBasedPercentages": false,
+				"showThumbnails": false,
+				"totalsType": "allVisits"
+			},
+			"sort": {
+				"asc": false,
+				"columnId": "<<<METRIC_COLUMN_GUID>>>",
+				"labelColumn": false
+			}
+		},
+		"hideTitle": false,
+		"isConfigVisible": true,
+		"isReadOnly": false,
+		"name": "<<<SUBPANEL_NAME>>>",
+		"showAnnotations": true,
+		"showControls": true,
+		"type": "FreeformReportlet"
+	},
+	"type": "genericSubPanel",
+	"visible": true,
+	"visualizationIndex": "<<<VISUALIZATION_INDEX>>>"
+}

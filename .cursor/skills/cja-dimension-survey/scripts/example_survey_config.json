@@ -1,0 +1,36 @@
+{
+  "dataViewId": "dv_REPLACE_WITH_YOUR_DATA_VIEW_ID",
+  "dataViewName": "Replace with data view friendly name",
+  "counts": { "n": 10, "m": 10 },
+  "projectDescription": "Optional: short description for the Workspace project.",
+  "dateRangeDefinition": "td-29d/td+1d",
+  "definitionVersion": "96",
+  "summaryPanelTitle": "Summary — lists & non-zero metrics",
+  "allDataSegmentId": "All_Visits",
+  "allDataSegmentDisplayName": "All Data",
+  "dimensionPanelTitle": "Optional override; default is first friendly — last friendly from gridDimensions",
+  "gridDimensions": [
+    {
+      "id": "variables/example.dimension_one",
+      "friendlyName": "Dimension One [example]"
+    },
+    {
+      "id": "variables/example.dimension_two",
+      "friendlyName": "Dimension Two [example]"
+    }
+  ],
+  "summary": {
+    "noDataDimensions": [
+      {
+        "id": "variables/example.no_data_dim",
+        "friendlyName": "No data dim [example]"
+      }
+    ],
+    "singleValueNote": "None in this pass.",
+    "zeroMetrics": [{ "id": "metrics/example.zero_metric" }],
+    "nonZeroMetrics": [
+      { "id": "metrics/occurrences", "name": "Events" },
+      { "id": "metrics/visits", "name": "Sessions" }
+    ]
+  }
+}

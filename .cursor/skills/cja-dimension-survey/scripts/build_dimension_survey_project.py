@@ -1,7 +1,7 @@
 """Build a CJA Workspace project body (JSON) from a survey config.
 
 Read `example_survey_config.json` for the expected config shape. The builder
-deep-clones `subPanel_snippet_trimmed.json` by default; `--cell-template` may
+deep-clones `subPanel_snippet_trimmed2.json` by default; `--cell-template` may
 point at another JSON file with the same `<<<KEY>>>` placeholder contract.
 """
 from __future__ import annotations
@@ -64,7 +64,7 @@ def quill_plain(text: str) -> str:
 
 _SKILL_DIR = Path(__file__).resolve().parent.parent
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_DEFAULT_SNIPPET_PATH = _SCRIPT_DIR / "subPanel_snippet_trimmed.json"
+_DEFAULT_SNIPPET_PATH = _SCRIPT_DIR / "subPanel_snippet_trimmed2.json"
 _template_base_cache: dict[str, dict[str, Any]] = {}
 
 
@@ -141,7 +141,7 @@ def freeform_cell(
     slot: int,
     cell_template_path: Path,
 ) -> dict[str, Any]:
-    """Build one grid cell from ``subPanel_snippet_trimmed.json`` (or same-shape ``--cell-template``)."""
+    """Build one grid cell from ``subPanel_snippet_trimmed2.json`` (or same-shape ``--cell-template``)."""
     _slot, x, y, swatch = SLOTS[slot]
     cell = _clone_cell_template(cell_template_path)
     sp_id = new_id()
@@ -487,7 +487,7 @@ def main() -> None:
         default=None,
         help=(
             "Grid subpanel JSON using the same <<<PLACEHOLDER>>> pattern as "
-            "subPanel_snippet_trimmed.json. Default: scripts/subPanel_snippet_trimmed.json beside this script."
+            "subPanel_snippet_trimmed2.json. Default: scripts/subPanel_snippet_trimmed2.json beside this script."
         ),
     )
     args = ap.parse_args()

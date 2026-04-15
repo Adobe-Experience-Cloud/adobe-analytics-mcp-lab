@@ -87,7 +87,7 @@ To prepare our environment today using *Cursor* we have a few setup steps to fol
 
 Cursor is the sdk platform we will use today with the CJA MCP server. Open it from your application list.
 
-<img width="168" height="38" alt="Screenshot 2026-04-03 141758" src="https://github.com/user-attachments/assets/7761c37c-bf73-475e-984a-a61a7b206a16" />
+<img width="168" height="38" src="assets/setup/Screenshot 2026-04-03 141758.png" />
 
 ### 📦 Setup 2: Clone our Git repository
 
@@ -95,7 +95,7 @@ This step is a simple way to download files we need. In Github, the terminology 
 
 1. Cursor will open to a black window like this. Click on the *Clone repo* option.
 
-<img width="448" height="179" alt="Screenshot 2026-04-03 142109" src="https://github.com/user-attachments/assets/d31260ff-eccf-459f-b4e8-739c534224a2" />
+<img width="448" height="179" src="assets/setup/Screenshot 2026-04-03 142109.png" />
 
 2. In the text bar that has appeared, paste the following URL and click *Clone from URL*.
 
@@ -103,7 +103,7 @@ This step is a simple way to download files we need. In Github, the terminology 
 https://github.com/Adobe-Experience-Cloud/adobe-analytics-mcp-lab
 ```
 
-<img width="529" height="84" alt="AdobeExpressPhotos_26e57926bbcc47c58cfd164169b25eb8_CopyEdited" src="https://github.com/user-attachments/assets/e95c2f8d-bd7b-494b-87a5-e32dd30d68d4" />
+<img width="529" height="84" src="assets/setup/Screenshot 2026-04-03 142349.png" />
 
 3. Select any location, such as the desktop, for the repo to be saved.
 
@@ -127,7 +127,7 @@ Now, we just need to tell Cursor how to reach CJA and help us connect.
 Add my cja mcp server to the global Cursor settings.
 ```
 
-<img width="479" height="89" alt="AdobeExpressPhotos_dfbdba47b8514d9b95b3c51d9ed23ac6_CopyEdited" src="https://github.com/user-attachments/assets/d7b14b05-938c-41d3-8dc9-1bb864527f9d" />
+<img width="479" height="89" src="assets/setup/Screenshot 2026-04-03 150605.png" />
 
 This should process quickly, taking only a few seconds. Instead of clicking through Settings menus, we are using the downloaded files and the Composer agent in Cursor to automate setup.
 
@@ -139,7 +139,7 @@ Authenticate to CJA using mcp_auth.
 
 As before, this should only take a few seconds. Cursor will hopefully make a call and produce this interactive result for you. Click *Authenticate*:
 
-<img width="478" height="207" alt="AdobeExpressPhotos_b0c2b17aff54421b87bf69f9a614765a_CopyEdited" src="https://github.com/user-attachments/assets/27aa4344-1714-4cff-9b5d-7c368e90c9b3" />
+<img width="478" height="207" src="/assets/setup/Screenshot 2026-04-03 145833.png" />
 
 4. On web auth, select *Experience Showcase* (if asked) and click OK.
 
@@ -147,7 +147,7 @@ As before, this should only take a few seconds. Cursor will hopefully make a cal
 
 5. On the following screen, click *Allow access*:
 
-<img width="415" height="581" alt="AdobeExpressPhotos_c07022c6ea14438bb535f87a152922c5_CopyEdited" src="https://github.com/user-attachments/assets/6c0bc68d-edd8-4f7e-978a-3978d95b79f5" />
+<img width="415" height="581" src="assets/setup/Screenshot 2026-04-03 145533.png" />
 
 Now, Cursor should say some positive comments about being connected. If so, you can confirm the connection to CJA is active with a prompt like this:
 
@@ -157,7 +157,7 @@ What data views can I access?
 
 If Cursor returns a small list including the L611 data view, then you are ready! *Leave the Cursor app alone until we get to the MCP tasks in a few minutes.*
 
-<img width="461" height="151" alt="AdobeExpressPhotos_bfd296436c9d4730b877c53442b6d399_CopyEdited" src="https://github.com/user-attachments/assets/e4ff7d01-62d5-4630-9813-55ce9d40e013" />
+<img width="461" height="151" src="assets/setup/Screenshot 2026-04-03 152418.png" />
 
 ### 🛠️ Manual setup instructions
 
@@ -535,7 +535,7 @@ Instead of navigating Analysis Workspace manually, you describe what you want: *
 In the CJA UI, there is a feature called Data Insights Agent or AI Assistant. It will answer simple information requests, report updates, etc. but only within your CJA/AEP context. The MCP server facilitates those too, but it is the power of the chat agent you use which takes it farther. You can give an AI like ChatGPT a complex prompt, with external references, instructing it to generate a unique CJA report app for you. This lab will explore the possibilities.
 
 AI Assistant and Data Insights Agent in CJA:
-`<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="https://github.com/user-attachments/assets/0bdd9adf-0ae1-46de-a34d-c8c0471e85fc" />`
+<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="assets/lesson-2/Screenshot 2026-04-03 153649.png" />
 
 ### 🧠 2.3 What are **skills**?
 
@@ -553,7 +553,7 @@ So, to aid repeatability and demonstrations in our lab, we have defined the `cja
 
 1. Open a new agent chat.
 
-<img width="155" height="152" alt="AdobeExpressPhotos_a9aeb23ad3c14d3c85fd6ebfcc3cdfd5_CopyEdited" src="https://github.com/user-attachments/assets/584a0ad2-38ca-4131-9264-afab80fd42ed" />
+<img width="155" height="152" src="assets/lesson-2/Screenshot 2026-04-03 171218.png" />
 
 2. Specify the data view for our session with this prompt:
 
@@ -561,7 +561,7 @@ So, to aid repeatability and demonstrations in our lab, we have defined the `cja
 Set L611 as my default data view for this session.
 ```
 
-<img width="1070" height="174" alt="AdobeExpressPhotos_8155baefdfad4ad09ecaae450a2e324a_CopyEdited" src="https://github.com/user-attachments/assets/7cfcd234-9748-42d3-bb4a-b157c81aa441" />
+<img width="1070" height="174" src="/assets/lesson-2/Screenshot 2026-04-03 173023.png" />
 
 The agent calls `setDefaultSessionDataViewId` — now every subsequent tool call uses this data view by default. This is a proactive call, as the AI would have asked us directly as needed.
 
@@ -571,7 +571,7 @@ The agent calls `setDefaultSessionDataViewId` — now every subsequent tool call
 Make a simple CJA project.
 ```
 
-<img width="786" height="199" alt="AdobeExpressPhotos_6539e90f9a394454ab16297ae7b557b9_CopyEdited" src="https://github.com/user-attachments/assets/24e931ab-94e4-4650-80f6-5a0f9feefd28" />
+<img width="786" height="199" src="assets/lesson-2/Screenshot 2026-04-03 173214.png" />
 
 > 📝 **Note:** This will use our project builder skill. They are naturally identified by the AI based on their definition (or you may invoke it explicitly by skillname). In our Cursor environment, if we use phrases like *make/build a CJA project* or reference `@cja-project-builder`, the agent will follow the skill to address the prompt.
 
@@ -585,11 +585,11 @@ How many people saw each azb product in March?
 
 This is a followup from our data mirror example. We are a little vague, intentionally, to demonstrate how the system processes and infers context. The LLM can respond with CJA data directly in our chat.
 
-<img width="668" height="178" alt="AdobeExpressPhotos_1a34beef47cd40d68255a522bf65b6eb_CopyEdited" src="https://github.com/user-attachments/assets/62d5a583-af0b-4661-a37e-240148af1ac1" />
+<img width="668" height="178" src="assets/lesson-2/Screenshot 2026-04-03 170029.png" />
 
 Your results will likely include a text representation of the product names and people counts.
 
-<img width="855" height="305" alt="image" src="https://github.com/user-attachments/assets/85817e12-394d-4428-a969-104aa8ec0349" />
+<img width="855" height="305" src="assets/lesson-2/Screenshot 2026-04-03 170252.png" />
 
 5. Save that report into a new project:
 
@@ -597,7 +597,7 @@ Your results will likely include a text representation of the product names and 
 Save this in a project and give me the link.
 ```
 
-<img width="1074" height="565" alt="AdobeExpressPhotos_0f2f44fbabe24d8bbf8614199feaa187_CopyEdited" src="https://github.com/user-attachments/assets/f1643179-05a4-4a97-b35f-effc14b5d836" />
+<img width="1074" height="565" src="assets/lesson-2/Screenshot 2026-04-03 170356.png" />
 
 6. Let it create a more interesting CJA project:
 

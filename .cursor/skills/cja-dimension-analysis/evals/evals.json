@@ -1,0 +1,23 @@
+{
+  "skill_name": "cja-dimension-analysis",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze the Page Name dimension on the Adobe Store Prod data view. I want to see cardinality, distribution/skew, and any data quality issues. Generate an HTML dashboard.",
+      "expected_output": "Skill should: (1) call findDataViews, set data view, (2) find/describe the Page Name dimension, (3) run reports for cardinality and distribution, (4) search for error patterns like Unspecified/None/empty, (5) save analysis JSON, (6) run cja_dimension_analysis.py to generate HTML dashboard, (7) present report path and key findings summary.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Compare the Marketing Channel and Device Type dimensions side by side. Show me cardinality and skew for both. Use the last 90 days on my main data view.",
+      "expected_output": "Skill should: (1) set up data view, (2) find/describe both dimensions, (3) run cardinality and distribution for each, (4) produce a comparison table showing both dimensions, (5) generate report highlighting skew differences and any HIGH cardinality dimensions.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I think there are data quality issues in my Campaign ID dimension — lots of Unspecified values. Can you check and give me a markdown report?",
+      "expected_output": "Skill should: (1) set up data view, (2) find Campaign ID dimension, (3) specifically run Phase 5 (Data Quality) - searchDimensionItems for 'Unspecified', 'None', 'empty', etc., (4) compute missing data %, (5) generate markdown report with severity classification, (6) recommend action if severity is Warning or Critical.",
+      "files": []
+    }
+  ]
+}

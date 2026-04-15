@@ -1,0 +1,23 @@
+{
+  "skill_name": "cja-component-find-replace",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Find all projects that use the 'Mobile Users' segment in the Adobe Store data view.",
+      "expected_output": "Skill should: (1) ask/confirm data view scope, (2) use findSegments to find 'Mobile Users', (3) use describeSegment with usedIn expansion to get project references, (4) display a table of projects with owner, last modified date, project ID, (5) note the findProjects limitation if relevant.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to replace the deprecated metric 'metrics/oldRevenue' with 'metrics/revenue' in all my projects. How do I do this?",
+      "expected_output": "Skill should: (1) locate and verify 'metrics/oldRevenue' via findMetrics/describeMetric, (2) verify 'metrics/revenue' as same type (metric), (3) find all projects via findProjects + scan definitions, (4) present replacement plan with project list, (5) test on one project and ask for user confirmation, (6) only continue with batch after user validates test project.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Component impact analysis: which projects reference the 'Product Category' dimension? I want to know before I retire it.",
+      "expected_output": "Skill should: (1) find and verify 'Product Category' dimension ID, (2) note it's a dimension (no usedIn expansion) so must scan project definitions, (3) call findProjects then describeProject with definition expansion for each project, (4) list all matching projects, (5) note findProjects limitation, (6) give clear 'safe to retire' or 'N projects would break' conclusion.",
+      "files": []
+    }
+  ]
+}

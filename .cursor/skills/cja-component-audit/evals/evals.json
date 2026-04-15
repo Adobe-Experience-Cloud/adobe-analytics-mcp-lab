@@ -1,0 +1,23 @@
+{
+  "skill_name": "cja-component-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit all my components on the Adobe Store Prod data view. Include segments and calculated metrics. Generate an HTML dashboard.",
+      "expected_output": "Skill should: (1) set data view, (2) call findSegments + findCalculatedMetrics with full expansions, (3) call listComponentUsage for both types, (4) classify Active/Stale/Unused, (5) check for duplicate calc metric formulas + name similarity, (6) analyze ownership, (7) compute health scores, (8) run cja_component_audit.py to generate HTML report, (9) summarize top findings.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Which calculated metrics are unused? I think we have a lot of duplicates too. Give me a markdown report.",
+      "expected_output": "Skill should: (1) focus on calculated metrics (and segments as default), (2) run inventory + usage classification, (3) specifically highlight calc metrics in Unused bucket, (4) run formula duplicate detection, (5) call listSimilarTo for top calc metrics, (6) generate markdown report, (7) include recommendations for deletion/merger.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Component health check across segments and calc metrics. I want to see ownership distribution and which team members have the most unused components.",
+      "expected_output": "Skill should: (1) run full audit phases 0-6, (2) specifically emphasize Phase 5 ownership analysis — who owns the most components and who has the most unused, (3) generate report with ownership distribution table, (4) include 'single-owner risk' flags if applicable, (5) recommendations should include owner-specific suggestions for cleanup.",
+      "files": []
+    }
+  ]
+}

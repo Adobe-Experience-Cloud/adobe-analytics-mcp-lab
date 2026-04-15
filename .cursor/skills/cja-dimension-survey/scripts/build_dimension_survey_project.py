@@ -1,14 +1,8 @@
-"""
-Build a CJA Workspace project body (JSON) for the cja-dimension-survey skill.
+"""Build a CJA Workspace project body (JSON) from a survey config.
 
-Reads a survey config JSON (see example_survey_config.json). Writes UTF-8 JSON
-to --out or stdout. Not tied to any data view; all ids and copy come from config.
-
-Grid cells use **[`subPanel_snippet_trimmed.json`](subPanel_snippet_trimmed.json)** next to this script:
-placeholders ``<<<KEY>>>`` are replaced per cell (``X``, ``Y``, ``VISUALIZATION_INDEX`` must be
-numeric). Optional ``--cell-template`` may point at another JSON file with the **same** placeholder
-pattern (forked snippet); do not use a different freeform shape.
-Grid geometry: row height 325px, 3×3 slot map; summary table uses All_Visits (configurable).
+Read `example_survey_config.json` for the expected config shape. The builder
+deep-clones `subPanel_snippet_trimmed.json` by default; `--cell-template` may
+point at another JSON file with the same `<<<KEY>>>` placeholder contract.
 """
 from __future__ import annotations
 
@@ -86,7 +80,7 @@ def _clone_cell_template(path: Path) -> dict[str, Any]:
 
 
 def _apply_angle_placeholders(obj: Any, repl: dict[str, Any]) -> None:
-    """Replace string values that are exactly <<<KEY>>> (entire string)."""
+    """Replace string values that are exactly `<<<KEY>>>`."""
     if isinstance(obj, dict):
         for k, v in obj.items():
             if isinstance(v, str) and v.startswith("<<<") and v.endswith(">>>") and len(v) > 6:
@@ -311,8 +305,8 @@ def load_and_validate(raw: dict[str, Any]) -> dict[str, Any]:
     grid = _require(raw, "gridDimensions", "root")
     if not isinstance(grid, list) or not grid:
         raise ValueError("gridDimensions must be a non-empty array")
-    if len(grid) > 9:
-        raise ValueError("gridDimensions: at most 9 rows for one 3×3 panel (split panels in config if needed)")
+    if len(grid) > 9 * 20:
+        raise ValueError("gridDimensions: cap 20 panels × 9 cells (refine scope or split projects)")
     for i, row in enumerate(grid):
         if not isinstance(row, dict):
             raise ValueError(f"gridDimensions[{i}] must be an object")
@@ -388,7 +382,7 @@ def build_project_body(cfg: dict[str, Any], cell_template_path: Path) -> dict[st
     grid_dims: list[tuple[str, str]] = [
         (str(r["id"]), str(r["friendlyName"])) for r in cfg["gridDimensions"]
     ]
-    panel_title = str(cfg.get("dimensionPanelTitle") or f"{grid_dims[0][1]} - {grid_dims[-1][1]}")
+    dimension_panel_title_override = cfg.get("dimensionPanelTitle")
 
     summary = cfg["summary"]
     no_data_lines = format_no_data_lines(summary["noDataDimensions"])
@@ -399,9 +393,6 @@ def build_project_body(cfg: dict[str, Any], cell_template_path: Path) -> dict[st
     ]
     non_zero.sort(key=lambda t: t[0])
 
-    grid_subpanels = [
-        freeform_cell(d, f, i, cell_template_path) for i, (d, f) in enumerate(grid_dims)
-    ]
     summary_subpanels = [
         text_subpanel("Text — dimensions, no usable data", quill_plain(no_data_lines), 0, 0),
         text_subpanel("Text — dimensions, single value", quill_plain(one_el), 125, 1),
@@ -410,8 +401,22 @@ def build_project_body(cfg: dict[str, Any], cell_template_path: Path) -> dict[st
     ]
 
     ws_id = new_id()
-    panel_grid_id = new_id()
     panel_summary_id = new_id()
+
+    def _grid_chunks(dims: list[tuple[str, str]], size: int = 9) -> list[list[tuple[str, str]]]:
+        return [dims[i : i + size] for i in range(0, len(dims), size)]
+
+    grid_panels: list[tuple[str, str, list]] = []
+    chunks = _grid_chunks(grid_dims, 9)
+    for ci, chunk in enumerate(chunks):
+        subs = [freeform_cell(d, f, i, cell_template_path) for i, (d, f) in enumerate(chunk)]
+        if dimension_panel_title_override and len(chunks) == 1:
+            ptitle = str(dimension_panel_title_override)
+        elif dimension_panel_title_override and len(chunks) > 1:
+            ptitle = f"{dimension_panel_title_override} (part {ci + 1}/{len(chunks)})"
+        else:
+            ptitle = f"{chunk[0][1]} - {chunk[-1][1]}"
+        grid_panels.append((new_id(), ptitle, subs))
 
     date_ent = {"__entity__": True, "type": "DateRange", "__metaData__": {"definition": date_def}}
     rs_ent = {
@@ -436,6 +441,9 @@ def build_project_body(cfg: dict[str, Any], cell_template_path: Path) -> dict[st
             "subPanels": subs,
         }
 
+    workspace_panels = [panel(pid, nm, subs) for pid, nm, subs in grid_panels]
+    workspace_panels.append(panel(panel_summary_id, summary_title, summary_subpanels))
+
     definition = {
         "version": definition_version,
         "viewDensity": "compact",
@@ -444,10 +452,7 @@ def build_project_body(cfg: dict[str, Any], cell_template_path: Path) -> dict[st
             {
                 "id": ws_id,
                 "name": "",
-                "panels": [
-                    panel(panel_grid_id, panel_title, grid_subpanels),
-                    panel(panel_summary_id, summary_title, summary_subpanels),
-                ],
+                "panels": workspace_panels,
             }
         ],
     }

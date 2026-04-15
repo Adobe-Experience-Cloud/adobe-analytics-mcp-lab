@@ -34,6 +34,7 @@ Build a Workspace project that surveys usage-ranked dimensions and standard metr
 5. Use `describeDimension` and `describeMetric` only for titles, never for ordering.
 
 ## Output rules
+- Include only the elements of `subPanels` that are listed in `scripts/subPanel_snippet_trimmed.json`, even if the guide says more are required.
 - Put only dimensions with two or more usable values on the 3×3 grid.
 - Put no-data dimensions and single-value dimensions in the final summary panel.
 - Put zero metrics in the final summary text block.
@@ -49,3 +50,4 @@ Build a Workspace project that surveys usage-ranked dimensions and standard metr
 - Do not use calculated metrics or segments in usage-ranked candidate lists.
 - Do not silently choose a data view.
 - Do not auto-run this skill unless the user explicitly asks for a dimension survey, coverage check, or similar bulk analysis.
+- Always call `upsertProject` even with a large definition up to 100k.

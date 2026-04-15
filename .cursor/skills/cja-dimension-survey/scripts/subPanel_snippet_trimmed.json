@@ -1,5 +1,4 @@
 {
-	"collapsed": false,
 	"description": "<<<SUBPANEL_DESCRIPTION_QUILL>>>",
 	"id": "<<<SUBPANEL_GUID>>>",
 	"name": "<<<SUBPANEL_NAME>>>",
@@ -25,32 +24,11 @@
 						}
 					},
 					"id": "<<<METRIC_COLUMN_GUID>>>",
-					"name": "Events",
-					"nodes": [],
-					"tableCellDisplay": {
-						"location": "behindNumber",
-						"type": {
-							"background": true,
-							"backgroundType": "bar",
-							"comparison": "none",
-							"interpretZeroAsNoValue": true,
-							"number": true,
-							"percent": true,
-							"showAnomaly": false,
-							"showForecasting": false,
-							"showGrandTotal": true,
-							"showSparklines": false,
-							"showTotals": true,
-							"wrapHeaderText": true
-						}
-					},
-					"visible": true
+					"name": "Events"
 				}
-			],
-			"visible": true
+			]
 		},
 		"freeformTable": {
-			"collapsed": false,
 			"columnWidths": [
 				68,
 				32
@@ -72,27 +50,13 @@
 				"currentPage": 0,
 				"viewBy": 5
 			},
-			"settings": {
-				"breakdownByPosition": false,
-				"rowBasedPercentages": false,
-				"showThumbnails": false,
-				"totalsType": "allVisits"
-			},
 			"sort": {
-				"asc": false,
-				"columnId": "<<<METRIC_COLUMN_GUID>>>",
-				"labelColumn": false
+				"columnId": "<<<METRIC_COLUMN_GUID>>>"
 			}
 		},
-		"hideTitle": false,
-		"isConfigVisible": true,
-		"isReadOnly": false,
 		"name": "<<<SUBPANEL_NAME>>>",
-		"showAnnotations": true,
-		"showControls": true,
 		"type": "FreeformReportlet"
 	},
 	"type": "genericSubPanel",
-	"visible": true,
 	"visualizationIndex": "<<<VISUALIZATION_INDEX>>>"
 }

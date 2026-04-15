@@ -40,7 +40,7 @@ For each candidate metric:
 ## Layout
 ### 3x3 grid panels
 - Place only grid-candidate dimensions on the grid.
-- Use the trimmed cell template from `scripts/subPanel_snippet_trimmed2.json`.
+- Use the trimmed cell template from `scripts/subPanel_snippet_trimmed.json`.
 - Keep the structure of each cell fixed; only substitute ids, titles, description Quill, and geometry values.
 - Fill slots in row-major order.
 - Use 325px row height.
@@ -68,7 +68,7 @@ Include four subpanels:
 ## Builder inputs
 Use these files:
 - `scripts/build_dimension_survey_project.py`
-- `scripts/subPanel_snippet_trimmed2.json`
+- `scripts/subPanel_snippet_trimmed.json`
 - `scripts/example_survey_config.json`
 
 Do not query CJA for a template project. Clone the snippet directly.

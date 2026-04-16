@@ -1,17 +1,17 @@
 """
 Write a component-network HTML + JS pair under ``outputs/`` (gitignored).
 
-Typical use: after pulling ``listComponentUsage`` + ``listFrequentlyUsedWith`` via MCP,
-save a JSON bundle under ``outputs/`` (gitignored), e.g. ``outputs/mcp_run_bundle.json``, and build
-with ``--preset mcp-json``. Also supports ``--preset lab-snapshot`` for a local pipeline check when
-MCP is unavailable (uses ``demo_example/demo_example_snapshot.py``).
+After pulling ``listComponentUsage`` + ``listFrequentlyUsedWith`` via MCP, save a JSON bundle
+(e.g. ``outputs/mcp_run_bundle.json``) and run this script to emit the visualization.
 
 Run from skill root::
 
-    python scripts/build_network_to_outputs.py --preset lab-snapshot --max-nodes 85
+    python scripts/build_network_to_outputs.py
+    python scripts/build_network_to_outputs.py --max-nodes 30
+    python scripts/build_network_to_outputs.py --input outputs/my_bundle.json
 
-    python scripts/build_network_to_outputs.py --preset mcp-json
-    python scripts/build_network_to_outputs.py --preset mcp-json --input outputs/my_bundle.json
+Emitted filenames include a node-count suffix, for example ``component_network_run_n10.html``,
+``visualization_data_run_n10.js``, and ``run_manifest_n10.json``.
 
 Optional friendly node labels: save ``outputs/display_names.json`` (flat id -> title map from
 ``describeDimension`` / ``describeMetric`` / ``describeCalculatedMetric`` / ``describeSegment``),
@@ -28,13 +28,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
-DEMO = ROOT / "demo_example"
 
 
 def _bootstrap_path() -> None:
     import sys
 
-    for p in (ROOT, SCRIPTS, DEMO):
+    for p in (ROOT, SCRIPTS):
         s = str(p)
         if s not in sys.path:
             sys.path.insert(0, s)
@@ -179,81 +178,6 @@ def build_html(
     return raw
 
 
-def run_lab_snapshot(*, max_nodes: int, run_label: str) -> None:
-    _bootstrap_path()
-    import component_network_lib as lab
-    import demo_example_snapshot as snap
-
-    out_dir = ROOT / "outputs"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    rows_all = [(c, t, u) for c, t, u in snap.USAGE_ROWS if not lab.should_exclude(c)]
-    rows_sorted = sorted(rows_all, key=lambda x: -x[2])
-    rows = rows_sorted[: max(1, max_nodes)]
-    selected = [c for c, _, _ in rows]
-    universe = set(selected)
-    all_edges = merge_fuw_edges(universe, snap.FUW_COUSAGE)
-    sel_set = set(selected)
-    edges = [e for e in all_edges if e["source"] in sel_set and e["target"] in sel_set]
-
-    dv_id = snap.DATA_VIEW_ID
-    dv_label = run_label
-    sel_note = (
-        f"default EXCLUDE filter; all filtered components by usage, capped at {max_nodes} nodes "
-        f"(digestibility cap; {len(rows)} after cap)"
-    )
-
-    js_name = "visualization_data_run.js"
-    js = to_js(
-        data_view_id=dv_id,
-        data_view_label=dv_label,
-        selected=selected,
-        rows=rows,
-        edges=edges,
-        display_names=snap.DISPLAY_NAMES,
-        selection_note=sel_note,
-    )
-    (out_dir / js_name).write_text(js, encoding="utf-8")
-
-    ct = lab.count_types(selected, rows)
-    sub = (
-        f"<strong>{len(selected)} components:</strong> {ct['metric']} metrics | {ct['dimension']} dimensions | "
-        f"{ct['calculatedMetric']} calc metrics | {ct['segment']} segments • <strong>{len(edges)}</strong> co-usage links • three-zone layout<br/>"
-        "<em style=\"font-size: 0.9em; color: #a0aec0;\">Written to <code>outputs/</code> (gitignored). "
-        "Open <code>component_network_run.html</code> beside the JS file. For live MCP pulls, use the same "
-        "<code>dataViewId</code> with fresh <code>listComponentUsage</code> / <code>listFrequentlyUsedWith</code>.</em>"
-    )
-    template = ROOT / "synthetic_sample" / "component_network_top100.html"
-    html = build_html(
-        template_path=template,
-        title=f"Component network — {run_label}",
-        subtitle_html=sub,
-        selected=selected,
-        rows=rows,
-        data_view_id=dv_id,
-        data_view_label=dv_label,
-        js_name=js_name,
-    )
-    (out_dir / "component_network_run.html").write_text(html, encoding="utf-8")
-
-    manifest = {
-        "run_label": run_label,
-        "dataViewId": dv_id,
-        "preset": "lab-snapshot",
-        "max_nodes": max_nodes,
-        "nodes_written": len(selected),
-        "edges_written": len(edges),
-        "note": "CJA MCP was not used in this agent session; data came from demo_example_snapshot.py for pipeline validation.",
-    }
-    (out_dir / "run_manifest.json").write_text(
-        json.dumps(manifest, indent=2),
-        encoding="utf-8",
-    )
-    print(json.dumps(manifest, indent=2))
-    print(f"Wrote {out_dir / 'component_network_run.html'}")
-    print(f"Wrote {out_dir / js_name}")
-
-
 def _resolve_display_names_for_run(
     raw: dict,
     *,
@@ -284,7 +208,7 @@ def _resolve_display_names_for_run(
     return merged, sources
 
 
-def run_mcp_json(
+def run_from_bundle(
     *,
     bundle_path: Path,
     max_nodes: int,
@@ -313,6 +237,8 @@ def run_mcp_json(
     cap = max(1, max_nodes)
     rows = rows_sorted[:cap]
     selected = [c for c, _, _ in rows]
+    n_nodes = len(selected)
+    file_suffix = f"_n{n_nodes}"
     universe = set(selected)
     all_edges = merge_fuw_edges(universe, fuw)
     sel_set = set(selected)
@@ -335,7 +261,8 @@ def run_mcp_json(
         if dn_sources:
             sel_note += f" ({', '.join(dn_sources)})"
 
-    js_name = "visualization_data_run.js"
+    js_name = f"visualization_data_run{file_suffix}.js"
+    html_name = f"component_network_run{file_suffix}.html"
     js = to_js(
         data_view_id=dv_id,
         data_view_label=dv_label,
@@ -352,8 +279,8 @@ def run_mcp_json(
         f"<strong>{len(selected)} components:</strong> {ct['metric']} metrics | {ct['dimension']} dimensions | "
         f"{ct['calculatedMetric']} calc metrics | {ct['segment']} segments • <strong>{len(edges)}</strong> co-usage links • three-zone layout<br/>"
         "<em style=\"font-size: 0.9em; color: #a0aec0;\">Written to <code>outputs/</code> (gitignored). "
-        "Open <code>component_network_run.html</code> beside the JS file. Regenerate from MCP export via "
-        "<code>--preset mcp-json</code>.</em>"
+        f"Open <code>{html_name}</code> beside the JS file. Regenerate with "
+        "<code>python scripts/build_network_to_outputs.py</code>.</em>"
     )
     template = ROOT / "synthetic_sample" / "component_network_top100.html"
     html = build_html(
@@ -366,44 +293,42 @@ def run_mcp_json(
         data_view_label=dv_label,
         js_name=js_name,
     )
-    (out_dir / "component_network_run.html").write_text(html, encoding="utf-8")
+    (out_dir / html_name).write_text(html, encoding="utf-8")
 
     manifest = {
         "run_label": dv_label,
         "dataViewId": dv_id,
-        "preset": "mcp-json",
         "bundle": str(bundle_path.resolve()),
         "max_nodes": cap,
         "nodes_written": len(selected),
         "edges_written": len(edges),
         "displayNamesResolved": len(display_names),
         "displayNamesSources": dn_sources,
-        "note": "Built from listComponentUsage + listFrequentlyUsedWith saved as JSON (CJA MCP).",
+        "htmlFile": html_name,
+        "jsFile": js_name,
+        "note": "Built from listComponentUsage + listFrequentlyUsedWith JSON (CJA MCP).",
     }
-    (out_dir / "run_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    manifest_name = f"run_manifest{file_suffix}.json"
+    (out_dir / manifest_name).write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(json.dumps(manifest, indent=2))
-    print(f"Wrote {out_dir / 'component_network_run.html'}")
+    print(f"Wrote {out_dir / html_name}")
     print(f"Wrote {out_dir / js_name}")
 
 
 def main() -> None:
-    p = argparse.ArgumentParser()
-    p.add_argument(
-        "--preset",
-        choices=("lab-snapshot", "mcp-json"),
-        default="lab-snapshot",
-        help="lab-snapshot: demo_example_snapshot; mcp-json: usage+fuw bundle from CJA MCP export",
+    p = argparse.ArgumentParser(
+        description="Build component network HTML+JS from an MCP usage+Fuw JSON bundle.",
     )
-    p.add_argument("--max-nodes", type=int, default=85, help="Hard cap on nodes (digestibility)")
+    p.add_argument("--max-nodes", type=int, default=85, help="Hard cap on nodes (after EXCLUDE filter)")
     p.add_argument(
         "--run-label",
-        default="L611 lab (snapshot-backed run)",
-        help="Display label for data view line / title (lab-snapshot default; mcp-json overrides with bundle unless set)",
+        default=None,
+        help="Override title / data view line in HTML (default: dataViewLabel from bundle)",
     )
     p.add_argument(
         "--input",
         type=Path,
-        help="For mcp-json: path to bundle JSON (default: outputs/mcp_run_bundle.json under skill root; gitignored)",
+        help="Path to bundle JSON (default: outputs/mcp_run_bundle.json under skill root)",
     )
     p.add_argument(
         "--display-names",
@@ -417,25 +342,21 @@ def main() -> None:
         help="Do not auto-load outputs/display_names.json (still use bundle.displayNames if set)",
     )
     args = p.parse_args()
-    if args.preset == "lab-snapshot":
-        run_lab_snapshot(max_nodes=args.max_nodes, run_label=args.run_label)
-    elif args.preset == "mcp-json":
-        out_dir = ROOT / "outputs"
-        bundle = args.input or (out_dir / "mcp_run_bundle.json")
-        if not bundle.is_file():
-            raise SystemExit(
-                f"Bundle not found: {bundle}\n"
-                "Save listComponentUsage + listFrequentlyUsedWith results as JSON there, "
-                "or pass --input path/to/bundle.json (keep run-specific files out of scripts/)."
-            )
-        label = None if args.run_label == "L611 lab (snapshot-backed run)" else args.run_label
-        run_mcp_json(
-            bundle_path=bundle,
-            max_nodes=args.max_nodes,
-            run_label=label,
-            display_names_path=args.display_names,
-            skip_default_display_names=args.skip_display_names,
+    out_dir = ROOT / "outputs"
+    bundle = args.input or (out_dir / "mcp_run_bundle.json")
+    if not bundle.is_file():
+        raise SystemExit(
+            f"Bundle not found: {bundle}\n"
+            "Save listComponentUsage + listFrequentlyUsedWith results as JSON there, "
+            "or pass --input path/to/bundle.json.",
         )
+    run_from_bundle(
+        bundle_path=bundle,
+        max_nodes=args.max_nodes,
+        run_label=args.run_label,
+        display_names_path=args.display_names,
+        skip_default_display_names=args.skip_display_names,
+    )
 
 
 if __name__ == "__main__":

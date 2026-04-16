@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo example — component network (fake dataset)</title>
+    <title>Component network — L611 MCP & Data Mirror</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         * {
@@ -308,9 +308,9 @@
     <div id="container">
         <div id="header">
             <div class="header-left">
-                <h1>Demo example — component network (fake dataset)</h1>
+                <h1>Component network — L611 MCP & Data Mirror</h1>
                 <div class="subtitle">
-                    <strong>31 components:</strong> 7 metrics | 8 dimensions | 6 calc metrics | 10 segments • <strong>29</strong> co-usage links • three-zone layout<br/><em style="font-size: 0.9em; color: #a0aec0;">Preview only. Real builds use the user&apos;s data view — see <code>SKILL.md</code>. Refresh: <code>python demo_example/build_demo_example.py</code> (from the skill folder) or <code>python build_demo_example.py</code> (from <code>demo_example/</code>).</em>
+                    <strong>35 components:</strong> 7 metrics | 8 dimensions | 10 calc metrics | 10 segments • <strong>89</strong> co-usage links • three-zone layout<br/><em style="font-size: 0.9em; color: #a0aec0;">Written to <code>outputs/</code> (gitignored). Open <code>component_network_run_35components.html</code> beside <code>visualization_data_run_35components.js</code>. Regenerate from MCP export via <code>--preset mcp-json</code>.</em>
                 </div>
             </div>
             <div class="header-right">
@@ -335,7 +335,7 @@
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #9f7aea;"></div>
-                    <span>Calc metrics (6)</span>
+                    <span>Calc metrics (10)</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #ed8936;"></div>
@@ -374,8 +374,8 @@
             </div>
 
             <div id="stats">
-                <div class="stat-item">Data View: <span class="stat-value">Fake dataset (demo example) (dv_69b9b1ab3d60bb87c5701251)</span></div>
-                <div class="stat-item">Components: <span class="stat-value">31</span></div>
+                <div class="stat-item">Data View: <span class="stat-value">L611 MCP & Data Mirror (dv_69b9b1ab3d60bb87c5701251)</span></div>
+                <div class="stat-item">Components: <span class="stat-value">35</span></div>
                 <div class="stat-item">Connections: <span class="stat-value" id="connectionCount">0</span></div>
                 <div class="stat-item">Zoom: <span class="stat-value" id="zoomLevel">100%</span></div>
             </div>
@@ -391,7 +391,7 @@
         </div>
     </div>
 
-    <script src="visualization_data_demo_example.js"></script>
+    <script src="visualization_data_run_35components.js"></script>
     <script>
         const maxCount = apiConnections.length ? Math.max(...apiConnections.map(c => c.count)) : 0;
         const minCount = apiConnections.length ? Math.min(...apiConnections.map(c => c.count)) : 0;

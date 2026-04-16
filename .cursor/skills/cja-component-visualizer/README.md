@@ -1,39 +1,30 @@
 # CJA component network (visualizer skill)
 
-Interactive **D3** layouts that show **which CJA components tend to appear together** in Workspace projects, plus optional **usage** sizing on nodes.
+Interactive **D3** layout: **which CJA components tend to appear together** in Workspace (co-usage from MCP **`listFrequentlyUsedWith`**), with node size from **`listComponentUsage`**.
 
-For **shared / multi-tenant** use, start with **`SKILL.md`**: pick the **user’s data view**, confirm **thresholds and graph size**, then pull live usage and co-usage for that view.
+Start with **`SKILL.md`**: confirm the **user’s data view**, **thresholds**, and **graph size**, pull usage and co-usage from MCP, save a bundle JSON, then run the builder below.
 
-## Quick start (sample bundle)
+## Build from MCP data
 
-1. **Optional fake-dataset preview (no build):** open **`demo_example/component_network_demo_example.html`** in a browser (same folder as `visualization_data_demo_example.js`) to see **one** finished-looking result — not your data view.  
-2. **Synthetic pipeline samples:** open **`synthetic_sample/component_network_above_mean.html`** or **`synthetic_sample/component_network_top100.html`** with their matching `visualization_data_*.js` in the same folder (built by PowerShell under **`scripts/`**).
-3. Use **Fit All**, pan/zoom, and **Separation** to explore.
+1. Save **`listComponentUsage`** + **`listFrequentlyUsedWith`** (plus `dataViewId` / label) as **`outputs/mcp_run_bundle.json`** — shape expected by **`scripts/build_network_to_outputs.py`** (see **`SKILL.md`** / **`AGENT_REPLICATION_GUIDE.md`**).
+2. From the skill root:
 
-The **`demo_example/`** bundle is a **frozen fake-dataset example** (`demo_example/demo_example_snapshot.py`: usage + co-usage). **`synthetic_sample/`** holds the **synthetic** lab graph (`connections_sample_raw.json`), HTML templates, and generated `visualization_data_*.js` for layout and script testing.
-
-## Regenerate sample JS (PowerShell)
-
-From this directory (skill root):
-
-```powershell
-.\scripts\build_1sd_outliers.ps1; .\scripts\generate_1sd_viz.ps1
-.\scripts\build_above_mean.ps1; .\scripts\generate_above_mean_viz.ps1
+```bash
+python scripts/build_network_to_outputs.py
+python scripts/build_network_to_outputs.py --max-nodes 30
+python scripts/build_network_to_outputs.py --input outputs/my_bundle.json
 ```
 
-Friendly labels for the sample ids live in **`synthetic_sample/component_display_names.json`**.
+3. Open the generated **`outputs/component_network_run_n*.html`** next to its **`visualization_data_run_n*.js`**.
 
-## Fake-dataset static demo (regenerate preview snapshot only)
+Optional: **`outputs/display_names.json`** for friendly titles (merged automatically unless **`--skip-display-names`**).
 
-Run **`python demo_example/build_demo_example.py`** (or **`python scripts/component_network_lib.py`**, same output) from this folder. That refreshes files inside **`demo_example/`** from **`demo_example/demo_example_snapshot.py`** only (illustrative ids and labels). Open the HTML locally; no MCP required to view. Real user builds follow **`SKILL.md`** with their **`dataViewId`**.
+## MCP edges
 
-## MCP data for graph edges
+- **`listFrequentlyUsedWith`** — for **metrics** and **dimensions**, some gateways need **`componentId` with literal `%252F` in place of each `/`**. See **`MCP_BUG_REPORT.md`**.
 
-- **`listComponentUsage`** — usage counts per component type.
-- **`listFrequentlyUsedWith`** — co-usage edges; for **metrics** and **dimensions**, pass **`componentId` with a literal `%252F` in place of each `/`** (example: `metrics%252Foccurrences`). Plain slash ids often **404** on MCP. See **`MCP_BUG_REPORT.md`** for the encoding matrix.
-
-**`listSimilarTo`** is **not** part of this skill’s workflow (similarity links are omitted).
+**`listSimilarTo`** is not part of this skill’s workflow.
 
 ## Documentation
 
-See **`SKILL.md`** (agent workflow), **`START_HERE.md`**, **`AGENT_REPLICATION_GUIDE.md`**, **`PROJECT_SUMMARY.md`**, and **`VISUALIZATION_NOTES.md`** (layout, tiers, UX) for structure, replication, and file roles.
+**`SKILL.md`**, **`START_HERE.md`**, **`AGENT_REPLICATION_GUIDE.md`**, **`PROJECT_SUMMARY.md`**, **`VISUALIZATION_NOTES.md`**.

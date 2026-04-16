@@ -1,14 +1,14 @@
 ---
 name: cja-component-visualizer
 description: >
-  CJA Workspace component co-usage network (D3): usage-weighted nodes and co-usage edges from listComponentUsage + listFrequentlyUsedWith. Use when the user wants a component relationship map, co-usage visualization, or “which components appear together” graph for their data view. Always drive builds from the user’s org/session and chosen data view plus explicit preferences (volume/threshold); never assume an example snapshot data view. Optional demo_example bundle is a fake-dataset preview only.
+  CJA Workspace component co-usage network (D3): usage-weighted nodes and co-usage edges from listComponentUsage + listFrequentlyUsedWith. Use when the user wants a component relationship map, co-usage visualization, or “which components appear together” graph for their data view. Always drive builds from the user’s org/session, chosen data view, and explicit preferences (volume/threshold).
 ---
 
 # CJA component network (visualizer)
 
 Produce an **interactive component map** for **the user’s** Customer Journey Analytics data view: nodes are dimensions, metrics, calculated metrics, and segments; links encode **co-usage** (MCP **`listFrequentlyUsedWith`**) and node size can reflect **`listComponentUsage`** counts.
 
-This skill is meant to be **shared**. Treat every run as **context-first**: resolve **which data view** and **how much graph** the user wants before calling APIs. **Do not** follow a fixed plan tied to a specific production or example snapshot data view.
+This skill is **context-first**: resolve **which data view** and **how much graph** the user wants before calling APIs.
 
 ---
 
@@ -19,13 +19,13 @@ The user asks for things like:
 - component co-usage / relationship / dependency map  
 - “what’s used with what” in Workspace for **their** data view  
 - a network or force graph of CJA components  
-- regenerating or extending the bundled HTML/JS pattern for **their** org  
+- emitting HTML/JS for **their** org from fresh MCP pulls  
 
 ---
 
 ## Non-negotiables
 
-1. **Data view** — Use the user’s **`dataViewId`** (and IMS org implied by their MCP session). If they do not supply an id, use MCP **`findDataViews`** (or equivalent listing) and have them **pick one**. Never default to the bundled id in **`demo_example/demo_example_snapshot.py`** for a real deliverable.  
+1. **Data view** — Use the user’s **`dataViewId`** (and IMS org implied by their MCP session). If they do not supply an id, use MCP **`findDataViews`** (or equivalent listing) and have them **pick one**.  
 2. **Preferences** — Ask (or infer clearly from their message) how they want **volume / thresholds**:  
    - **Universe**: e.g. all usage rows after exclusions, **above mean** per type, **mean + 1 SD**, **top N per component type**, or a **hard cap** on total nodes.  
    - **Edges**: prefer real **`listFrequentlyUsedWith`** co-usage; if that is blocked, document fallback (e.g. **`proxy_edges`** in `scripts/component_network_lib.py`) and set expectations (“synthetic proximity,” not co-usage).  
@@ -34,26 +34,15 @@ The user asks for things like:
 
 ---
 
-## Optional preview (not the default workflow)
-
-**`demo_example/`** is a **frozen fake-dataset example** so anyone can open a finished-looking HTML/JS pair **without** credentials. Use it only to answer “what does the output look like?” — not as the template for **their** data view.
-
-- Open: `demo_example/component_network_demo_example.html` (with `visualization_data_demo_example.js` beside it).  
-- Regenerate that preview: `python demo_example/build_demo_example.py` from the skill folder (reads `demo_example/demo_example_snapshot.py` only).  
-
----
-
 ## Run artifacts (`outputs/`)
 
-Ephemeral HTML/JS (and optional JSON sidecars) from **MCP-backed** or **scratch** builds go under **`outputs/`** at the skill root. That directory is **gitignored** at the repo level (see root `.gitignore`) so Cursor/OneDrive sync and git stays clean. **Do not commit** contents.
+HTML/JS (and optional JSON sidecars) from MCP-backed builds go under **`outputs/`** at the skill root. That directory is **gitignored** at the repo level (see root `.gitignore`). **Do not commit** contents.
 
-Example (local check using the lab snapshot module, not a substitute for live MCP):
+After saving **`outputs/mcp_run_bundle.json`** (usage + FUW from MCP):
 
-`python scripts/build_network_to_outputs.py --preset lab-snapshot --max-nodes 85`
+`python scripts/build_network_to_outputs.py`
 
-MCP-backed bundle + optional **`outputs/display_names.json`** (see **Agent workflow** step 6):
-
-`python scripts/build_network_to_outputs.py --preset mcp-json`
+Optional: `--max-nodes N`, `--input path/to/bundle.json`, `--run-label "My label"`, **`outputs/display_names.json`** (see workflow step 6).
 
 ---
 
@@ -69,11 +58,11 @@ MCP-backed bundle + optional **`outputs/display_names.json`** (see **Agent workf
    - **Metrics** — `describeMetric` with `metricId` **without** the `metrics/` prefix. Use **`name`**.  
    - **Calculated metrics** — `describeCalculatedMetric` with full calculated metric id; **`expansions`** is required (e.g. `dataName` or `dataName,definition`). Use **`name`**.  
    - **Segments** — `describeSegment` with segment id; **`expansions`** is required (e.g. `dataName`). Use **`name`** (human label).  
-   Build a JSON map **`fullComponentId` → `title`** and save it as **`outputs/display_names.json`** (gitignored). **`scripts/build_network_to_outputs.py`** auto-merges that file (and optional `displayNames` on the bundle, and `--display-names`) when using **`--preset mcp-json`**. Helpers: `scripts/component_display_names.py`. Skip auto-merge with **`--skip-display-names`** if you only want raw ids.  
-7. **Emit artifacts** — Write `visualization_data_<label>.js` (`nodes` + `apiConnections` in the same shape as the samples) and either copy **`synthetic_sample/component_network_top100.html`** as a base and swap the `<script src=...>` or follow the string-replace approach in **`demo_example/build_demo_example.py`**. Prefer writing under **`outputs/`** for one-off runs so files stay out of git (see **Run artifacts** above).  
+   Build a JSON map **`fullComponentId` → `title`** and save it as **`outputs/display_names.json`** (gitignored). **`scripts/build_network_to_outputs.py`** merges that file (and optional `displayNames` on the bundle, and `--display-names`). Helpers: `scripts/component_display_names.py`. Skip auto-merge with **`--skip-display-names`** if you only want raw ids.  
+7. **Emit artifacts** — Save the bundle JSON with **`dataViewId`**, **`dataViewLabel`**, **`usage`**, and **`fuw`**, then run **`python scripts/build_network_to_outputs.py`**. The writer uses **`synthetic_sample/component_network_top100.html`** as the HTML shell (string replacements only).  
 8. **Handoff** — Tell the user how to open the HTML locally and what selection/edge rules were used.  
 
-Reuse **`scripts/component_network_lib.py`** for math and node shaping; add a **small** runner script or one-off code path that passes **live MCP rows**, not `demo_example/demo_example_snapshot.py`.
+Reuse **`scripts/component_network_lib.py`** for math and node shaping.
 
 Long-form replication (token copy, network tab, etc.) remains in **`AGENT_REPLICATION_GUIDE.md`**.
 
@@ -84,19 +73,17 @@ Long-form replication (token copy, network tab, etc.) remains in **`AGENT_REPLIC
 | File | Role |
 |------|------|
 | `scripts/component_network_lib.py` | Shared selection, exclusions, `proxy_edges`, `build_nodes`, `count_types` (no embedded data view). |
-| `demo_example/demo_example_snapshot.py` | **Example only** — frozen fake-dataset usage + FUW for the static preview. |
-| `demo_example/build_demo_example.py` | Regenerates the static **`demo_example/`** bundle from the snapshot only. |
 | `MCP_BUG_REPORT.md` | `%252F` encoding for FUW seeds. |
 | `AGENT_REPLICATION_GUIDE.md` | Detailed replication and API steps. |
 | `VISUALIZATION_NOTES.md` | Layout, quintile tiers, UX; not read by build scripts. |
-| `outputs/` | Gitignored folder for local HTML/JS run outputs (see **Run artifacts**). |
-| `scripts/build_network_to_outputs.py` | Writer into **`outputs/`** (`lab-snapshot` or `mcp-json` preset; merges display titles). |
+| `outputs/` | Gitignored folder for local HTML/JS run outputs. |
+| `scripts/build_network_to_outputs.py` | Reads MCP bundle JSON → writes HTML/JS under **`outputs/`**. |
 | `scripts/component_display_names.py` | Parse/merge display-name overlays (no MCP calls). |
+| `synthetic_sample/component_network_top100.html` | HTML shell template for emitted pages. |
 
 ---
 
 ## Do not
 
 - Ship a “plan” that hard-codes one data view for all users.  
-- Present **`demo_example/`** as if it were their org’s graph without labeling it as the fake-dataset preview.  
 - Use **`listSimilarTo`** as a stand-in for co-usage unless the user explicitly asks for similarity rather than co-usage.  

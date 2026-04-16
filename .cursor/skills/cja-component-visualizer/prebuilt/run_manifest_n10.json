@@ -1,0 +1,16 @@
+{
+  "run_label": "L611 Luma E-commerce data view",
+  "dataViewId": "dv_69b9b1ab3d60bb87c5701251",
+  "preset": "mcp-json",
+  "bundle": "C:\\Users\\apowers\\OneDrive - Adobe\\Apps\\myCode\\final git location\\adobe-analytics-mcp-lab\\.cursor\\skills\\cja-component-visualizer\\outputs\\mcp_run_bundle.json",
+  "max_nodes": 10,
+  "nodes_written": 10,
+  "edges_written": 12,
+  "displayNamesResolved": 35,
+  "displayNamesSources": [
+    "C:\\Users\\apowers\\OneDrive - Adobe\\Apps\\myCode\\final git location\\adobe-analytics-mcp-lab\\.cursor\\skills\\cja-component-visualizer\\outputs\\display_names.json"
+  ],
+  "htmlFile": "component_network_run_n10.html",
+  "jsFile": "visualization_data_run_n10.js",
+  "note": "Built from listComponentUsage + listFrequentlyUsedWith saved as JSON (CJA MCP)."
+}

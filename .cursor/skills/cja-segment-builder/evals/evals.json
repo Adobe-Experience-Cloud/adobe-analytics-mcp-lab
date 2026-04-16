@@ -1,0 +1,30 @@
+{
+  "skill_name": "cja-segment-builder",
+  "_cleanup_note": "Test components created during skill implementation — IDs for cleanup: segment '[TEST] Mobile Visitors' = sD0F83C645C5E1CC60A495CB3@AdobeOrg_69d5cee2ca160558a6e31886 | segment '[TEST] Sequential Page Visitors' = sD0F83C645C5E1CC60A495CB3@AdobeOrg_69d5ceef6799b66fc5ce5664 | segment 'Additional segment features' = s331621C069661E8F0A495CD7@AdobeOrg_69e0e6bda8654713b799d68b. Data view used: dv_62ba17d5a5d7845496f5fb4d (Adobe Store - Prod) and dv_69b9b1ab3d60bb87c5701251.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a segment for mobile users in my CJA data view",
+      "expected_output": "The skill should: (1) check for existing similar segments (Mobile Visitors already exists — present it for review), (2) clarify scope (visitor-level), (3) resolve Device Type dimension (variables/device_type) with value 'Mobile Phone' using streq-in predicate, (4) present proposed definition for user approval, (5) call upsertSegment with correct streq-in syntax, (6) run a validation report with the new segment ID returning non-zero visitor counts.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Build a segment for visitors who came from paid search channels",
+      "expected_output": "The skill should: (1) search findSegments for existing paid search segments, (2) resolve the Marketing Channel dimension (variables/marketing_channel) and search for 'Paid Search' items via searchDimensionItems, (3) propose a visitor-scope segment using streq-in with the correct channel value(s), (4) present a plain-language summary for approval (e.g. 'Visitor where Marketing Channel = Paid Search'), (5) call upsertSegment with valid definition, (6) validate with runReport returning non-zero data.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Make a segment for users who purchased — I want to target people who completed a checkout",
+      "expected_output": "The skill should: (1) check for existing purchaser segments via findSegments (e.g. 'Purchasers'), (2) resolve the Orders or Commerce Purchases metric (metrics/orders_1_1 or metrics/commerce.purchases.value), (3) propose a visitor-scope segment where Orders > 0 using greater-than predicate, (4) optionally suggest naming it 'Purchasers' or 'Customers with Orders', (5) confirm with user before calling upsertSegment, (6) validate with runReport showing non-zero purchaser counts.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Add modifier coverage for a segment with does not exist, after, within, and does not match rules",
+      "expected_output": "The skill should: (1) preserve a session-scope sequence container when the request uses session-level modifiers, (2) translate 'does not exist' to a not-exists predicate on Product Name [multi], (3) translate 'after 3 Product Name [multi]' to a dimension-restriction with count 3 and limit after, (4) translate 'within 1 hour' to a time-restriction with count 1, limit within, and unit hour, (5) preserve 'does not match a*b' as a not-matches predicate with the exact glob pattern, (6) upsert the segment directly when the request is clear, and (7) validate the result with a report if available.",
+      "files": []
+    }
+  ]
+}

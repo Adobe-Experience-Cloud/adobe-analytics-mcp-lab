@@ -3,14 +3,12 @@ Shared helpers for CJA **component network** builds — **any** data view.
 
 This module lives under ``scripts/``; the skill root is the parent directory.
 Selection math, default exclusions, proxy edges, and node shaping are data-view
-agnostic. **Do not** embed a specific ``dataViewId`` or usage snapshot here.
-
-The optional **fake-dataset** preview data lives in ``demo_example/demo_example_snapshot.py`` and
-is wired only by ``demo_example/build_demo_example.py``.
+agnostic. **Do not** embed a specific ``dataViewId`` or usage data here.
 """
 from __future__ import annotations
 
 import math
+import sys
 import re
 from pathlib import Path
 from statistics import mean, pstdev
@@ -129,15 +127,15 @@ def count_types(selected: list[str], rows: list[tuple[str, str, int]]) -> dict[s
 
 
 def main() -> None:
-    import importlib.util
-
-    path = Path(__file__).resolve().parent.parent / "demo_example" / "build_demo_example.py"
-    spec = importlib.util.spec_from_file_location("_demo_example_build", path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Cannot load demo builder: {path}")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    mod.main()
+    root = Path(__file__).resolve().parent.parent
+    print(
+        "component_network_lib is a library module.\n"
+        f"From the skill root ({root}), run:\n"
+        "  python scripts/build_network_to_outputs.py\n"
+        "  python scripts/build_network_to_outputs.py --max-nodes 30 --input outputs/mcp_run_bundle.json\n",
+        file=sys.stderr,
+    )
+    raise SystemExit(2)
 
 
 if __name__ == "__main__":

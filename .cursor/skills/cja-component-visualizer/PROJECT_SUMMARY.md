@@ -1,29 +1,25 @@
 # Component visualizer skill — summary
 
-This folder holds a **D3.js** force-directed **component network** pattern for Customer Journey Analytics: nodes are dimensions, metrics, calculated metrics, and segments; edges are co-usage strengths (from your own exported `connections_*.json`, typically produced via MCP **`listFrequentlyUsedWith`**).
+**D3.js** force-directed **component network** for Customer Journey Analytics: nodes are dimensions, metrics, calculated metrics, and segments; edges are co-usage from MCP **`listFrequentlyUsedWith`** (bundle JSON → **`build_network_to_outputs.py`**).
 
-## Bundled assets
+## Bundled pieces
 
-| Asset | Role |
+| Piece | Role |
 |--------|------|
-| `scripts/*.ps1` | Synthetic pipeline: selection + `visualization_data_*.js` generation |
-| `scripts/component_network_lib.py` | Shared Python helpers for real or demo builds |
-| `synthetic_sample/connections_sample_raw.json` | Tiny **synthetic** edge list for local testing |
-| `synthetic_sample/component_display_names.json` | Friendly labels for sample component ids |
-| `synthetic_sample/*.html` + matching `visualization_data_*.js` | Synthetic “mean + 1 SD” / “above mean” samples |
-| `demo_example/component_network_demo_example.html` + `visualization_data_demo_example.js` | **Optional fake-dataset preview** (open in browser; no MCP to view) |
-| `SKILL.md` | **Primary** agent workflow: user data view + preferences → map |
-| `demo_example/demo_example_snapshot.py` | Frozen fake-dataset usage + FUW for preview only |
-| `demo_example/build_demo_example.py` | Regenerate the **`demo_example/`** bundle from the snapshot (uses `synthetic_sample/component_network_top100.html` as HTML template) |
+| `scripts/component_network_lib.py` | Selection, exclusions, `proxy_edges`, `build_nodes` |
+| `scripts/build_network_to_outputs.py` | MCP bundle JSON → **`outputs/`** HTML + JS |
+| `scripts/component_display_names.py` | Merge display-name overlays |
+| `synthetic_sample/component_network_top100.html` | HTML shell template for emitted pages |
+| `SKILL.md` | Primary agent workflow |
 
-Do **not** commit production tokens or bearer strings in graph exports.
+Do **not** commit production tokens or raw MCP exports with secrets.
 
-## Docs index
+## Docs
 
-- `SKILL.md` — user-context workflow (data view + thresholds)  
-- `START_HERE.md` — orientation and file map  
-- `AGENT_REPLICATION_GUIDE.md` — end-to-end replication for **your** data view  
-- `VISUALIZATION_NOTES.md` — consolidated UI/design/UX notes (not used by builds)  
-- `MCP_BUG_REPORT.md` — MCP `listFrequentlyUsedWith` encoding (`%252F`); `listSimilarTo` out of scope  
+- `SKILL.md` — workflow  
+- `START_HERE.md` — orientation  
+- `AGENT_REPLICATION_GUIDE.md` — replication  
+- `VISUALIZATION_NOTES.md` — UX / layout notes  
+- `MCP_BUG_REPORT.md` — FUW `%252F` encoding  
 
-**Folders:** `scripts/` (Python + PowerShell builders), `synthetic_sample/` (checked-in synthetic graph + templates), `demo_example/` (fake-dataset browser preview), `outputs/` (**gitignored** — local run HTML/JS).
+**Folders:** `scripts/`, `synthetic_sample/` (template + legacy synthetic assets), `outputs/` (**gitignored**).

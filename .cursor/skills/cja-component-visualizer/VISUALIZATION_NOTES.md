@@ -49,7 +49,7 @@ Toggle **Separation** in the UI to reduce or disable the horizontal bias.
 
 ### Reference implementation
 
-See **`synthetic_sample/component_network_*.html`** and **`demo_example/component_network_demo_example.html`** in this skill.
+See **`synthetic_sample/component_network_*.html`** in this skill.
 
 ---
 
@@ -295,7 +295,7 @@ Tight clusters often imply a **shared reporting workflow**. Long bridges suggest
 
 ### Files in this skill
 
-Outputs follow naming conventions (`demo_example/visualization_data_demo_example.js`, `synthetic_sample/visualization_data_top10pct.js`, `synthetic_sample/visualization_data_above_mean.js`, etc.). Counts and labels always come from the **generated JS** next to each HTML file.
+Outputs follow naming conventions (`outputs/visualization_data_run_n*.js` from **`build_network_to_outputs.py`**, plus older `synthetic_sample/visualization_data_*.js` if present). Counts and labels always come from the **generated JS** next to each HTML file.
 
 ---
 

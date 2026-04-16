@@ -3,6 +3,7 @@
 
 # Ephemeral skill run artifacts (component network HTML/JS, MCP dumps, etc.)
 .cursor/skills/cja-component-visualizer/outputs/
+.cursor/skills/cja-component-visualizer/prebuilt/
 
 # Dimension survey: chat/run-only payloads and MCP scratch (keep scripts/ for committed configs)
 .cursor/skills/cja-dimension-survey/outputs/
@@ -19,3 +20,5 @@ scripts/
 outputs/
 tmp/
 tools/
+
+# ignore test survey

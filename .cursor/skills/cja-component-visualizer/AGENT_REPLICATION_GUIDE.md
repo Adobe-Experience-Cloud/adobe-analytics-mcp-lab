@@ -6,20 +6,26 @@ This guide enables any agent to recreate the CJA Component Network Visualization
 
 ### Before you start (shared skill)
 
-Read **`SKILL.md`** first. The **default** path is **user-context driven**: confirm the user’s **`dataViewId`** (or list data views and let them choose) and their **preferences** for how many components and which threshold (for example above-mean vs mean + 1 SD vs top-N). Do **not** assume a specific example snapshot data view for deliverables.
+Read **`SKILL.md`** first. The workflow is **user-context driven**: confirm the user’s **`dataViewId`** (or list data views and let them choose) and their **preferences** for how many components and which threshold (for example above-mean vs mean + 1 SD vs top-N).
 
-The **`demo_example/`** HTML/JS pair is an **optional preview** of what a finished bundle looks like (frozen fake-dataset example), not the template graph for every org.
+## MCP build (recommended)
 
-## What This Creates
+1. Pull **`listComponentUsage`** and **`listFrequentlyUsedWith`** for the user’s **`dataViewId`** (see **`SKILL.md`** for selection, exclusions, FUW encoding, and display names).
+2. Save **`outputs/mcp_run_bundle.json`** with `dataViewId`, optional `dataViewLabel`, `usage`, and `fuw`.
+3. Run **`python scripts/build_network_to_outputs.py`** (optional: `--max-nodes`, `--input`, `--run-label`, `--display-names`, `--skip-display-names`).
 
-The PowerShell samples in this folder historically produced **two** threshold examples on synthetic data:
+The writer uses **`synthetic_sample/component_network_top100.html`** as a **replaceable HTML shell** only; all graph **data** comes from the bundle JSON.
 
-1. **Statistical Outliers (Mean + 1.0 SD)**: ~16 components - only the true statistical standouts (~7% of components)
-2. **Above Mean**: ~37 components - broader view of high-usage components (~17% of components)
+## Legacy: synthetic PowerShell workflow (optional)
 
-For **live** MCP builds, match the user’s requested policy (which may differ from both).
+The sections below describe an **older** path using **`synthetic_sample/connections_sample_raw.json`** and PowerShell scripts — **not** live MCP. Skip if you only need MCP-backed graphs.
 
-Both visualizations feature:
+That workflow produced **two** threshold examples on synthetic data:
+
+1. **Statistical Outliers (Mean + 1.0 SD)**: ~16 components  
+2. **Above Mean**: ~37 components  
+
+Both graph types share:
 - **Three-zone spatial layout**: Metrics/Calc Metrics (left), Dimensions (center), Segments (right)
 - **Node sizing by actual project usage**: Larger nodes = more frequently used
 - **Connection strength visualization**: Color-coded by co-occurrence frequency (quintile-based tiers)
@@ -282,7 +288,8 @@ Copy the template structure from `synthetic_sample/component_network_top100.html
 cja-component-visualizer/
 ├── SKILL.md, README.md, START_HERE.md, PROJECT_SUMMARY.md, …
 ├── scripts/
-│   ├── component_network_lib.py           # Shared Python helpers (real + demo builds)
+│   ├── component_network_lib.py           # Shared Python helpers (selection, nodes, edges)
+│   ├── build_network_to_outputs.py       # Emit outputs/ HTML+JS from MCP bundle JSON
 │   ├── build_1sd_outliers.ps1            # Step 2a: synthetic 1SD selection
 │   ├── build_above_mean.ps1              # Step 2b: synthetic above-mean selection
 │   ├── generate_1sd_viz.ps1             # Step 3a: emit JS for 1SD graph
@@ -295,7 +302,6 @@ cja-component-visualizer/
 │   ├── visualization_data_above_mean.js
 │   ├── component_network_top100.html
 │   └── component_network_above_mean.html
-├── demo_example/                         # Fake-dataset static preview + builder
 └── …
 ```
 

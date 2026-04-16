@@ -22,3 +22,4 @@ tmp/
 tools/
 
 # ignore test survey
+cja-survey-test/

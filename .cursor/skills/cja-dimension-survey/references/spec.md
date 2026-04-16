@@ -1,21 +1,17 @@
 # cja-dimension-survey spec
 
-## Core ids
-- Dimension classification: `metrics/occurrences`
-- Metric qualification and final table: `All_Visits`
+## Core id
+- Dimension classification and every grid table column: `metrics/occurrences`
 
 ## Sorting
 Sort every published list by the full component id string, not by display name.
 - Dimensions with no usable data: sort by dimension id.
 - Dimensions with one usable value: sort by dimension id.
 - Dimensions with two or more usable values: sort by dimension id.
-- Zero metrics: sort by metric id.
-- Non-zero metrics: sort by metric id.
 
 ## Data view and counts
 - Ask for the data view unless it is already established in the conversation.
-- Ask for counts when both N and M are missing.
-- If only one number is given, use it for both N and M.
+- Ask for the dimension count when it is missing.
 
 ## Dimension classification
 For each candidate dimension:
@@ -29,13 +25,6 @@ Classify each dimension as:
 - no data: zero usable values
 - single value: exactly one usable value
 - grid candidate: two or more usable values
-
-## Metric qualification
-For each candidate metric:
-- Run `runReport` with `All_Visits` on rows.
-- Put the metric set on columns.
-- Split requests only when payload limits require it.
-- Split results into zero and non-zero metric groups.
 
 ## Layout
 ### 3x3 grid panels
@@ -54,11 +43,9 @@ Build the description from the dimension id:
 5. Store the Delta as JSON text with `JSON.stringify` semantics.
 
 ### Final summary panel
-Include four subpanels:
+Include one text reportlet that contains two sections:
 1. no-data dimensions text
 2. single-value dimensions text
-3. zero metrics text
-4. non-zero metrics freeform table
 
 ## Titles
 - Use friendly names only for panel and subpanel titles.
@@ -71,4 +58,7 @@ Use these files:
 - `scripts/subPanel_snippet_trimmed.json`
 - `scripts/example_survey_config.json`
 
-Do not query CJA for a template project. Clone the snippet directly.
+Clone the snippet directly.
+Do not query CJA for a template project.
+Do not look for similar projects, inspect saved projects, or copy fragments from existing Workspace definitions.
+This skill always builds from scratch according to the spec in this folder.

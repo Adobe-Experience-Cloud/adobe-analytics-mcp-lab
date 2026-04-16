@@ -27,6 +27,19 @@ Use progressive disclosure. Stay in lightweight mode by default and escalate onl
 - When trimming for size, prefer an approximate halving strategy by meaningful branches such as panels, subpanels, or reportlets. Do not make random fine-grained cuts.
 - Stop the size-retry loop after about 2 to 3 reductions. Then tell the user what was removed and ask whether to continue with a reduced project or use an approved workaround.
 
+## Large `upsertProject` payloads (core)
+
+Workspace `projectBody` definitions and full `upsertProject` argument objects are often tens of thousands of characters. Agents frequently fail when they try to pass the entire `upsertProject` arguments object inline in a single primary-thread MCP call (truncation, escaping, or tool-parameter limits).
+
+**Do this instead:**
+
+1. **Write the payload to disk** in the workspace (for example `tmp/` or `outputs/`): either the full `{"projectBody": {...}}` object or, when updating an existing project, `{"projectId": "<id>", "projectBody": {"definition": ...}}` if metadata and `dataId` are already correct (slightly smaller envelope).
+2. **Validate** with `json.loads` (or `python -c "json.load(open(...))"`) so the file is known-good before any MCP call.
+3. **Call `upsertProject` without pasting the blob into chat:** have a **subagent** (for example `Task` with `generalPurpose`) read that UTF-8 file, parse JSON, and invoke `upsertProject` with the resulting dict—one focused job, file as source of truth.
+4. **Confirm** with `describeProject` (`expansions=definition`) if the UI or response does not make success obvious.
+
+Do not depend on embedding the full minified JSON in the parent agent’s single `call_mcp_tool` message when the file is large.
+
 ## Escalation Model
 
 Start in lightweight mode. Escalate only when specific complexity triggers appear.

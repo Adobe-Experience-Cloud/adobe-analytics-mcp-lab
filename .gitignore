@@ -13,3 +13,9 @@
 # Python bytecode (local runs; do not commit)
 __pycache__/
 *.py[cod]
+
+# Ignore temporary builds
+scripts/
+outputs/
+tmp/
+tools/

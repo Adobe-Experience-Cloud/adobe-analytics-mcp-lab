@@ -54,18 +54,30 @@ Use `references/segment-grammar.md` for the compact UI-to-JSON mapping. Keep the
 
 ## Validation standard
 
-When validating logic, work inside-out and choose the validation components automatically from the segment logic. Start with the innermost condition or smallest qualifying scope, then move outward one layer at a time.
+Treat validation as an inside-out proof tree, not a "did it save" check. Choose validation components automatically from the segment logic, starting with the narrowest meaningful scope and expanding outward.
 
-Use at least:
+For each validation step:
 
-- one known positive example that should match,
-- one known negative example that should not match,
-- one report that makes the sequence or modifier visible,
-- a comparison against a control segment or baseline when that helps interpretation.
+- validate the innermost checkpoint first;
+- compare the matching population to its inverse or non-matching population;
+- show the counts returned by the report call, such as events, sessions, people, or any other returned population measure;
+- use `[validation]` mini-segments when needed to isolate a step and make the counts easier to prove;
+- include at least one real person, session, or hit example when it helps prove a right-case or wrong-case path;
+- ask "what would break this logic?" and test that failure mode explicitly.
 
-For each step, show a terse proof table with the qualifying component, the expected in-population, and the expected out-population. When the segment logic can prove a qualifying person or non-qualifying person directly, include at least one person-level example as part of the validation proof.
+Use a report-style table for every validation pass. Prefer columns such as:
 
-For sequential segments, explicitly verify that the matching path is true at least once and that the ordered checkpoints occur in the right scope.
+| Step | Proof focus | Validation segment or filter | In count | Out count | What changed |
+|---|---|---:|---:|---:|---|
+
+For sequential logic:
+
+- prove the first matching path is valid at least once;
+- prove the nearest boundary conditions (`before`, `after`, `within`, `exclude`) behave correctly;
+- prove at least one positive path and one negative path around the same checkpoint set;
+- validate the inner sequence before validating the outer container when logic is nested;
+- when the segment can qualify a real person, session, or hit, include at least one identifiable example that should be in the final result or should be excluded;
+- do not validate by merely confirming that a report loads; validate by the counts and comparisons that the report returns.
 
 ## Guardrails
 

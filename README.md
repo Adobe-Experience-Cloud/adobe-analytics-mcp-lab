@@ -637,130 +637,7 @@ Discuss or reflect:
 
 ---
 
-## 🔍 Lesson 3 of 4 — Component Management
-
-⏱️ Est. completion: 15 min *(Hands-on in Cursor — three skills)*
-
-All operations in this lesson are **read-only** — the skills report and recommend but never modify anything without your explicit confirmation.
-
----
-
-### 🎯 3.1 Objectives
-
-By the end of this lesson you will be able to:
-
-- Run a full component audit across segments and calculated metrics
-- Interpret health scores, usage classifications, and duplicate flags
-- Deep-dive into a dimension's cardinality and data quality
-- Identify all projects using a specific component in preparation for a replacement
-
-### 🩺 3.2 Exercise: Run a Component Audit
-
-Over time, every CJA org accumulates component debt: segments nobody uses, calculated metrics that are near-identical copies of each other, components owned by people who left the team two years ago. The `cja-component-audit` skill scans your entire library and produces an actionable report — without touching a single thing.
-
-1. Open a new Agent chat
-2. Load the skill:
-
-```
-   @cja-component-audit
-```
-
-3. **Prompt:**
-
-```
-   Audit all my components on the [Data View Name] data view.
-   Include segments and calculated metrics.
-```
-
-4. The agent works through seven phases:
-
-| Phase             | What happens                                                          |
-| ----------------- | --------------------------------------------------------------------- |
-| 0 — Setup        | Confirms data view and component types                                |
-| 1 — Inventory    | Pulls full component lists with metadata, definitions, and timestamps |
-| 2 — Usage        | Classifies each component as Active, Stale, or Unused                 |
-| 3 — Duplicates   | Compares definitions; flags near-identical formulas and names         |
-| 4 — Dependencies | Maps which calculated metrics reference which segments                |
-| 5 — Ownership    | Identifies who owns what and flags high concentrations                |
-| 6 — Health       | Calculates a health score (0–100) per component type                 |
-| 7 — Report       | Generates an HTML dashboard or markdown report                        |
-
-5. When the report is ready, review:
-
-- **Active / Stale / Unused** counts for segments and calculated metrics
-- **Duplicate flags** — pairs with identical or near-identical definitions
-- **Top recommendations** — what to delete, merge, rename, or archive
-
-> 📝 **Note:** The audit is strictly read-only. It inventories and reports. It never deletes, modifies, or archives components.
-
-> 💡 **Tip:** If the report is large, ask the agent to focus: *"Show me only the unused segments"* or *"Give me the top 5 consolidation recommendations."*
-
-### 📊 3.3 Exercise: Analyze a Dimension
-
-The `cja-dimension-analysis` skill gives you a deep view into a single dimension — how many unique values it has, how skewed the distribution is, whether there are anomalies, and whether there are data quality issues like unexpected gaps or high-cardinality spikes.
-
-1. In the same or a new Agent chat:
-
-```
-   @cja-dimension-analysis
-```
-
-2. **Prompt:**
-
-```
-   Analyze the Product Category dimension.
-   Show me cardinality, the top values by event count, and any data quality issues.
-```
-
-3. The agent returns:
-
-- **Cardinality** — how many distinct values exist
-- **Top-N distribution** — which values dominate and by how much
-- **Skew** — Gini coefficient and top-N concentration
-- **Data quality flags** — unexpected gaps, anomalous spikes, new/disappeared values
-
-> 💡 **Tip:** You can ask follow-up questions: *"Which product categories have the most purchases?"* or *"Are there any category values that appeared recently and might be data quality issues?"*
-
-### 🔎 3.4 Exercise: Find and Replace a Component
-
-Before you can safely retire or replace a segment or calculated metric, you need to know which projects use it. The `cja-component-find-replace` skill finds every project that references a specific component, so you have a complete picture before making any changes.
-
-1. Open a new Agent chat:
-
-```
-   @cja-component-find-replace
-```
-
-2. **Prompt — find affected projects:**
-
-```
-   Find all projects that use the segment "[Segment Name]"
-```
-
-   Use a segment name from your audit report in Exercise 3.2 — ideally one flagged as stale or a duplicate.
-3. Review the list of affected projects. Note how many projects would be impacted.
-4. **Prompt — plan the replacement:**
-
-```
-   What would I need to change if I wanted to replace it
-   with the segment "[Better Segment Name]"?
-```
-
-   The agent describes the replacement plan: which projects to update and what the component swap looks like. Actual replacement happens only after your explicit confirmation.
-
-> 💡 **Tip:** Combine with the audit: use the health report to identify a consolidation candidate (two near-duplicate segments), find all projects using the weaker one, then plan the migration to the better one.
-
-### 💡 3.5 Checkpoint
-
-- What health score did your component library receive? What was the most common issue?
-- How would you incorporate a component audit into a regular governance cadence — monthly, quarterly, before a major analysis project?
-- If you found that 40% of your segments were unused, what would be your first step before deleting them?
-
----
-
----
-
-## 🧩 Lesson 4 of 4 — Segment Builder
+## 🧩 Lesson 3 of 4 — Segment Builder
 
 ⏱️ Est. completion: 15 min *(Hands-on in Cursor — deep dive on segmentation)*
 
@@ -768,7 +645,7 @@ You'll build a simple segment, a sequential segment, and attempt a challenge seg
 
 ---
 
-### 🎯 4.1 Objectives
+### 🎯 3.1 Objectives
 
 By the end of this lesson you will be able to:
 
@@ -778,7 +655,7 @@ By the end of this lesson you will be able to:
 - Read and interpret the plain-language segment summary the agent produces before creation
 - Apply the duplicate-check workflow to avoid segment bloat
 
-### 🔨 4.2 Exercise: Build a Simple Segment
+### 🔨 3.2 Exercise: Build a Simple Segment
 
 A general segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type.
 
@@ -816,7 +693,7 @@ A general segment uses AND/OR logic to filter visitors, visits, or hits based on
 
 > 📝 **Note:** The agent never creates a segment without your explicit confirmation. It always shows you the plain-language summary and the components table first — treat this as your validation step.
 
-### ⛓️ 4.3 Exercise: Build a Sequential Segment
+### ⛓️ 3.3 Exercise: Build a Sequential Segment
 
 Sequential segments use THEN logic — *"first X happened, then Y happened."* They are the most powerful segmentation capability in CJA and also the hardest to build manually. The JSON structure is complex and easy to get wrong. The segment builder handles it automatically.
 
@@ -858,7 +735,7 @@ Sequential segments use THEN logic — *"first X happened, then Y happened."* Th
 > | **Everything after X**  | `sequence-prefix` — "only after X occurred"                   |
 > | **A not followed by B** | `sequence` with `exclude-next-checkpoint` — A then "not B"  |
 
-### 🏆 4.4 Exercise: Complex Segment Challenge
+### 🏆 3.4 Exercise: Complex Segment Challenge
 
 Try building this segment on your own. It combines multiple concepts: a distinct count condition, scope nesting, and a date-based exclusion.
 
@@ -880,13 +757,136 @@ Watch how the agent breaks down the problem and what clarifying questions it ask
 
 > 📝 **Note:** Building this segment manually in the CJA UI requires knowing about Distinct Count operators, correct container nesting, and how date dimensions are stored as item IDs. The agent handles all of this — your job is to describe the intent clearly.
 
-### 💡 4.5 Checkpoint
+### 💡 3.5 Checkpoint
 
 Reflect on what you built:
 
 - You just created three segments in 15 minutes — from plain language to live CJA segments. What would the same work look like without the MCP server?
 - Look at the sequential segment. The underlying JSON for a `sequence` with a `time-restriction` is about 40 lines of nested objects. How does the agent's plain-language summary help you verify correctness without reading the JSON?
 - Where else outside CJA could you use segment logic? *(Think: the same filtering logic you just described could describe a SQL WHERE clause or a BigQuery filter.)*
+
+---
+
+---
+
+## 🔍 Lesson 4 of 4 — Component Management
+
+⏱️ Est. completion: 15 min *(Hands-on in Cursor — three skills)*
+
+All operations in this lesson are **read-only** — the skills report and recommend but never modify anything without your explicit confirmation.
+
+---
+
+### 🎯 4.1 Objectives
+
+By the end of this lesson you will be able to:
+
+- Run a full component audit across segments and calculated metrics
+- Interpret health scores, usage classifications, and duplicate flags
+- Deep-dive into a dimension's cardinality and data quality
+- Identify all projects using a specific component in preparation for a replacement
+
+### 🩺 4.2 Exercise: Run a Component Audit
+
+Over time, every CJA org accumulates component debt: segments nobody uses, calculated metrics that are near-identical copies of each other, components owned by people who left the team two years ago. The `cja-component-audit` skill scans your entire library and produces an actionable report — without touching a single thing.
+
+1. Open a new Agent chat
+2. Load the skill:
+
+```
+   @cja-component-audit
+```
+
+3. **Prompt:**
+
+```
+   Audit all my components on the [Data View Name] data view.
+   Include segments and calculated metrics.
+```
+
+4. The agent works through seven phases:
+
+| Phase             | What happens                                                          |
+| ----------------- | --------------------------------------------------------------------- |
+| 0 — Setup        | Confirms data view and component types                                |
+| 1 — Inventory    | Pulls full component lists with metadata, definitions, and timestamps |
+| 2 — Usage        | Classifies each component as Active, Stale, or Unused                 |
+| 3 — Duplicates   | Compares definitions; flags near-identical formulas and names         |
+| 4 — Dependencies | Maps which calculated metrics reference which segments                |
+| 5 — Ownership    | Identifies who owns what and flags high concentrations                |
+| 6 — Health       | Calculates a health score (0–100) per component type                 |
+| 7 — Report       | Generates an HTML dashboard or markdown report                        |
+
+5. When the report is ready, review:
+
+- **Active / Stale / Unused** counts for segments and calculated metrics
+- **Duplicate flags** — pairs with identical or near-identical definitions
+- **Top recommendations** — what to delete, merge, rename, or archive
+
+> 📝 **Note:** The audit is strictly read-only. It inventories and reports. It never deletes, modifies, or archives components.
+
+> 💡 **Tip:** If the report is large, ask the agent to focus: *"Show me only the unused segments"* or *"Give me the top 5 consolidation recommendations."*
+
+### 📊 4.3 Exercise: Analyze a Dimension
+
+The `cja-dimension-analysis` skill gives you a deep view into a single dimension — how many unique values it has, how skewed the distribution is, whether there are anomalies, and whether there are data quality issues like unexpected gaps or high-cardinality spikes.
+
+1. In the same or a new Agent chat:
+
+```
+   @cja-dimension-analysis
+```
+
+2. **Prompt:**
+
+```
+   Analyze the Product Category dimension.
+   Show me cardinality, the top values by event count, and any data quality issues.
+```
+
+3. The agent returns:
+
+- **Cardinality** — how many distinct values exist
+- **Top-N distribution** — which values dominate and by how much
+- **Skew** — Gini coefficient and top-N concentration
+- **Data quality flags** — unexpected gaps, anomalous spikes, new/disappeared values
+
+> 💡 **Tip:** You can ask follow-up questions: *"Which product categories have the most purchases?"* or *"Are there any category values that appeared recently and might be data quality issues?"*
+
+### 🔎 4.4 Exercise: Find and Replace a Component
+
+Before you can safely retire or replace a segment or calculated metric, you need to know which projects use it. The `cja-component-find-replace` skill finds every project that references a specific component, so you have a complete picture before making any changes.
+
+1. Open a new Agent chat:
+
+```
+   @cja-component-find-replace
+```
+
+2. **Prompt — find affected projects:**
+
+```
+   Find all projects that use the segment "[Segment Name]"
+```
+
+   Use a segment name from your audit report in Exercise 4.2 — ideally one flagged as stale or a duplicate.
+3. Review the list of affected projects. Note how many projects would be impacted.
+4. **Prompt — plan the replacement:**
+
+```
+   What would I need to change if I wanted to replace it
+   with the segment "[Better Segment Name]"?
+```
+
+   The agent describes the replacement plan: which projects to update and what the component swap looks like. Actual replacement happens only after your explicit confirmation.
+
+> 💡 **Tip:** Combine with the audit: use the health report to identify a consolidation candidate (two near-duplicate segments), find all projects using the weaker one, then plan the migration to the better one.
+
+### 💡 4.5 Checkpoint
+
+- What health score did your component library receive? What was the most common issue?
+- How would you incorporate a component audit into a regular governance cadence — monthly, quarterly, before a major analysis project?
+- If you found that 40% of your segments were unused, what would be your first step before deleting them?
 
 ---
 

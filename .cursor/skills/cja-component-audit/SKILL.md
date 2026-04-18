@@ -1,5 +1,6 @@
 ---
 name: cja-component-audit
+author: Rene Muniz <muniz@adobe.com>
 description: >
   Full audit of CJA components across multiple types: segments, calculated metrics, and
   optionally dimensions and metrics. Use this skill whenever the user asks to audit, review,
@@ -8,8 +9,11 @@ description: >
   "component hygiene", "component governance", "clean up my components", "component bloat",
   "unused segments and calc metrics", "archival candidates", "component audit report",
   "generate component dashboard", or any variation of a multi-type component review.
-  Produces an actionable HTML dashboard or markdown report. Strictly report-only — never
+  Produces an actionable HTML dashboard. Strictly report-only — never
   deletes, modifies, or archives anything. Works with the CJA MCP server.
+metadata:
+  author: adobe
+  version: "1.0"
 ---
 # CJA Component Audit
 
@@ -82,7 +86,7 @@ For each component, extract and store:
 - `definition` — the JSON logic (segments and calculated metrics only)
 - `tags`
 
-Save inventory to JSON files (one per component type) in `.cursor/skills/cja-component-audit/output/`:
+Save inventory to JSON files (one per component type) in `/tmp/cja-component-audit/`:
 `segments_inventory.json`, `calcmetrics_inventory.json`, etc.
 
 ### Phase 2 — Usage Analysis
@@ -91,13 +95,19 @@ Save inventory to JSON files (one per component type) in `.cursor/skills/cja-com
    - `"segment"`, `"calculatedMetric"`, `"dimension"`, `"metric"`
    - Returns a ranked list of components by usage across all reports.
 2. Cross-reference with the inventory from Phase 1.
-3. Classify each component into usage buckets:
+3. Classify each component into usage buckets using this **strict, consistent definition**:
 
 | Bucket | Criteria |
 |--------|----------|
-| **Active** | In `listComponentUsage` results OR `recentRecordedAccess` within 90 days OR meaningful `usageSummary` counts |
-| **Stale** | Last accessed 90–365 days ago AND not in usage results |
-| **Unused** | Never accessed OR last accessed > 365 days ago AND zero usage references |
+| **Active** | Appears in `listComponentUsage` results **AND/OR** has non-zero `usageSummary` counts (referenced in projects, other segments, or calculated metrics) |
+| **Stale** | NOT in `listComponentUsage` AND zero `usageSummary` counts BUT `recentRecordedAccess` within the last 365 days |
+| **Unused** | NOT in `listComponentUsage` AND zero `usageSummary` counts AND no `recentRecordedAccess` within 365 days |
+
+**IMPORTANT — `recentRecordedAccess` alone must NOT classify a component as Active.** Opening
+a component in the UI counts as an access but does not mean it is used in reports. Only
+`listComponentUsage` results and non-zero `usageSummary` counts indicate real usage.
+Use this same definition consistently in both the health score calculation and the Score
+Breakdown box — they must not contradict each other.
 
 4. Save usage data: `usage_<type>.json`
 
@@ -181,17 +191,44 @@ Save: `{ownershipStats: {...}, typeDistribution: {...}}`
 **Overall health score**: weighted average across types (segments and calc metrics weighted 2×,
 dimensions and metrics weighted 1× if included).
 
-**Recommendations** (categorized):
-- 🗑️ **Delete**: Unused, zero dependencies, no meaningful purpose (explain based on age and owner)
-- 🔗 **Merge**: Duplicate groups — recommend which to keep (prefer most-used, most recently
-  modified, best named)
-- ✏️ **Rename**: Confusing or ambiguous names — suggest clearer convention
-- 📦 **Archive Review**: Stale but possibly seasonal (e.g., last used 10 months ago)
-- 🏷️ **Tag**: Components lacking categorization that would benefit from tags
+**Recommendations — rules-based, not narrative-driven**
 
-Each recommendation includes: **what**, **why**, **impact** (High/Medium/Low), **effort** (Quick/Moderate).
+Generate recommendations mechanically from the data using these exact rules. Do not
+improvise or invent recommendations beyond what the data triggers. Every recommendation
+must cite the specific count or component names that triggered it.
 
-Prioritize: quick wins (Delete: unused, no deps) first, then bigger cleanup tasks (Merge groups).
+| Rule | Trigger | Recommendation text |
+|------|---------|-------------------|
+| **R1 — Delete unused segments** | `unusedSegments > 0` | "Delete {N} unused segments: [list names]. These have zero report usage and zero usageSummary references. Effort: Quick." |
+| **R2 — Delete unused calc metrics** | `unusedCalcMetrics > 0` | "Delete {N} unused calculated metrics: [list names]. Zero report usage confirmed. Effort: Quick." |
+| **R3 — Merge segment duplicates** | `segDupGroups > 0` | "Merge {N} segment duplicate groups. For each group keep the most recently modified copy and retire the rest: [list group names and copy counts]. Effort: Moderate." |
+| **R4 — Merge calc metric duplicates** | `cmDupGroups > 0` | "Merge {N} calculated metric duplicate groups: [list names]. Keep the most-used copy. Effort: Moderate." |
+| **R5 — Tag untagged segments** | `segZeroTags / totalSegs > 0.5` | "Add tags to {N}/{total} segments that have no tags. Tagging enables governance and discoverability. Effort: Moderate." |
+| **R6 — Tag untagged calc metrics** | `cmZeroTags / totalCM > 0.5` | "Add tags to {N}/{total} calculated metrics that have no tags. Effort: Moderate." |
+| **R7 — Resolve unknown ownership** | `unknownOwner / total > 0.5` | "{N}/{total} components have no owner. Assign ownership in the CJA UI to enable team cleanup coordination. Effort: Moderate." |
+| **R8 — Investigate mystery high-use** | `mysterySegs > 0 OR mysteryCMs > 0` | "{N} components show high workspace usage but are not visible to this account. Verify with a CJA admin that these components are still valid and accessible to the team. Effort: Quick." |
+| **R9 — Stale review** | `staleSegments > 0 OR staleCalcMetrics > 0` | "Review {N} stale components last accessed 90–365 days ago: [list names]. Archive or delete if no longer needed. Effort: Low." |
+
+Rules fire in priority order R1 → R9. Skip any rule whose trigger condition is false.
+Each recommendation must include: the triggering count, component names (or top 5 if list is long),
+impact (High/Medium/Low), and effort (Quick/Moderate/Low).
+
+**Author and date context — required in all component listings**
+
+Whenever listing individual components anywhere in the report (duplicate groups, unused lists,
+stale lists, recommendations, ownership tables) always include the following alongside the name:
+- **Owner** (`ownerFullName`, or "Unknown" if absent)
+- **Created** (`createdDate`, formatted as `MMM D, YYYY`)
+- **Last modified** (`modified`, formatted as `MMM D, YYYY`)
+
+This gives users the context they need to act: who to contact, how old the component is, and
+whether it was recently touched. Format as a compact table or inline — e.g.:
+
+| Name | Owner | Created | Last Modified |
+|------|-------|---------|---------------|
+| Cart Abandoners - Last 30 Days | Jane Smith | Jan 5, 2024 | Mar 12, 2025 |
+
+If `ownerFullName` is null or empty, display "Unknown owner" — never omit the column.
 
 ### Phase 7 — Report Generation
 
@@ -199,27 +236,26 @@ After all phases complete:
 
 1. Save all collected data to a consolidated JSON file:
    `component_audit_results_YYYY-MM-DD_HH-MM.json`
-   (in `.cursor/skills/cja-component-audit/output/`)
+   (in a temp output directory, e.g. `/tmp/cja-component-audit/`)
 
-2. Run the Python report generator:
+2. Run the Python script to produce the analysis results JSON:
    ```bash
-   python3 .cursor/skills/cja-component-audit/cja_component_audit.py \
+   python3 scripts/cja_component_audit.py \
      <inventory_dir> \
      "<data_view_name>" \
      "<data_view_id>" \
-     [output_directory] \
-     [--format=html|markdown] \
-     [--keep-audits=N]
+     [output_directory]
    ```
 
-   **Options:**
-   - `--format=html` (default): Interactive HTML dashboard
-   - `--format=markdown`: Comprehensive text-based report
-   - `--keep-audits=N` (default: 5): Auto-cleanup of old audit files
+   > **Important:** The Python script performs the data analysis (usage classification,
+   > duplicate detection, health scoring) and writes a results JSON file. **Do not use
+   > the Python script's HTML output as the report.** Generate the HTML report yourself
+   > using the required templates defined below — this ensures the correct layout,
+   > two-box summary, and style are always produced consistently.
 
 3. The report structure:
-   - **Executive Summary**: overall health score, total components per type, component counts
-     by bucket (Active/Stale/Unused), top issues
+   - **Executive Summary**: two side-by-side boxes (health score card + score breakdown) — see
+     required layout below, followed by KPI stat cards and critical alerts
    - **Per-Type Breakdown**: for each component type — usage distribution, top 10 by usage,
      unused list, health score
    - **Duplicates & Near-Duplicates**: grouped by type, each group with recommendation
@@ -228,7 +264,185 @@ After all phases complete:
    - **Recommendations**: prioritized action list with what/why/impact/effort
    - **Next Steps**: concrete actions in priority order
 
-4. Present the report path to the user and summarize the top 3–5 findings.
+### Required Summary Section — Two-Box Layout
+
+The Executive Summary **must always** open with two side-by-side boxes. This layout is
+mandatory — do not replace it with a plain alert banner or simple KPI cards.
+
+**Status color mapping** (apply to health score card background and circle):
+
+| Score | Label | Card background | Border / circle color |
+|-------|-------|-----------------|----------------------|
+| 80–100 | 🟢 Excellent | `#D4F0E8` | `#12805C` |
+| 60–79  | 🟡 Good | `#FEF3E2` | `#DA7B11` |
+| 40–59  | 🟠 Fair | `#FFF0E6` | `#E07B39` |
+| 0–39   | 🔴 Needs Improvement | `#FDECEA` | `#D7373F` |
+
+**Required HTML — paste this block immediately after the `<div class="container">` opening tag:**
+
+```html
+<!-- ═══ SUMMARY: Two-box layout — MANDATORY ═══ -->
+<div id="summary" style="display:flex; gap:20px; align-items:flex-start; margin-bottom:28px; flex-wrap:wrap;">
+
+  <!-- LEFT: Health Score Card -->
+  <div style="flex:1; min-width:300px; background:{STATUS_BG}; border:2px solid {STATUS_COLOR};
+              border-radius:12px; padding:28px; box-shadow:0 2px 8px rgba(0,0,0,.07);">
+    <div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:20px;">
+      <!-- Score circle -->
+      <div style="background:{STATUS_COLOR}; color:#fff; width:84px; height:84px; border-radius:50%;
+                  display:flex; flex-direction:column; align-items:center; justify-content:center;
+                  flex-shrink:0; font-weight:800;">
+        <span style="font-size:28px; line-height:1;">{OVERALL_SCORE}</span>
+        <span style="font-size:11px; opacity:.8;">/ 100</span>
+      </div>
+      <!-- Status + narrative -->
+      <div>
+        <div style="font-size:20px; font-weight:700; color:{STATUS_COLOR}; margin-bottom:8px;">
+          {STATUS_ICON} {STATUS_LABEL}
+        </div>
+        <p style="font-size:13px; line-height:1.6; color:#2C2C2C;">{NARRATIVE_TEXT}</p>
+      </div>
+    </div>
+    <!-- Per-type sub-scores -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px;">
+      <div style="background:#fff; border-radius:8px; padding:12px 14px;">
+        <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:#6E6E6E; margin-bottom:4px;">Segments</div>
+        <div style="font-size:22px; font-weight:800; color:#2C2C2C;">{SEG_SCORE}</div>
+        <div style="font-size:11px; color:#6E6E6E;">/ 100 &middot; {SEG_STATUS_ICON} {SEG_STATUS_LABEL}</div>
+      </div>
+      <div style="background:#fff; border-radius:8px; padding:12px 14px;">
+        <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:#6E6E6E; margin-bottom:4px;">Calc Metrics</div>
+        <div style="font-size:22px; font-weight:800; color:#2C2C2C;">{CM_SCORE}</div>
+        <div style="font-size:11px; color:#6E6E6E;">/ 100 &middot; {CM_STATUS_ICON} {CM_STATUS_LABEL}</div>
+      </div>
+      <!-- Add more sub-cards if additional component types were audited -->
+    </div>
+  </div>
+
+  <!-- RIGHT: Score Breakdown — exact rows and colors are MANDATORY -->
+  <!-- min-width:360px keeps labels on one line — do not reduce -->
+  <div style="flex:0 0 360px; min-width:360px; background:#fff; border-radius:12px; padding:28px;
+              box-shadow:0 2px 8px rgba(0,0,0,.07);">
+    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px;
+                color:#6E6E6E; margin-bottom:16px;">Score Breakdown</div>
+    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+      <!--
+        Color rules (apply to the right-hand value cell):
+          Active counts   → bold #2C2C2C (dark, not colored — being active is neutral/good)
+          Duplicate groups > 0 → #D7373F (red)
+          Zero-tags counts    → #D7373F (red) when all or nearly all are untagged
+          Approved calc metrics = 0 → #D7373F (red)
+          Unknown-owner high  → #DA7B11 (orange)
+      -->
+
+      <!-- Row 1: Active segments — use bold dark, NOT red -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Active segments</td>
+        <td style="text-align:right; font-weight:700; color:#2C2C2C; white-space:nowrap;">
+          {ACTIVE_SEGS} / {TOTAL_SEGS} ({SEG_ACTIVE_PCT}%)</td>
+      </tr>
+      <!-- Row 2: Active custom calc metrics — use bold dark, NOT red -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Active custom calc metrics</td>
+        <td style="text-align:right; font-weight:700; color:#2C2C2C; white-space:nowrap;">
+          {ACTIVE_CM} / {TOTAL_CM} ({CM_ACTIVE_PCT}%)</td>
+      </tr>
+      <!-- Row 3: Segment duplicate groups — red if > 0 -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Segment duplicate groups</td>
+        <td style="text-align:right; font-weight:700; color:#D7373F; white-space:nowrap;">
+          {SEG_DUP_GROUPS} groups</td>
+      </tr>
+      <!-- Row 4: Calc metric duplicate groups — orange if > 0 -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Calc metric duplicate groups</td>
+        <td style="text-align:right; font-weight:700; color:#DA7B11; white-space:nowrap;">
+          {CM_DUP_GROUPS} group ({CM_DUP_COPIES} copies)</td>
+      </tr>
+      <!-- Row 5: Segments with zero tags — red -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Segments with zero tags</td>
+        <td style="text-align:right; font-weight:700; color:#D7373F; white-space:nowrap;">
+          {SEG_ZERO_TAGS} / {TOTAL_SEGS}</td>
+      </tr>
+      <!-- Row 6: Calc metrics with zero tags — red -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Calc metrics with zero tags</td>
+        <td style="text-align:right; font-weight:700; color:#D7373F; white-space:nowrap;">
+          {CM_ZERO_TAGS} / {TOTAL_CM}</td>
+      </tr>
+      <!-- Row 7: Approved calc metrics — red if 0 -->
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Approved calc metrics</td>
+        <td style="text-align:right; font-weight:700; color:#D7373F; white-space:nowrap;">
+          {APPROVED_CM} / {TOTAL_CM}</td>
+      </tr>
+      <!-- Row 8: Unknown-owner components — orange if high -->
+      <tr>
+        <td style="padding:9px 0; color:#2C2C2C; white-space:nowrap;">Unknown-owner components</td>
+        <td style="text-align:right; font-weight:700; color:#DA7B11; white-space:nowrap;">
+          {UNKNOWN_OWNER} / {TOTAL_COMPONENTS}</td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+<!-- ═══ END two-box layout ═══ -->
+```
+
+After the two-box layout, continue with the KPI stat cards grid and critical alert banners.
+
+4. Open with `open <output_directory>/COMPONENT_AUDIT_REPORT_YYYY-MM-DD_HH-MM.html`
+5. Present the report path to the user and summarize the top 3–5 findings.
+
+### Required HTML Style — Header, Nav & Theme
+
+The HTML report **must** use a light theme with a dark-to-blue gradient header and white nav bar.
+Do **not** use a dark background, dark cards, or a purple gradient. Do **not** left-align the header text.
+
+```css
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+       background: #F5F5F5; color: #2C2C2C; }
+header { background: linear-gradient(135deg, #1B1B1B 0%, #1473E6 100%);
+         color: white; padding: 36px 32px; text-align: center; width: 100%; }
+header h1 { font-size: 26px; font-weight: 700; }
+header p  { opacity: 0.85; margin-top: 6px; font-size: 14px; }
+nav { position: sticky; top: 0; background: #fff;
+      border-bottom: 1px solid #dfe6e9; display: flex; gap: 4px;
+      padding: 0 24px; z-index: 100; }
+nav a { display: block; padding: 13px 16px; font-size: 13px;
+        font-weight: 600; color: #1473E6; text-decoration: none; }
+nav a:hover { background: #EAF3FF; border-radius: 4px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+.kpi-card { background: #fff; border-radius: 12px; padding: 22px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.07); }
+.section  { background: #fff; border-radius: 10px; margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.07); overflow: hidden; }
+```
+
+**Correct HTML structure:**
+```html
+<header>
+  <h1>CJA Component Audit Report</h1>
+  <p>Data View: {DATA_VIEW_NAME} ({DATA_VIEW_ID}) &middot; Audit Date: {DATE} &middot; Total Components: {COUNT}</p>
+</header>
+<nav>
+  <a href="#summary">Summary</a>
+  <a href="#segments">Segments</a>
+  <a href="#calc-metrics">Calc Metrics</a>
+  <a href="#duplicates">Duplicates</a>
+  <a href="#ownership">Ownership</a>
+  <a href="#recommendations">Recommendations</a>
+  <a href="#next-steps">Next Steps</a>
+</nav>
+```
+
+**Section titles — no phase prefix**: Section headings in the HTML report must **not** include
+the phase number. Use the plain section name only:
+- ✅ "Usage Analysis" — not "Phase 2 — Usage Analysis"
+- ✅ "Duplicate & Similarity Groups" — not "Phase 3 — Duplicate & Similarity Groups"
+- ✅ "Ownership Distribution" — not "Phase 5 — Ownership & Distribution Analysis"
 
 ## CJA MCP Tools Used
 
@@ -255,6 +469,16 @@ with full 4-tier logical canonicalization (De Morgan's law, operator consolidati
 use `cja-segment-audit` instead. The component audit includes segment duplicate detection
 at a reasonable depth, and will recommend escalating to `cja-segment-audit` when it finds
 complex or large segment duplicate situations.
+
+## Example Interaction
+
+> "Can you do a full component audit of our CJA setup — segments and calculated metrics?"
+
+1. **Setup:** Call `findDataViews`, present available data views, user selects one. Call `setDefaultSessionDataViewId`.
+2. **Inventory:** Fetch all segments with `findSegments` (expansions: ownerFullName, modified, usageSummary, recentRecordedAccess, tags). Fetch all calculated metrics with `findCalculatedMetrics`. Announce: "Found 87 segments and 34 calculated metrics."
+3. **Usage:** Call `listComponentUsage` for both types. Classify each component as Active / Stale / Unused. Announce tier counts.
+4. **Duplicates:** Run name-similarity grouping. Call `listSimilarTo` for unused + stale + top 15 active of each type. Report: "Found 6 duplicate groups across both types."
+5. **Report:** Run `python3 scripts/cja_component_audit.py /tmp/cja-component-audit/ "Prod DV" "dv_abc123" /tmp/cja-component-audit/` to produce the analysis JSON. Generate the HTML report from the templates in this skill and write to `/tmp/cja-component-audit/COMPONENT_AUDIT_REPORT_2026-04-17_14-32.html`. Open it. Summarize: "Your library has 121 components. 31 unused, 6 duplicate groups detected, combined health score 61/100. Recommended actions: delete 24 items, merge 4 groups, add tags to 18."
 
 ## Important Guardrails
 

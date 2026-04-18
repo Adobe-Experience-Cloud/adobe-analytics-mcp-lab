@@ -1,5 +1,6 @@
 ---
 name: cja-dimension-analysis
+author: Rene Muniz <muniz@adobe.com>
 description: >
   Comprehensive dimension analysis and reporting for CJA. Use this skill whenever the user
   wants to analyze one or more dimensions — including cardinality, distribution/skew, trends,
@@ -9,6 +10,9 @@ description: >
   "dimension cardinality", "dimension trends", "dimension skew", "dimension anomalies",
   "compare dimensions", or any similar request to understand what's inside a CJA dimension.
   Produces an interactive HTML dashboard or a markdown report. Works with the CJA MCP server.
+metadata:
+  author: adobe
+  version: "1.0"
 ---
 # CJA Dimension Analysis
 
@@ -166,11 +170,11 @@ After all analysis phases complete:
 
 1. Save all collected data to a JSON file:
    `dimension_analysis_results_YYYY-MM-DD_HH-MM.json`
-   (in `.cursor/skills/cja-dimension-analysis/output/` or a path the user specifies)
+   (in a temp output directory, e.g. `/tmp/cja-dimension-analysis/`, or a path the user specifies)
 
 2. Run the Python report generator:
    ```bash
-   python3 .cursor/skills/cja-dimension-analysis/cja_dimension_analysis.py \
+   python3 scripts/cja_dimension_analysis.py \
      <analysis_json> \
      "<data_view_name>" \
      "<data_view_id>" \
@@ -186,7 +190,8 @@ After all analysis phases complete:
 
 3. The script generates a second output file: the report (HTML or markdown).
 
-4. Present the report path to the user and summarize key findings:
+4. Open with `open <output_directory>/DIMENSION_ANALYSIS_REPORT_*.html`
+5. Present the report path to the user and summarize key findings:
    - Dimensions with HIGH/VERY HIGH cardinality
    - Dimensions with extreme or high skew
    - Any anomalies found
@@ -215,7 +220,48 @@ Interactive report with:
 - Comparison section (if multiple dimensions or period comparison requested)
 - Forecast section (if forecasting was run)
 - Recommendations panel: grouped by priority (critical → warning → info)
-- Design: purple gradient header, card-based layout, collapsible sections
+- Design: dark navy-to-blue gradient header, full-width, card-based layout, collapsible sections
+
+### Report HTML Style — Required
+
+The generated HTML **must** use these exact styles for the header and nav to match the
+standard CJA report design used across all skills:
+
+```css
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+       background: #F5F5F5; color: #2C2C2C; }
+header { background: linear-gradient(135deg, #1B1B1B 0%, #1473E6 100%);
+         color: white; padding: 36px 32px; text-align: center; width: 100%; }
+header h1 { font-size: 26px; font-weight: 700; }
+header p  { opacity: 0.85; margin-top: 6px; font-size: 14px; }
+nav { position: sticky; top: 0; background: #fff;
+      border-bottom: 1px solid #dfe6e9; display: flex; gap: 4px;
+      padding: 0 24px; z-index: 100; }
+nav a { display: block; padding: 13px 16px; font-size: 13px;
+        font-weight: 600; color: #1473E6; text-decoration: none; }
+nav a:hover { background: #EAF3FF; border-radius: 4px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+```
+
+**Header structure — no pill/badge above the title:**
+```html
+<header>
+  <h1>{DIMENSION_NAME} Dimension Report</h1>
+  <p>{DATA_VIEW_NAME} &middot; {DIMENSION_ID}</p>
+  <p style="margin-top:8px;font-size:13px;opacity:0.75;">
+    Date Range: {DATE_RANGE} &nbsp;|&nbsp; Total Occurrences: {TOTAL}
+    &nbsp;|&nbsp; Generated: {DATE}
+  </p>
+</header>
+```
+
+**Section titles — no phase prefix**: Section headings in the HTML report must **not** include
+the phase number. Use the plain section name only:
+- ✅ "Cardinality" — not "Phase 1 — Cardinality"
+- ✅ "Distribution & Skew" — not "Phase 2 — Distribution & Skew"
+- ✅ "Trends" — not "Phase 3 — Trends"
+- ✅ "Data Quality" — not "Phase 5 — Data Quality / Errors"
 
 ### Markdown Report
 
@@ -259,6 +305,16 @@ The JSON file saved in Phase 8 has this structure, which the Python script reads
   }
 }
 ```
+
+## Example Interaction
+
+> "Can you analyze how our 'Marketing Channel' dimension is performing and break it down by device type?"
+
+1. **Setup:** Confirm the data view with `findDataViews`. Call `setDefaultSessionDataViewId`.
+2. **Dimension discovery:** Call `findDimensions` to locate the 'Marketing Channel' dimension and its ID. Confirm it exists and has data with `searchDimensionItems`.
+3. **Analysis:** Run `runReport` for Marketing Channel performance over the last 30 days (visits, conversions, revenue). Identify top and bottom performers.
+4. **Breakdown:** Run a second report cross-tabbing Marketing Channel by Device Type dimension to surface mobile vs. desktop patterns.
+5. **Report:** Run the Python analysis script to generate an interactive HTML report. Open it. Summarize top findings: "Email drives 38% of conversions despite only 12% of traffic. Paid Search converts 2× better on mobile than desktop."
 
 ## Important Guardrails
 

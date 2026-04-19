@@ -28,9 +28,9 @@ After completing this lab, you will walk away with the following knowledge:
 - How to connect Cursor to the CJA MCP Server and verify the connection
 - What skills are and how they enable repeatable AI workflows
 - How to create CJA Analysis Workspace projects using only natural language prompts
-- How to audit your CJA component library for health, waste, and duplicate segments at scale
+- What the Analytics Plugin Marketplace is and how it packages skills into installable plugins alongside the MCP servers
 - How to deep-dive into a dimension's cardinality and data quality
-- How to identify component dependencies and plan find-and-replace migrations
+- How to audit your CJA component library for health, waste, and duplicate segments at scale
 - How to build simple and sequential segments through conversation — including complex THEN logic with time restrictions
 - How the CJA MCP Server compares to Digital Insights Agent in CJA
 
@@ -65,7 +65,7 @@ This lab shows you how to solve both.
 
 Two capabilities, two data flows:
 
-![1776090399107](image/README/1776090399107.png)
+![Technical Architecture](assets/setup/technical-architecture.jpg)
 
 > 📝 **Note:** Data Mirror requires a one-time setup in AEP (schema, dataset, source connector). Once configured, it runs continuously. The CJA MCP Server is already hosted — you connect to it in Lesson 2 with a single JSON config entry.
 
@@ -82,6 +82,15 @@ Two capabilities, two data flows:
 ## ⚙️ Environment setup
 
 To prepare our environment today using *Cursor* we have a few setup steps to follow. Begin these steps as soon as you arrive in the lab.
+
+One click Cursor Install
+
+
+`<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">`
+  `<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />`
+`</a>`
+
+If the above does not work on your lab machine, continue to the 
 
 ### 🖥️ Setup 1: Open Cursor
 
@@ -289,11 +298,11 @@ The lab dataset is built around **Luma**, a fictional retail brand. Four tables 
 └──────────────────────────────────────┘
 ```
 
-| Relationship | From | To | Cardinality | Join Key |
-|---|---|---|---|---|
-| Event → Person | `web_traffic` | `customer_profiles` | N : 1 | `person_id` |
-| Event → Product | `web_traffic` | `products` | N : 1 | `product_id` |
-| Event → Campaign | `web_traffic` | `campaigns` | N : 1 (nullable) | `campaign_id` |
+| Relationship      | From            | To                    | Cardinality      | Join Key        |
+| ----------------- | --------------- | --------------------- | ---------------- | --------------- |
+| Event → Person   | `web_traffic` | `customer_profiles` | N : 1            | `person_id`   |
+| Event → Product  | `web_traffic` | `products`          | N : 1            | `product_id`  |
+| Event → Campaign | `web_traffic` | `campaigns`         | N : 1 (nullable) | `campaign_id` |
 
 ### 📋 1.4 The Source Tables
 
@@ -301,14 +310,15 @@ Each source table contains fields that Data Mirror uses as descriptors.
 
 Descriptor fields per table:
 
-| Table                 | Primary Key     | Version Descriptor                           | Timestamp Descriptor      | Notes                                               |
-| --------------------- | --------------- | -------------------------------------------- | ------------------------- | --------------------------------------------------- |
-| `web_traffic`       | `event_id`    | `version_no` (integer, increments 0→1→2) | `event_timestamp`       | BigQuery native CDC                                 |
-| `customer_profiles` | `person_id`   | `version_time` (datetime)                  | —                        | BigQuery native CDC                                 |
-| `products`          | `product_id`  | `last_modified_time` (datetime)            | —                        | Cloud storage: uses `_change_request_type` column |
-| `campaigns`         | `campaign_id` | `campaign_version` (datetime)              | `timestamp`             | Cloud storage: uses `_change_request_type` column |
+| Table                 | Primary Key     | Version Descriptor                           | Timestamp Descriptor | Notes                                               |
+| --------------------- | --------------- | -------------------------------------------- | -------------------- | --------------------------------------------------- |
+| `web_traffic`       | `event_id`    | `version_no` (integer, increments 0→1→2) | `event_timestamp`  | BigQuery native CDC                                 |
+| `customer_profiles` | `person_id`   | `version_time` (datetime)                  | —                   | BigQuery native CDC                                 |
+| `products`          | `product_id`  | `last_modified_time` (datetime)            | —                   | Cloud storage: uses `_change_request_type` column |
+| `campaigns`         | `campaign_id` | `campaign_version` (datetime)              | `timestamp`        | Cloud storage: uses `_change_request_type` column |
 
 Two versioning patterns are in use:
+
 - **Integer** — `web_traffic` uses `version_no` (0→1→2)
 - **DateTime** — `customer_profiles` uses `version_time`, `products` uses `last_modified_time`, `campaigns` uses `campaign_version`
 
@@ -371,15 +381,17 @@ Each dataflow has **Enable change data capture** toggled on. This requires a rel
   > 📝 **Other databases:** The concept is the same — enable change tracking at the table level. Here's what it looks like in Snowflake and Databricks:
   >
   > **Snowflake:**
+  >
   > ```sql
   > ALTER TABLE web_traffic SET CHANGE_TRACKING = TRUE;
   > ```
   >
   > **Databricks (Delta):**
+  >
   > ```sql
   > ALTER TABLE web_traffic SET TBLPROPERTIES (delta.enableChangeDataFeed = true);
   > ```
-
+  >
 - **Cloud storage sources** (Azure Blob, S3) — signal operations via a `_change_request_type` column: `"u"` for upsert (insert or update), `"d"` for delete. Evaluated during ingestion only; not stored or mapped to XDM fields [2].
 
 Once configured, the dataflows run continuously. Here are the active flows for this lab:
@@ -442,6 +454,7 @@ BigQuery's [change history](https://docs.cloud.google.com/bigquery/docs/change-h
 ```
 
 Data Mirror matches on `product_id` and reads `_change_request_type`:
+
 - `"u"` — upsert (insert or update): the newer `last_modified_time` replaces the existing record
 - `"d"` — delete: the row is removed
 
@@ -451,14 +464,15 @@ Across both sources, these operations exercise every CDC mutation type: **delete
 
 Once the datasets land in the AEP data lake, the next step is adding them to a CJA connection. When you add a relational XDM dataset, CJA asks you to classify it based on the schema's behavior type:
 
-| Schema Behavior | CJA Dataset Type | Use Case |
-|---|---|---|
-| **Time Series** | **Event** dataset | Clickstream, transactions — rows with a timestamp per interaction |
-| **Time Series** | **Summary** dataset | Aggregated data — campaign-level totals, daily rollups |
-| **Record** | **Profile** dataset | Person-level attributes — identity, loyalty tier, region |
-| **Record** | **Lookup** dataset | Reference tables — product catalog, campaign metadata |
+| Schema Behavior       | CJA Dataset Type          | Use Case                                                           |
+| --------------------- | ------------------------- | ------------------------------------------------------------------ |
+| **Time Series** | **Event** dataset   | Clickstream, transactions — rows with a timestamp per interaction |
+| **Time Series** | **Summary** dataset | Aggregated data — campaign-level totals, daily rollups            |
+| **Record**      | **Profile** dataset | Person-level attributes — identity, loyalty tier, region          |
+| **Record**      | **Lookup** dataset  | Reference tables — product catalog, campaign metadata             |
 
 In this lab, the four datasets map as follows:
+
 - `web_traffic` → **Event** (time series — individual clickstream hits)
 - `campaigns` → **Summary** (time series — campaign-level aggregates)
 - `customer_profiles` → **Profile** (record — one row per person)
@@ -471,6 +485,7 @@ Once the connection is saved, CJA ingests the datasets and respects the CDC oper
 ### 👀 1.9 See the Results in CJA
 
 Two setups are running during this session:
+
 - **Live setup** — changes are being applied now
 - **Pre-run setup** — same changes applied earlier, already fully propagated
 
@@ -535,7 +550,7 @@ Instead of navigating Analysis Workspace manually, you describe what you want: *
 In the CJA UI, there is a feature called Data Insights Agent or AI Assistant. It will answer simple information requests, report updates, etc. but only within your CJA/AEP context. The MCP server facilitates those too, but it is the power of the chat agent you use which takes it farther. You can give an AI like ChatGPT a complex prompt, with external references, instructing it to generate a unique CJA report app for you. This lab will explore the possibilities.
 
 AI Assistant and Data Insights Agent in CJA:
-<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="assets/lesson-2/Screenshot 2026-04-03 153649.png" />
+`<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="assets/lesson-2/Screenshot 2026-04-03 153649.png" />`
 
 ### 🧠 2.3 What are **skills**?
 
@@ -637,130 +652,7 @@ Discuss or reflect:
 
 ---
 
-## 🔍 Lesson 3 of 4 — Component Management
-
-⏱️ Est. completion: 15 min *(Hands-on in Cursor — three skills)*
-
-All operations in this lesson are **read-only** — the skills report and recommend but never modify anything without your explicit confirmation.
-
----
-
-### 🎯 3.1 Objectives
-
-By the end of this lesson you will be able to:
-
-- Run a full component audit across segments and calculated metrics
-- Interpret health scores, usage classifications, and duplicate flags
-- Deep-dive into a dimension's cardinality and data quality
-- Identify all projects using a specific component in preparation for a replacement
-
-### 🩺 3.2 Exercise: Run a Component Audit
-
-Over time, every CJA org accumulates component debt: segments nobody uses, calculated metrics that are near-identical copies of each other, components owned by people who left the team two years ago. The `cja-component-audit` skill scans your entire library and produces an actionable report — without touching a single thing.
-
-1. Open a new Agent chat
-2. Load the skill:
-
-```
-   @cja-component-audit
-```
-
-3. **Prompt:**
-
-```
-   Audit all my components on the [Data View Name] data view.
-   Include segments and calculated metrics.
-```
-
-4. The agent works through seven phases:
-
-| Phase             | What happens                                                          |
-| ----------------- | --------------------------------------------------------------------- |
-| 0 — Setup        | Confirms data view and component types                                |
-| 1 — Inventory    | Pulls full component lists with metadata, definitions, and timestamps |
-| 2 — Usage        | Classifies each component as Active, Stale, or Unused                 |
-| 3 — Duplicates   | Compares definitions; flags near-identical formulas and names         |
-| 4 — Dependencies | Maps which calculated metrics reference which segments                |
-| 5 — Ownership    | Identifies who owns what and flags high concentrations                |
-| 6 — Health       | Calculates a health score (0–100) per component type                 |
-| 7 — Report       | Generates an HTML dashboard or markdown report                        |
-
-5. When the report is ready, review:
-
-- **Active / Stale / Unused** counts for segments and calculated metrics
-- **Duplicate flags** — pairs with identical or near-identical definitions
-- **Top recommendations** — what to delete, merge, rename, or archive
-
-> 📝 **Note:** The audit is strictly read-only. It inventories and reports. It never deletes, modifies, or archives components.
-
-> 💡 **Tip:** If the report is large, ask the agent to focus: *"Show me only the unused segments"* or *"Give me the top 5 consolidation recommendations."*
-
-### 📊 3.3 Exercise: Analyze a Dimension
-
-The `cja-dimension-analysis` skill gives you a deep view into a single dimension — how many unique values it has, how skewed the distribution is, whether there are anomalies, and whether there are data quality issues like unexpected gaps or high-cardinality spikes.
-
-1. In the same or a new Agent chat:
-
-```
-   @cja-dimension-analysis
-```
-
-2. **Prompt:**
-
-```
-   Analyze the Product Category dimension.
-   Show me cardinality, the top values by event count, and any data quality issues.
-```
-
-3. The agent returns:
-
-- **Cardinality** — how many distinct values exist
-- **Top-N distribution** — which values dominate and by how much
-- **Skew** — Gini coefficient and top-N concentration
-- **Data quality flags** — unexpected gaps, anomalous spikes, new/disappeared values
-
-> 💡 **Tip:** You can ask follow-up questions: *"Which product categories have the most purchases?"* or *"Are there any category values that appeared recently and might be data quality issues?"*
-
-### 🔎 3.4 Exercise: Find and Replace a Component
-
-Before you can safely retire or replace a segment or calculated metric, you need to know which projects use it. The `cja-component-find-replace` skill finds every project that references a specific component, so you have a complete picture before making any changes.
-
-1. Open a new Agent chat:
-
-```
-   @cja-component-find-replace
-```
-
-2. **Prompt — find affected projects:**
-
-```
-   Find all projects that use the segment "[Segment Name]"
-```
-
-   Use a segment name from your audit report in Exercise 3.2 — ideally one flagged as stale or a duplicate.
-3. Review the list of affected projects. Note how many projects would be impacted.
-4. **Prompt — plan the replacement:**
-
-```
-   What would I need to change if I wanted to replace it
-   with the segment "[Better Segment Name]"?
-```
-
-   The agent describes the replacement plan: which projects to update and what the component swap looks like. Actual replacement happens only after your explicit confirmation.
-
-> 💡 **Tip:** Combine with the audit: use the health report to identify a consolidation candidate (two near-duplicate segments), find all projects using the weaker one, then plan the migration to the better one.
-
-### 💡 3.5 Checkpoint
-
-- What health score did your component library receive? What was the most common issue?
-- How would you incorporate a component audit into a regular governance cadence — monthly, quarterly, before a major analysis project?
-- If you found that 40% of your segments were unused, what would be your first step before deleting them?
-
----
-
----
-
-## 🧩 Lesson 4 of 4 — Segment Builder
+## 🧩 Lesson 3 of 4 — Segment Builder
 
 ⏱️ Est. completion: 15 min *(Hands-on in Cursor — deep dive on segmentation)*
 
@@ -768,7 +660,7 @@ You'll build a simple segment, a sequential segment, and attempt a challenge seg
 
 ---
 
-### 🎯 4.1 Objectives
+### 🎯 3.1 Objectives
 
 By the end of this lesson you will be able to:
 
@@ -778,7 +670,7 @@ By the end of this lesson you will be able to:
 - Read and interpret the plain-language segment summary the agent produces before creation
 - Apply the duplicate-check workflow to avoid segment bloat
 
-### 🔨 4.2 Exercise: Build a Simple Segment
+### 🔨 3.2 Exercise: Build a Simple Segment
 
 A general segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type.
 
@@ -816,7 +708,7 @@ A general segment uses AND/OR logic to filter visitors, visits, or hits based on
 
 > 📝 **Note:** The agent never creates a segment without your explicit confirmation. It always shows you the plain-language summary and the components table first — treat this as your validation step.
 
-### ⛓️ 4.3 Exercise: Build a Sequential Segment
+### ⛓️ 3.3 Exercise: Build a Sequential Segment
 
 Sequential segments use THEN logic — *"first X happened, then Y happened."* They are the most powerful segmentation capability in CJA and also the hardest to build manually. The JSON structure is complex and easy to get wrong. The segment builder handles it automatically.
 
@@ -858,7 +750,7 @@ Sequential segments use THEN logic — *"first X happened, then Y happened."* Th
 > | **Everything after X**  | `sequence-prefix` — "only after X occurred"                   |
 > | **A not followed by B** | `sequence` with `exclude-next-checkpoint` — A then "not B"  |
 
-### 🏆 4.4 Exercise: Complex Segment Challenge
+### 🏆 3.4 Exercise: Complex Segment Challenge
 
 Try building this segment on your own. It combines multiple concepts: a distinct count condition, scope nesting, and a date-based exclusion.
 
@@ -880,13 +772,145 @@ Watch how the agent breaks down the problem and what clarifying questions it ask
 
 > 📝 **Note:** Building this segment manually in the CJA UI requires knowing about Distinct Count operators, correct container nesting, and how date dimensions are stored as item IDs. The agent handles all of this — your job is to describe the intent clearly.
 
-### 💡 4.5 Checkpoint
+### 💡 3.5 Checkpoint
 
 Reflect on what you built:
 
 - You just created three segments in 15 minutes — from plain language to live CJA segments. What would the same work look like without the MCP server?
 - Look at the sequential segment. The underlying JSON for a `sequence` with a `time-restriction` is about 40 lines of nested objects. How does the agent's plain-language summary help you verify correctness without reading the JSON?
 - Where else outside CJA could you use segment logic? *(Think: the same filtering logic you just described could describe a SQL WHERE clause or a BigQuery filter.)*
+
+---
+
+---
+
+## 🔌 Lesson 4 of 4 — Sneak Peek: The Analytics Plugin Marketplace
+
+⏱️ Est. completion: 15 min *(Hands-on in Cursor — preview two skills from the upcoming CJA plugin)*
+
+All operations in this lesson are **read-only** — the skills report and analyze but never modify anything.
+
+---
+
+### 🎯 4.1 Objectives
+
+By the end of this lesson you will be able to:
+
+- Explain what the Analytics Plugin Marketplace is and how it bundles skills with MCP server configuration
+- Describe the difference between skills in a Git repo and skills in an installable plugin
+- Deep-dive into a dimension's cardinality and data quality using the Dimension Analysis skill
+- Run a full component audit across segments and calculated metrics using the Component Audit skill
+
+### 🏪 4.2 From Skills to Plugins
+
+In Lessons 2 and 3, you loaded skills from the Git repository you cloned at the start of the lab. That works — but it requires manual setup: clone a repo, point your client at the right folder, hope nothing drifts between versions. For a handful of skills in a lab setting, that's fine. For a production analytics team managing dozens of skills across CJA and Adobe Analytics, it doesn't scale.
+
+Adobe is releasing a **Plugin Marketplace** —  that folllows [Anthropic&#39;s Claude plugin marketplace](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/plugins) specification— that packages everything an AI agent needs into installable plugins:
+
+A plugin is a bundle that packages:
+
+- **MCP server configuration** — the connection to your CJA or AA environment, ready to go
+- **A full library of skills** — available the moment you install, no manual loading
+- **Version management** — update all skills at once when a new release ships
+
+Analytics is releasing two plugins that will ship alongside the CJA and AA MCP servers:
+
+| Plugin                    | Product                    | Skills    | Install                                                 |
+| ------------------------- | -------------------------- | --------- | ------------------------------------------------------- |
+| **adobe-cja**       | Customer Journey Analytics | 13 skills | `/plugin install adobe-cja@adobe-analytics-mcp`       |
+| **adobe-analytics** | Adobe Analytics            | 14 skills | `/plugin install adobe-analytics@adobe-analytics-mcp` |
+
+One command replaces the clone, the configuration, and the manual skill setup you did earlier today.
+
+**What's in the CJA plugin:**
+
+| Category                        | Skills                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| **Monitor & investigate** | KPI Pulse · Anomaly Triage · Top Movers Watchlist                         |
+| **Analyze**               | Funnel Health Check · Dimension Analysis · Segment Performance Comparator |
+| **Build**                 | Segment Builder · Calculated Metric Builder · Project Builder             |
+| **Govern**                | Segment Audit · Calculated Metric Audit · Component Audit                 |
+| **Deliver**               | Executive Briefing                                                          |
+
+The Adobe Analytics plugin mirrors this structure with AA-specific equivalents — plus a Report Suite Comparison skill unique to AA.
+
+> 📝 **Note:** Both plugins ship alongside their respective MCP servers. The servers are the foundation; the plugins give you a curated, versioned skill library on top.
+
+The skills you cloned earlier are the same ones that will ship in the plugin. Let's try two of them now to see what's coming.
+
+### 📊 4.3 Exercise: Analyze a Dimension
+
+Dimensions are the backbone of every CJA report — but most teams have never looked closely at what's actually inside them. High-cardinality dimensions hurt query performance. Skewed distributions mean a few values dominate reporting. Stale or error-laden values silently corrupt analysis.
+
+The Dimension Analysis skill profiles a dimension in depth: cardinality, distribution, trends, anomalies, and data quality — all from a single prompt.
+
+1. Open a new Agent chat:
+
+```
+   @cja-dimension-analysis
+```
+
+2. **Prompt:**
+
+```
+   Analyze the Product Category dimension.
+   Show me cardinality, the top values by event count, and any data quality issues.
+```
+
+3. The agent returns:
+
+- **Cardinality** — how many distinct values exist
+- **Top-N distribution** — which values dominate and by how much
+- **Skew** — Gini coefficient and top-N concentration
+- **Data quality flags** — unexpected gaps, anomalous spikes, new/disappeared values
+
+> 💡 **Tip:** You can ask follow-up questions: *"Which product categories have the most purchases?"* or *"Are there any category values that appeared recently and might be data quality issues?"*
+
+### 🩺 4.4 Exercise: Run a Component Audit
+
+Over time, every CJA org accumulates component debt: segments nobody uses, calculated metrics that are near-identical copies of each other, components owned by people who left the team two years ago. The Component Audit skill scans your entire library and produces an actionable report — without touching a single thing.
+
+1. In the same or a new Agent chat:
+
+```
+   @cja-component-audit
+```
+
+2. **Prompt:**
+
+```
+   Audit all my components on the [Data View Name] data view.
+   Include segments and calculated metrics.
+```
+
+3. The agent works through seven phases:
+
+| Phase             | What happens                                                          |
+| ----------------- | --------------------------------------------------------------------- |
+| 0 — Setup        | Confirms data view and component types                                |
+| 1 — Inventory    | Pulls full component lists with metadata, definitions, and timestamps |
+| 2 — Usage        | Classifies each component as Active, Stale, or Unused                 |
+| 3 — Duplicates   | Compares definitions; flags near-identical formulas and names         |
+| 4 — Dependencies | Maps which calculated metrics reference which segments                |
+| 5 — Ownership    | Identifies who owns what and flags high concentrations                |
+| 6 — Health       | Calculates a health score (0–100) per component type                 |
+| 7 — Report       | Generates an HTML dashboard or markdown report                        |
+
+4. When the report is ready, review:
+
+- **Active / Stale / Unused** counts for segments and calculated metrics
+- **Duplicate flags** — pairs with identical or near-identical definitions
+- **Top recommendations** — what to delete, merge, rename, or archive
+
+> 📝 **Note:** The audit is strictly read-only. It inventories and reports. It never deletes, modifies, or archives components.
+
+> 💡 **Tip:** If the report is large, ask the agent to focus: *"Show me only the unused segments"* or *"Give me the top 5 consolidation recommendations."*
+
+### 💡 4.5 Checkpoint
+
+- The two skills you just ran — Dimension Analysis and Component Audit — are part of a 13-skill plugin. Which other skills from the catalog would be most valuable for your team?
+- How does a plugin model (one install, all skills, versioned updates) change the way you'd roll out AI-assisted analytics across your organization?
+- The same skill patterns exist for both CJA and Adobe Analytics. If your org uses both products, how would having parallel plugins simplify your workflow?
 
 ---
 

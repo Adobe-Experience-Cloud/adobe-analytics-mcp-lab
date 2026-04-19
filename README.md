@@ -65,7 +65,7 @@ This lab shows you how to solve both.
 
 Two capabilities, two data flows:
 
-![1776090399107](image/README/1776090399107.png)
+![Technical Architecture](assets/setup/technical-architecture.png)
 
 > 📝 **Note:** Data Mirror requires a one-time setup in AEP (schema, dataset, source connector). Once configured, it runs continuously. The CJA MCP Server is already hosted — you connect to it in Lesson 2 with a single JSON config entry.
 
@@ -84,10 +84,13 @@ Two capabilities, two data flows:
 To prepare our environment today using *Cursor* we have a few setup steps to follow. Begin these steps as soon as you arrive in the lab.
 
 One click Cursor Install
-<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">
-  <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />
-</a>
-If the above does not work on your lab machine, continue 
+
+
+`<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">`
+  `<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />`
+`</a>`
+
+If the above does not work on your lab machine, continue to the 
 
 ### 🖥️ Setup 1: Open Cursor
 

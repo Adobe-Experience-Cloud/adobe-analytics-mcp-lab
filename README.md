@@ -65,7 +65,7 @@ This lab shows you how to solve both.
 
 Two capabilities, two data flows:
 
-![Technical Architecture](assets/setup/technical-architecture.png)
+![Technical Architecture](assets/setup/technical-architecture.jpg)
 
 > 📝 **Note:** Data Mirror requires a one-time setup in AEP (schema, dataset, source connector). Once configured, it runs continuously. The CJA MCP Server is already hosted — you connect to it in Lesson 2 with a single JSON config entry.
 

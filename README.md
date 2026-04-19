@@ -83,6 +83,12 @@ Two capabilities, two data flows:
 
 To prepare our environment today using *Cursor* we have a few setup steps to follow. Begin these steps as soon as you arrive in the lab.
 
+One click Cursor Install
+<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">
+  <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />
+</a>
+If the above does not work on your lab machine, continue 
+
 ### 🖥️ Setup 1: Open Cursor
 
 Cursor is the sdk platform we will use today with the CJA MCP server. Open it from your application list.

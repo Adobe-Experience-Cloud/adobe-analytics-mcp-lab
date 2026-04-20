@@ -72,13 +72,7 @@ https://github.com/Adobe-Experience-Cloud/adobe-analytics-mcp-lab
 
 <img width="529" height="84" src="assets/setup/Screenshot 2026-04-03 142349.png" />
 
-3. Select any location, such as the desktop, for the repo to be saved.
-
-*IMAGE:mac finder type window*
-
-Your screen should look similar to this, afterward:
-
-*IMAGE:cursor window*
+3. When prompted to save a local copy, please create a new folder called *L611* and select it.
 
 ### 🔧 Setup 3: Config Cursor
 
@@ -86,9 +80,9 @@ Now, we just need to tell Cursor how to reach CJA and help us connect.
 
 1. Click on the following button to install the CJA MCP Server
 
-`<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">`
-  `<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />`
-`</a>`
+<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">
+  <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />
+</a>
 
 This will open a browser window with a dialog asking you for permission to open Cursor. Click "Open Cursor.app" 
 

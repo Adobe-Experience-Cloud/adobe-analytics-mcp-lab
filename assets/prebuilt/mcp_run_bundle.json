@@ -1,0 +1,1613 @@
+{
+  "dataViewId": "dv_69b9b1ab3d60bb87c5701251",
+  "dataViewLabel": "L611 MCP & Data Mirror",
+  "usage": [
+    {
+      "componentId": "variables/daterangeday",
+      "componentType": "dimension",
+      "count": 1637
+    },
+    {
+      "componentId": "variables/eventType",
+      "componentType": "dimension",
+      "count": 585
+    },
+    {
+      "componentId": "variables/daterangehour",
+      "componentType": "dimension",
+      "count": 534
+    },
+    {
+      "componentId": "variables/platformdatasetid",
+      "componentType": "dimension",
+      "count": 353
+    },
+    {
+      "componentId": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+      "componentType": "dimension",
+      "count": 321
+    },
+    {
+      "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+      "componentType": "dimension",
+      "count": 286
+    },
+    {
+      "componentId": "variables/productListItems.name",
+      "componentType": "dimension",
+      "count": 271
+    },
+    {
+      "componentId": "variables/string_campaign_id",
+      "componentType": "dimension",
+      "count": 226
+    },
+    {
+      "componentId": "variables/web.webPageDetails.name",
+      "componentType": "dimension",
+      "count": 182
+    },
+    {
+      "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+      "componentType": "dimension",
+      "count": 136
+    },
+    {
+      "componentId": "metrics/occurrences",
+      "componentType": "metric",
+      "count": 3161
+    },
+    {
+      "componentId": "metrics/visitors",
+      "componentType": "metric",
+      "count": 273
+    },
+    {
+      "componentId": "metrics/commerce.order.priceTotal",
+      "componentType": "metric",
+      "count": 264
+    },
+    {
+      "componentId": "metrics/commerce.purchases.value",
+      "componentType": "metric",
+      "count": 243
+    },
+    {
+      "componentId": "metrics/web.webPageDetails.pageViews.value",
+      "componentType": "metric",
+      "count": 229
+    },
+    {
+      "componentId": "metrics/commerce.productViews.value",
+      "componentType": "metric",
+      "count": 156
+    },
+    {
+      "componentId": "metrics/visits",
+      "componentType": "metric",
+      "count": 127
+    },
+    {
+      "componentId": "metrics/adobe_returnsessions",
+      "componentType": "metric",
+      "count": 105
+    },
+    {
+      "componentId": "metrics/69c3d8faf826a7df98006eb2.string_campaign_name",
+      "componentType": "metric",
+      "count": 91
+    },
+    {
+      "componentId": "metrics/adobe_firsttimesessions",
+      "componentType": "metric",
+      "count": 86
+    },
+    {
+      "componentId": "cm_average_revenue_per_cart_defaultmetric",
+      "componentType": "calculatedMetric",
+      "count": 12
+    },
+    {
+      "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69c6cc41e722db1af3834549",
+      "componentType": "calculatedMetric",
+      "count": 10
+    },
+    {
+      "componentId": "cm_average_orders_per_product_defaultmetric",
+      "componentType": "calculatedMetric",
+      "count": 4
+    },
+    {
+      "componentId": "cm_timespent_person_defaultmetric",
+      "componentType": "calculatedMetric",
+      "count": 3
+    },
+    {
+      "componentId": "cm_orders_visits_defaultmetric",
+      "componentType": "calculatedMetric",
+      "count": 2
+    },
+    {
+      "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69d52cfa36045a61ab60d46b",
+      "componentType": "calculatedMetric",
+      "count": 2
+    },
+    {
+      "componentId": "cm_timespent_session_defaultmetric",
+      "componentType": "calculatedMetric",
+      "count": 2
+    },
+    {
+      "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69dfd5b45ea46d4969d1504a",
+      "componentType": "calculatedMetric",
+      "count": 2
+    },
+    {
+      "componentId": "cm_session_person_defaultmetric",
+      "componentType": "calculatedMetric",
+      "count": 2
+    },
+    {
+      "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69c6cf964cba1f0c7cbdad57",
+      "componentType": "calculatedMetric",
+      "count": 1
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573",
+      "componentType": "segment",
+      "count": 511
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c4e08bb1a6d95bf486c59a",
+      "componentType": "segment",
+      "count": 116
+    },
+    {
+      "componentId": "one_time_purchasers",
+      "componentType": "segment",
+      "count": 87
+    },
+    {
+      "componentId": "All_Visits",
+      "componentType": "segment",
+      "count": 68
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c6328ab8f7ad5865f3f59b",
+      "componentType": "segment",
+      "count": 36
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c586b32582137462844875",
+      "componentType": "segment",
+      "count": 36
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62f77a7eae51d7345efd6",
+      "componentType": "segment",
+      "count": 28
+    },
+    {
+      "componentId": "repeat_visitors",
+      "componentType": "segment",
+      "count": 22
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69e0164bbdd30c557f9e6fcf",
+      "componentType": "segment",
+      "count": 21
+    },
+    {
+      "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69e01833b97c5b76403c42bc",
+      "componentType": "segment",
+      "count": 18
+    }
+  ],
+  "fuw": {
+    "variables/eventType": [
+      {
+        "componentId": "variables/platformdatasetid",
+        "componentType": "dimension",
+        "count": 256
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 214
+      },
+      {
+        "componentId": "thisWeek",
+        "componentType": "dateRange",
+        "count": 93
+      },
+      {
+        "componentId": "69bc18559284000ae511424d",
+        "componentType": "project",
+        "count": 82
+      },
+      {
+        "componentId": "one_time_purchasers",
+        "componentType": "segment",
+        "count": 71
+      },
+      {
+        "componentId": "variables/productListItems.name",
+        "componentType": "dimension",
+        "count": 71
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 68
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 42
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 38
+      },
+      {
+        "componentId": "last30Days",
+        "componentType": "dateRange",
+        "count": 18
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573": [
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 509
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 509
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 508
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 223
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+        "componentType": "dimension",
+        "count": 141
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+        "componentType": "dimension",
+        "count": 76
+      },
+      {
+        "componentId": "variables/string_campaign_id",
+        "componentType": "dimension",
+        "count": 71
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_person_id",
+        "componentType": "dimension",
+        "count": 57
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_email",
+        "componentType": "dimension",
+        "count": 42
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 25
+      }
+    ],
+    "variables/platformdatasetid": [
+      {
+        "componentId": "variables/eventType",
+        "componentType": "dimension",
+        "count": 469
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 180
+      },
+      {
+        "componentId": "thisWeek",
+        "componentType": "dateRange",
+        "count": 97
+      },
+      {
+        "componentId": "69bc18559284000ae511424d",
+        "componentType": "project",
+        "count": 88
+      },
+      {
+        "componentId": "variables/productListItems.name",
+        "componentType": "dimension",
+        "count": 75
+      },
+      {
+        "componentId": "one_time_purchasers",
+        "componentType": "segment",
+        "count": 69
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 65
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 31
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 27
+      },
+      {
+        "componentId": "undefined",
+        "componentType": "project",
+        "count": 15
+      }
+    ],
+    "variables/69c276736b4f866ac4db7790.string_loyalty_tier": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 328
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 262
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 262
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573",
+        "componentType": "segment",
+        "count": 141
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_person_id",
+        "componentType": "dimension",
+        "count": 78
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 74
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_email",
+        "componentType": "dimension",
+        "count": 28
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 28
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_last_name",
+        "componentType": "dimension",
+        "count": 26
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c6328ab8f7ad5865f3f59b",
+        "componentType": "segment",
+        "count": 8
+      }
+    ],
+    "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 290
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 208
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 205
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.decimal_price",
+        "componentType": "dimension",
+        "count": 100
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573",
+        "componentType": "segment",
+        "count": 76
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 62
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 31
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c4e08bb1a6d95bf486c59a",
+        "componentType": "segment",
+        "count": 28
+      },
+      {
+        "componentId": "undefined",
+        "componentType": "project",
+        "count": 12
+      },
+      {
+        "componentId": "lastFullMonth",
+        "componentType": "dateRange",
+        "count": 10
+      }
+    ],
+    "variables/productListItems.name": [
+      {
+        "componentId": "variables/eventType",
+        "componentType": "dimension",
+        "count": 368
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 234
+      },
+      {
+        "componentId": "variables/platformdatasetid",
+        "componentType": "dimension",
+        "count": 199
+      },
+      {
+        "componentId": "thisWeek",
+        "componentType": "dateRange",
+        "count": 125
+      },
+      {
+        "componentId": "69bc18559284000ae511424d",
+        "componentType": "project",
+        "count": 121
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 77
+      },
+      {
+        "componentId": "one_time_purchasers",
+        "componentType": "segment",
+        "count": 69
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 55
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 27
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 27
+      }
+    ],
+    "metrics/commerce.order.priceTotal": [
+      {
+        "componentId": "variables/eventType",
+        "componentType": "dimension",
+        "count": 329
+      },
+      {
+        "componentId": "variables/platformdatasetid",
+        "componentType": "dimension",
+        "count": 206
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 163
+      },
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 141
+      },
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 114
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 113
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 95
+      },
+      {
+        "componentId": "variables/productListItems.name",
+        "componentType": "dimension",
+        "count": 77
+      },
+      {
+        "componentId": "69bc18559284000ae511424d",
+        "componentType": "project",
+        "count": 75
+      },
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 72
+      }
+    ],
+    "metrics/commerce.purchases.value": [
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 168
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 145
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 141
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 112
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 90
+      },
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 65
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 61
+      },
+      {
+        "componentId": "metrics/adobe_firsttimesessions",
+        "componentType": "metric",
+        "count": 59
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 56
+      },
+      {
+        "componentId": "metrics/commerce.productListAdds.value",
+        "componentType": "metric",
+        "count": 49
+      }
+    ],
+    "metrics/web.webPageDetails.pageViews.value": [
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 168
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 130
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 114
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 114
+      },
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 64
+      },
+      {
+        "componentId": "metrics/adobe_firsttimesessions",
+        "componentType": "metric",
+        "count": 58
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 57
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 55
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 47
+      },
+      {
+        "componentId": "variables/web.webPageDetails.name",
+        "componentType": "dimension",
+        "count": 43
+      }
+    ],
+    "variables/string_campaign_id": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 209
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 173
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 154
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573",
+        "componentType": "segment",
+        "count": 71
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 54
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 45
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 31
+      },
+      {
+        "componentId": "metrics/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "metric",
+        "count": 20
+      },
+      {
+        "componentId": "metrics/string_device_type",
+        "componentType": "metric",
+        "count": 15
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 7
+      }
+    ],
+    "variables/web.webPageDetails.name": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 131
+      },
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 43
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 37
+      },
+      {
+        "componentId": "last30Days",
+        "componentType": "dateRange",
+        "count": 33
+      },
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 25
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 22
+      },
+      {
+        "componentId": "undefined",
+        "componentType": "project",
+        "count": 15
+      },
+      {
+        "componentId": "69bd9daaf13f3b15c3713cfd",
+        "componentType": "project",
+        "count": 13
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 12
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 10
+      }
+    ],
+    "metrics/commerce.productViews.value": [
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 145
+      },
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 130
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 113
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 83
+      },
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 61
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 58
+      },
+      {
+        "componentId": "metrics/adobe_firsttimesessions",
+        "componentType": "metric",
+        "count": 56
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 50
+      },
+      {
+        "componentId": "metrics/commerce.productListAdds.value",
+        "componentType": "metric",
+        "count": 49
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 44
+      }
+    ],
+    "variables/69c3d8faf826a7df98006eb2.string_campaign_name": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 114
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 81
+      },
+      {
+        "componentId": "variables/string_campaign_id",
+        "componentType": "dimension",
+        "count": 56
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 50
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 35
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573",
+        "componentType": "segment",
+        "count": 25
+      },
+      {
+        "componentId": "metrics/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "metric",
+        "count": 25
+      },
+      {
+        "componentId": "metrics/string_device_type",
+        "componentType": "metric",
+        "count": 9
+      },
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 8
+      },
+      {
+        "componentId": "cm_average_revenue_per_cart_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 8
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69c4e08bb1a6d95bf486c59a": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 116
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 112
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 97
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+        "componentType": "dimension",
+        "count": 28
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 27
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_id",
+        "componentType": "dimension",
+        "count": 20
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.decimal_price",
+        "componentType": "dimension",
+        "count": 8
+      },
+      {
+        "componentId": "thisYear",
+        "componentType": "dateRange",
+        "count": 4
+      },
+      {
+        "componentId": "thisMonth",
+        "componentType": "dateRange",
+        "count": 4
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+        "componentType": "dimension",
+        "count": 3
+      }
+    ],
+    "metrics/adobe_returnsessions": [
+      {
+        "componentId": "metrics/adobe_firsttimesessions",
+        "componentType": "metric",
+        "count": 88
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 72
+      },
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 65
+      },
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 64
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 61
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 54
+      },
+      {
+        "componentId": "All_Visits",
+        "componentType": "segment",
+        "count": 46
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 44
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 44
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 29
+      }
+    ],
+    "metrics/69c3d8faf826a7df98006eb2.string_campaign_name": [
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 73
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 55
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 42
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 25
+      },
+      {
+        "componentId": "metrics/string_device_type",
+        "componentType": "metric",
+        "count": 24
+      },
+      {
+        "componentId": "metrics/adobe_firsttimesessions",
+        "componentType": "metric",
+        "count": 20
+      },
+      {
+        "componentId": "variables/string_campaign_id",
+        "componentType": "dimension",
+        "count": 20
+      },
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 20
+      },
+      {
+        "componentId": "All_Visits",
+        "componentType": "segment",
+        "count": 20
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69c62e10d8c59b6c5dacc573",
+        "componentType": "segment",
+        "count": 19
+      }
+    ],
+    "one_time_purchasers": [
+      {
+        "componentId": "variables/eventType",
+        "componentType": "dimension",
+        "count": 375
+      },
+      {
+        "componentId": "variables/platformdatasetid",
+        "componentType": "dimension",
+        "count": 212
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 87
+      },
+      {
+        "componentId": "thisWeek",
+        "componentType": "dateRange",
+        "count": 76
+      },
+      {
+        "componentId": "69bc18559284000ae511424d",
+        "componentType": "project",
+        "count": 75
+      },
+      {
+        "componentId": "variables/productListItems.name",
+        "componentType": "dimension",
+        "count": 69
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 68
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 34
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 9
+      },
+      {
+        "componentId": "repeat_visitors",
+        "componentType": "segment",
+        "count": 9
+      }
+    ],
+    "metrics/adobe_firsttimesessions": [
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 88
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 62
+      },
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 59
+      },
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 58
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 56
+      },
+      {
+        "componentId": "All_Visits",
+        "componentType": "segment",
+        "count": 46
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 44
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 44
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 41
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 28
+      }
+    ],
+    "All_Visits": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 47
+      },
+      {
+        "componentId": "metrics/adobe_firsttimesessions",
+        "componentType": "metric",
+        "count": 46
+      },
+      {
+        "componentId": "metrics/adobe_returnsessions",
+        "componentType": "metric",
+        "count": 46
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 45
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 45
+      },
+      {
+        "componentId": "metrics/commerce.productViews.value",
+        "componentType": "metric",
+        "count": 40
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 38
+      },
+      {
+        "componentId": "metrics/web.webPageDetails.pageViews.value",
+        "componentType": "metric",
+        "count": 37
+      },
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 36
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 24
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69c6328ab8f7ad5865f3f59b": [
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 36
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 36
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 36
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 16
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+        "componentType": "dimension",
+        "count": 8
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "variables/string_campaign_id",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_email",
+        "componentType": "dimension",
+        "count": 4
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 2
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.decimal_price",
+        "componentType": "dimension",
+        "count": 2
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69c586b32582137462844875": [
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 36
+      },
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 36
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 36
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 16
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+        "componentType": "dimension",
+        "count": 8
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "variables/string_campaign_id",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_email",
+        "componentType": "dimension",
+        "count": 4
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 2
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.decimal_price",
+        "componentType": "dimension",
+        "count": 2
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69c62f77a7eae51d7345efd6": [
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 28
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 28
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 28
+      },
+      {
+        "componentId": "variables/daterangehour",
+        "componentType": "dimension",
+        "count": 12
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.string_product_id",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "variables/string_campaign_id",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_loyalty_tier",
+        "componentType": "dimension",
+        "count": 2
+      },
+      {
+        "componentId": "variables/69c276736b4f866ac4db7790.string_email",
+        "componentType": "dimension",
+        "count": 2
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 2
+      },
+      {
+        "componentId": "variables/69c3d9c0849bf329a2f5c253.product_id.decimal_price",
+        "componentType": "dimension",
+        "count": 2
+      }
+    ],
+    "repeat_visitors": [
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 22
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 22
+      },
+      {
+        "componentId": "variables/productListItems.name",
+        "componentType": "dimension",
+        "count": 22
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 22
+      },
+      {
+        "componentId": "variables/commerce.order.purchaseID",
+        "componentType": "dimension",
+        "count": 11
+      },
+      {
+        "componentId": "69bc18559284000ae511424d",
+        "componentType": "project",
+        "count": 11
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 10
+      },
+      {
+        "componentId": "undefined",
+        "componentType": "project",
+        "count": 9
+      },
+      {
+        "componentId": "one_time_purchasers",
+        "componentType": "segment",
+        "count": 9
+      },
+      {
+        "componentId": "thisWeek",
+        "componentType": "dateRange",
+        "count": 2
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69e0164bbdd30c557f9e6fcf": [
+      {
+        "componentId": "69e0087b653dbd2327b0d315",
+        "componentType": "project",
+        "count": 20
+      },
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 20
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69e01833b97c5b76403c42bc",
+        "componentType": "segment",
+        "count": 17
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 17
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69e01c4223df242d0640d4b1",
+        "componentType": "segment",
+        "count": 13
+      },
+      {
+        "componentId": "thisMonth",
+        "componentType": "dateRange",
+        "count": 10
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 5
+      },
+      {
+        "componentId": "variables/daterangeweek",
+        "componentType": "dimension",
+        "count": 4
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 1
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 1
+      }
+    ],
+    "s331621C069661E8F0A495CD7@AdobeOrg_69e01833b97c5b76403c42bc": [
+      {
+        "componentId": "metrics/occurrences",
+        "componentType": "metric",
+        "count": 17
+      },
+      {
+        "componentId": "69e0087b653dbd2327b0d315",
+        "componentType": "project",
+        "count": 17
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69e0164bbdd30c557f9e6fcf",
+        "componentType": "segment",
+        "count": 17
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 14
+      },
+      {
+        "componentId": "s331621C069661E8F0A495CD7@AdobeOrg_69e01c4223df242d0640d4b1",
+        "componentType": "segment",
+        "count": 13
+      },
+      {
+        "componentId": "thisMonth",
+        "componentType": "dateRange",
+        "count": 7
+      },
+      {
+        "componentId": "metrics/visits",
+        "componentType": "metric",
+        "count": 5
+      },
+      {
+        "componentId": "variables/daterangeweek",
+        "componentType": "dimension",
+        "count": 4
+      },
+      {
+        "componentId": "metrics/visitors",
+        "componentType": "metric",
+        "count": 1
+      },
+      {
+        "componentId": "customRange",
+        "componentType": "dateRange",
+        "count": 1
+      }
+    ],
+    "cm_average_revenue_per_cart_defaultmetric": [
+      {
+        "componentId": "69c4e0b3d98f8746fbe4f858",
+        "componentType": "project",
+        "count": 12
+      },
+      {
+        "componentId": "variables/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "dimension",
+        "count": 8
+      },
+      {
+        "componentId": "variables/daterangeday",
+        "componentType": "dimension",
+        "count": 6
+      },
+      {
+        "componentId": "metrics/69c3d8faf826a7df98006eb2.string_campaign_name",
+        "componentType": "metric",
+        "count": 6
+      },
+      {
+        "componentId": "cm_app_users_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 3
+      },
+      {
+        "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69c6cc41e722db1af3834549",
+        "componentType": "calculatedMetric",
+        "count": 3
+      },
+      {
+        "componentId": "All_Visits",
+        "componentType": "segment",
+        "count": 3
+      },
+      {
+        "componentId": "cm_average_orders_per_checkout_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 3
+      },
+      {
+        "componentId": "cm_average_orders_per_product_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 3
+      },
+      {
+        "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69dfd5b45ea46d4969d1504a",
+        "componentType": "calculatedMetric",
+        "count": 3
+      }
+    ],
+    "cm331621C069661E8F0A495CD7@AdobeOrg_69c6cc41e722db1af3834549": [
+      {
+        "componentId": "metrics/commerce.purchases.value",
+        "componentType": "metric",
+        "count": 8
+      },
+      {
+        "componentId": "All_Visits",
+        "componentType": "segment",
+        "count": 8
+      },
+      {
+        "componentId": "metrics/commerce.order.priceTotal",
+        "componentType": "metric",
+        "count": 8
+      },
+      {
+        "componentId": "variables/productListItems._experienceshowcase.core.mainCategory",
+        "componentType": "dimension",
+        "count": 8
+      },
+      {
+        "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69d52cfa36045a61ab60d46b",
+        "componentType": "calculatedMetric",
+        "count": 4
+      },
+      {
+        "componentId": "cm_app_users_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 4
+      },
+      {
+        "componentId": "cm_timespent_person_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 4
+      },
+      {
+        "componentId": "cm_average_orders_per_cart_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 4
+      },
+      {
+        "componentId": "cm331621C069661E8F0A495CD7@AdobeOrg_69dfd5b45ea46d4969d1504a",
+        "componentType": "calculatedMetric",
+        "count": 4
+      },
+      {
+        "componentId": "cm_timespent_session_defaultmetric",
+        "componentType": "calculatedMetric",
+        "count": 3
+      }
+    ]
+  },
+  "note": "Fresh MCP pull; top 27 by usage after component_network_lib EXCLUDE; FUW per seed (plain-slash ids)."
+}

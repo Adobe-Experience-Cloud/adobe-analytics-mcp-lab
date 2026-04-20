@@ -686,47 +686,40 @@ A basic segment uses AND/OR logic to filter visitors, visits, or hits based on d
 2. Create this simple segment:
 
 ```
-   Create a segment for mobile visitors.
+   Create a demo segment for mobile visitors.
 ```
 
 The agent interprets the appropriate containers, components, logic. It also scans for similar segments. If there is little or no ambiguity, it creates the segment automatically. Otherwise, it asks first. In both cases, it provides a description with a text-based proposal of the segment definition.
 
+We add *demo* to our request to bypass the *do-not-duplicate* caution that the skill normally raises. We are asking it to create a segment that is already in our environment, because of testing together like this - but we want it to create a new one, anyway.
+
+<img src="assets\lesson-3\Screenshot 2026-04-20 013613.png">
+
+3. Create this segment:
+
 ```
-   Create a segment for mobile visitors who viewed a product
+   Create a demo segment for mobile visitors who viewed a product
    but didn't complete a purchase in the same session.
 ```
 
-3. The agent first **checks for similar existing segments** using `findSegments` and `listSimilarTo`. Review what it finds — if a suitable segment already exists, you may not need to create a new one.
-4. The agent then proposes the segment. It will show you:
+<img src="assets\lesson-3\Screenshot 2026-04-20 015134.png">
 
-- **Name** — a suggested name based on your description
-- **Scope** — Visitor, Visit, or Hit level
-- **Plain-language rules summary** — *"Visitor where: Device Type = Mobile AND visits containing at least one product view event AND no purchase events"*
-- **Components referenced** — a table of dimensions and metrics with their IDs and how they're used
+### 3.4 Complex segments
 
-5. Review the proposal carefully. Ask for changes if needed: *"Change the scope to Visit level"* or *"Exclude cases where they removed the item from cart."*
-6. When it looks right, confirm:
+Sequential segments use THEN logic — *"first X happened, then Y happened."* They are the most powerful segmentation capability in CJA/AA and also the trickiest to apply. The skill should help with interpreting plain language and with manual build mechanics.
+
+1. Create this segment:
 
 ```
-   Looks good, create it.
+   Create a demo segment for visitors who viewed the Collections page and then made a purchase within 2 days.
 ```
 
-7. Note the segment ID the agent returns. You'll need it if you want to use this segment in a report or workspace.
-
-> 💡 **Tip:** The more specific you are, the less the agent needs to ask. Include scope ("visit-level"), time windows ("within 7 days"), and explicit exclusions ("but not if they also completed a purchase later").
-
-> 📝 **Note:** The agent never creates a segment without your explicit confirmation. It always shows you the plain-language summary and the components table first — treat this as your validation step.
-
-### ⛓️ 3.3 Exercise: Build a Sequential Segment
-
-Sequential segments use THEN logic — *"first X happened, then Y happened."* They are the most powerful segmentation capability in CJA and also the hardest to build manually. The JSON structure is complex and easy to get wrong. The segment builder handles it automatically.
 
 1. In the same or a new Agent chat (the skill is already loaded):
 2. **Prompt:**
 
 ```
-   Create a segment for visitors who viewed the Collections page
-   and then made a purchase within 2 days.
+
 ```
 
 3. The agent identifies this as a sequential segment. It proposes:

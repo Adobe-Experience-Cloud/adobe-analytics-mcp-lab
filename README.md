@@ -6,7 +6,7 @@
 
 ## 📖 Introduction
 
-This lab explores two Adobe capabilities that change how data gets into Customer Journey Analytics and how you interact with it once it's there.
+This lab explores two Adobe capabilities that change how data gets into Customer Journey Analytics and how you interact with it once it's there. Today should deliver inspiration and application for new methods of engagement with your CJA data!
 
 **Data Mirror** keeps CJA in sync with your external data warehouse — or cloud object storage that contains change data feed files — automatically, at the row level, using Change Data Capture (CDC). When a record is inserted, updated, or deleted at the source, the change propagates through the Adobe Experience Platform data lake and into CJA without any export scripts, batch jobs, or manual refresh.
 
@@ -21,43 +21,9 @@ Together, these two capabilities address the two most common friction points in 
 After completing this lab, you will walk away with the following knowledge:
 
 - What Data Mirror is, how CDC-based ingestion works, and when to use it over batch or incremental connectors
-- How to recognize the three relational schema descriptor fields required for Data Mirror
-- Follow a complete Data Mirror pipeline end-to-end: source data → schema → dataflow → CJA
-- How relational datasets map to CJA dataset types (event, summary, profile, lookup)
-- What the Model Context Protocol (MCP) is and how it connects AI clients to live analytics data
-- How to connect Cursor to the CJA MCP Server and verify the connection
-- What skills are and how they enable repeatable AI workflows
-- How to create CJA Analysis Workspace projects using only natural language prompts
+- What the Model Context Protocol (MCP) is and how the CJA MCP server connects AI clients to live data in CJA/AA
+- What skills are and how they enable new, creative, and repeatable AI workflows
 - What the Analytics Plugin Marketplace is and how it packages skills into installable plugins alongside the MCP servers
-- How to deep-dive into a dimension's cardinality and data quality
-- How to audit your CJA component library for health, waste, and duplicate segments at scale
-- How to build simple and sequential segments through conversation — including complex THEN logic with time restrictions
-- How the CJA MCP Server compares to Digital Insights Agent in CJA
-
----
-
-### ✅ Prerequisites
-
-Before starting this lab, confirm you have the following:
-
-- Basic familiarity with CJA — you know what a data view, workspace, and segment are
-- Cursor installed and running on your lab computer
-- Your Adobe IMS credentials (Experience Cloud login) available
-- CJA access provisioned for the lab sandbox (your lab setup confirms this)
-- No coding experience required — all exercises use natural language prompts
-
----
-
-### 🛍️ Customer Scenario
-
-The lab is built around **Luma**, a fictional multi-channel retail brand selling apparel and accessories online and in stores.
-
-Your role: you are a CJA analyst at Luma. Your team is responsible for maintaining accurate customer journey data and delivering timely insights to the marketing and e-commerce teams. You face two persistent challenges:
-
-1. 📉 **Data freshness** — Luma's product catalog and campaign data live in external cloud systems (BigQuery, Azure Blob, S3). Every time a product price changes or a campaign window closes, someone has to manually export a file and re-upload it. Reports go stale between refreshes.
-2. ⏳ **Analysis speed** — Building a workspace from scratch takes 30+ minutes. Your team spends more time assembling panels than interpreting results.
-
-This lab shows you how to solve both.
 
 ---
 
@@ -511,7 +477,7 @@ Before moving on, consider:
 
 ---
 
-## 🤖 2 — Intro to CJA MCP Server and project builder
+## Lesson 2 of 4 — CJA MCP Server and skills
 
 ⏱️ Est. completion: 10 min
 
@@ -522,7 +488,6 @@ Before moving on, consider:
 By the end of this lesson you will be able to:
 
 - Explain what MCP is and how it enables AI-to-CJA connectivity
-- Connect Cursor to the CJA MCP Server
 - Verify that CJA tools are available in an Agent chat
 - Create simple and advanced CJA projects using natural language
 
@@ -542,14 +507,14 @@ MCP is like an API for AI/LLM agents. You chat conversationally with AI tool lik
 | Governance    | List component usage, find similar components, find frequently co-used components |
 | Configuration | Set session defaults (data view, context)                                         |
 
-Instead of navigating Analysis Workspace manually, you describe what you want: *"Show me mobile revenue by product category for the last 30 days"* — the agent runs the query and returns results directly.
+Instead of navigating Analysis Workspace manually, you describe what you want: *"Show me my core product fields by geo for the last 30 days"* — the agent runs the query and returns results directly.
 
 **How it differs from Data Insights Agent in CJA/AEP**
 
 In the CJA UI, there is a feature called Data Insights Agent or AI Assistant. It will answer simple information requests, report updates, etc. but only within your CJA/AEP context. The MCP server facilitates those too, but it is the power of the chat agent you use which takes it farther. You can give an AI like ChatGPT a complex prompt, with external references, instructing it to generate a unique CJA report app for you. This lab will explore the possibilities.
 
 AI Assistant and Data Insights Agent in CJA:
-`<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="assets/lesson-2/Screenshot 2026-04-03 153649.png" />`
+<img width="858" height="736" alt="AI Assistant and Data Insights Agent" src="assets/lesson-2/Screenshot 2026-04-03 153649.png" />
 
 ### 🧠 2.3 What are **skills**?
 
@@ -557,11 +522,13 @@ AI Assistant and Data Insights Agent in CJA:
 
 Skills are the sheet of notes that you give to an AI to help it replicate a scenario it doesn't know.
 
-### 🏗️ 2.4 Project builder skill
+<img src="assets\lesson-2\Screenshot 2026-04-20 011531.png">
 
-With the MCP server connected, you can describe what you want to analyze and let the agent build it. The server provides a minimal framework to the LLM that connects to it: pull reports like this, update projects like that, etc. No additional context is needed - yet there are nuances that experienced analysts know that AI might miss.
+### 🏗️ 2.4 The *Project builder* skill
 
-So, to aid repeatability and demonstrations in our lab, we have defined the `cja-project-builder` **skill**. It guides the agent through a structured workflow: it discovers your available components, assembles a complete project definition, and calls `upsertProject` to create the workspace in CJA. For advanced, specific, repeatable tasks, skills can give us helpful guardrails and *repeatability* (usually). To show cool things and keep attendees' instances on the same track, we will use skills.
+With the MCP server connected, you can describe what you want to analyze and let the agent build it. The server provides a minimal framework to the LLM that connects to it: pull reports like this, update projects like that, etc. No additional context is *required* - yet there are nuances an LLM might miss.
+
+To aid repeatability and demonstrations in our lab, we have defined the `cja-project-builder` **skill**. It guides the agent through a structured workflow: it discovers your available components, assembles a complete project definition, and calls `upsertProject` to create the workspace in CJA. For advanced, specific, repeatable tasks, skills can give us helpful guardrails and *repeatability* (usually). To show cool things and keep attendees' instances on the same track, we will use skills.
 
 > 📝 **Note:** For our lab today, we suggest using the prompts listed and following along. If you want to try something additional, use a separate agent chat so that you can still explore the prepared skills and ideas we have. The lab goal is to show a breadth of possibilities with *reasonably consistent* exercises, but in practice, iterations are typically required.
 
@@ -569,7 +536,7 @@ So, to aid repeatability and demonstrations in our lab, we have defined the `cja
 
 <img width="155" height="152" src="assets/lesson-2/Screenshot 2026-04-03 171218.png" />
 
-2. Specify the data view for our session with this prompt:
+2. Specify the data view for our session:
 
 ```
 Set L611 as my default data view for this session.
@@ -577,9 +544,9 @@ Set L611 as my default data view for this session.
 
 <img width="1070" height="174" src="/assets/lesson-2/Screenshot 2026-04-03 173023.png" />
 
-The agent calls `setDefaultSessionDataViewId` — now every subsequent tool call uses this data view by default. This is a proactive call, as the AI would have asked us directly as needed.
+The agent calls `setDefaultSessionDataViewId` — now every subsequent call in this agent instance uses this data view. If not specified, the agent would assume or ask as it deemed applicable.
 
-3. Create a basic CJA project with this prompt:
+3. Create a basic CJA project:
 
 ```
 Make a simple CJA project.
@@ -587,25 +554,25 @@ Make a simple CJA project.
 
 <img width="786" height="199" src="assets/lesson-2/Screenshot 2026-04-03 173214.png" />
 
-> 📝 **Note:** This will use our project builder skill. They are naturally identified by the AI based on their definition (or you may invoke it explicitly by skillname). In our Cursor environment, if we use phrases like *make/build a CJA project* or reference `@cja-project-builder`, the agent will follow the skill to address the prompt.
+> 📝 **Note:** This uses the `project builder` skill. A skill is used by the AI based on its headers (or you may invoke it explicitly). In our Cursor environment, if we use phrases like *make/build a CJA project* or reference `@cja-project-builder`, the agent will follow the skill to address the prompt.
 
-The agent uses a basic definition framework to create a project and return its link.
+The skill provides a basic project definition to the LLM, which creates the project and return its link.
 
-4. Let's ask a data question:
+4. Ask a data question:
 
 ```
 How many people saw each azb product in March?
 ```
 
-This is a followup from our data mirror example. We are a little vague, intentionally, to demonstrate how the system processes and infers context. The LLM can respond with CJA data directly in our chat.
+This is a followup from our data mirror example. Even though the prompt is a bit vague, the LLM infers context. Here, it responds conversationally with CJA data directly in our chat.
 
 <img width="668" height="178" src="assets/lesson-2/Screenshot 2026-04-03 170029.png" />
 
-Your results will likely include a text representation of the product names and people counts.
+You will probably receive a similar text representation of the product names and people counts.
 
 <img width="855" height="305" src="assets/lesson-2/Screenshot 2026-04-03 170252.png" />
 
-5. Save that report into a new project:
+5. Save it into a project:
 
 ```
 Save this in a project and give me the link.
@@ -613,7 +580,7 @@ Save this in a project and give me the link.
 
 <img width="1074" height="565" src="assets/lesson-2/Screenshot 2026-04-03 170356.png" />
 
-6. Let it create a more interesting CJA project:
+6. Try a more interesting CJA project:
 
 ```
 Create an e-commerce performance dashboard for the Luma retail data. Show revenue, orders, and conversion rate for the last 30 days, broken down by product category. Include a line chart for the daily revenue trend.
@@ -621,31 +588,31 @@ Create an e-commerce performance dashboard for the Luma retail data. Show revenu
 
 The agent responds with a proposed structure and builds it. It uses context from your skills, chat, common reporting and ecommerce knowledge, and existing components in CJA. Panels, visualizations, dimensions, metrics are all driven through that lens.
 
-Hopefully, your result takes only a minute or two. The timing and result will vary with AI. If something looks wrong or your want a change, you would continue the conversation. Most often, even skill-based results require iterations to reach your exact goal.
+Hopefully, your result takes only a minute or two. The timing and result will vary with AI. If something looks wrong or you want a change, you would continue the conversation. Even skills require iterations to reach your exact goal, sometimes.
 
 > 💡 **Tip:** Be specific in your prompts. Whenever possible, use clear time ranges ("last 30 days"), metric names ("orders", "revenue"), and dimensions ("product category") when you know them.
 
-7. Prepare a component survey project:
+7. Request a *component survey* project:
+
+```
+Build a survey for the top 9 dimensions in L611.
+```
 
 > 📝 **Note:** This will take a few minutes to run. We will continue into the lab, so you may open a new agent chat while this runs.
 
-```
-Build a survey for the top 15 dimensions in L611.
-```
+This uses a skill named *dimension survey*. It creates an organized project view of n dimensions, starting with the most frequently used components. It skips generic time or out-of-the-box dimensions and emphasizes non-null dimensions.
 
-This will use a skill we named *dimension survey*. It addresses a common use case: working with a connection or data view I know little about. It finds the most used components and prepares a compact and organized view of them. The directions tell it to ignore the generic time or out-of-the-box dimensions. It can also pull only fields with at least two elements (not No Value).
+Frequently supporting new customers and unknown data views, I wanted a quick survey of the data environment. Doing this for many dimensions becomes tedious or impossible to recreate. I have successfully run this skill for up to 60 dimensions.
 
-I always wanted to build something like this. However, the volume of manual and tedious duplication activity in the UI prevented it - not to mention sorting by usage! It has been successful for approximately 60 dimensions and many panels.
-
-It may take a few minutes but when running in the background it feels fast. This skill was the product of *many* iterative conversations, as is common.
-
-> 💡 **Tip:** What manual or tedious tasks could this system build for you? Don't force a use case onto the feature, but dream big when scale and manual tasks are a blocker.
+> **Note:** This is a product of iterative conversations. Build a draft, request changes, update the skill, try again. As CJA projects grow in size and take more of the context window, it becomes harder for an MCP to stay on track. Keep skills thin and efficient for success.
 
 ### 💡 2.5 Checkpoint
 
-Discuss or reflect:
+What manual or tedious tasks could this system build for you? Don't force a use case onto the feature, but dream big when scale and manual tasks are a blocker.
 
-- Building that workspace manually would take 20–30 minutes. What would you build first for your own team using this approach?
+Consider:
+
+- Building a large survey workspace manually can take a while. What would you build first for your own team using this approach to circumvent repetitive tasks?
 - The agent called several MCP tools in sequence: `findDataViews`, `setDefaultSessionDataViewId`, `findMetrics`, `findDimensions`, `upsertProject`. You didn't need to know any of those tool names. What does that tell you about how MCP changes the analyst workflow?
 - What's one thing you'd want to add to the workspace you just created?
 
@@ -653,9 +620,7 @@ Discuss or reflect:
 
 ## 🧩 Lesson 3 of 4 — Segment Builder
 
-⏱️ Est. completion: 15 min *(Hands-on in Cursor — deep dive on segmentation)*
-
-You'll build a simple segment, a sequential segment, and attempt a challenge segment on your own. The `cja-segment-builder` skill handles the full workflow — finding existing duplicates, clarifying your intent, validating the definition, and creating — all with your confirmation before anything is saved.
+⏱️ Est. completion: 15 min
 
 ---
 
@@ -663,123 +628,87 @@ You'll build a simple segment, a sequential segment, and attempt a challenge seg
 
 By the end of this lesson you will be able to:
 
-- Build a general segment (AND/OR logic) from a plain-language description
-- Build a sequential segment using THEN logic with a time restriction
-- Understand the five key sequential pattern types in CJA
-- Read and interpret the plain-language segment summary the agent produces before creation
-- Apply the duplicate-check workflow to avoid segment bloat
+- Develop simple segments using plain-language descriptions
+- Develop complex, sequential, nested segments
+- Converse about the proposed segment with the agent before creation and save
+- Receive advice from your LLM segment expert
 
-### 🔨 3.2 Exercise: Build a Simple Segment
+### 🔨 3.2 The *Segment builder* skill
 
-A general segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type.
+This skill augments the LLM and MCP context of segmentation with expertise from an experienced practitioner. `cja-project-builder` introduces business logic, common interpretations, translation to CJA segments, communication strategies, etc. It has been developed through material built by experienced practitioners.
 
-1. Open a new Agent chat:
+This skill is activated any time we ask to create or update a segment.
 
-```
-   @cja-segment-builder
-```
+> **Note:** Each segment creation also includes a summary with a *validation* step. This is not especially effective so far. I leave it in to show the aspiration of not only translating and honing a definition but going all the way through validation. It is a complex task that likely will become its own skill.
 
-2. **Prompt:**
 
-```
-   Create a segment for mobile visitors who viewed a product
-   but didn't complete a purchase in the same session.
-```
+### 3.3 Simple segments
 
-3. The agent first **checks for similar existing segments** using `findSegments` and `listSimilarTo`. Review what it finds — if a suitable segment already exists, you may not need to create a new one.
-4. The agent then proposes the segment. It will show you:
+A basic segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type. It's not especially difficult to create, but let's start here.
 
-- **Name** — a suggested name based on your description
-- **Scope** — Visitor, Visit, or Hit level
-- **Plain-language rules summary** — *"Visitor where: Device Type = Mobile AND visits containing at least one product view event AND no purchase events"*
-- **Components referenced** — a table of dimensions and metrics with their IDs and how they're used
+1. Open a new Agent chat.
 
-5. Review the proposal carefully. Ask for changes if needed: *"Change the scope to Visit level"* or *"Exclude cases where they removed the item from cart."*
-6. When it looks right, confirm:
+2. Create this simple segment:
 
 ```
-   Looks good, create it.
+   Create a demo segment for mobile visitors.
 ```
 
-7. Note the segment ID the agent returns. You'll need it if you want to use this segment in a report or workspace.
+The agent interprets the appropriate containers, components, logic. It also scans for similar segments. If there is little or no ambiguity, it creates the segment automatically. Otherwise, it asks first. In both cases, it provides a description with a text-based proposal of the segment definition.
 
-> 💡 **Tip:** The more specific you are, the less the agent needs to ask. Include scope ("visit-level"), time windows ("within 7 days"), and explicit exclusions ("but not if they also completed a purchase later").
+We add *demo* to our request to bypass the *do-not-duplicate* caution that the skill normally raises. We are asking it to create a segment that is already in our environment, because of testing together like this - but we want it to create a new one, anyway.
 
-> 📝 **Note:** The agent never creates a segment without your explicit confirmation. It always shows you the plain-language summary and the components table first — treat this as your validation step.
+<img src="assets\lesson-3\Screenshot 2026-04-20 013613.png">
 
-### ⛓️ 3.3 Exercise: Build a Sequential Segment
-
-Sequential segments use THEN logic — *"first X happened, then Y happened."* They are the most powerful segmentation capability in CJA and also the hardest to build manually. The JSON structure is complex and easy to get wrong. The segment builder handles it automatically.
-
-1. In the same or a new Agent chat (the skill is already loaded):
-2. **Prompt:**
+3. Create this segment:
 
 ```
-   Create a segment for visitors who viewed the Collections page
-   and then made a purchase within 2 days.
+   Create a demo segment for mobile visitors who viewed a product but didn't complete a purchase in the same session.
 ```
 
-3. The agent identifies this as a sequential segment. It proposes:
+<img src="assets\lesson-3\Screenshot 2026-04-20 015134.png">
 
-- **Scope:** Visitor level
-- **Sequence:** Checkpoint 1 → Page Name contains "collections" → THEN within 2 days → Checkpoint 2 → Event Type = purchase
-- The underlying API structure uses `sequence` with a `time-restriction` element between checkpoints
+### 3.4 Complex segments
 
-4. Review the logic, then confirm:
+Sequential segments use THEN logic — *"first X happened, then Y happened."* They are the most powerful segmentation capability in CJA/AA and also the trickiest to apply. The skill should help with interpreting plain language and with manual build mechanics.
 
-```
-   Yes, create it.
-```
-
-5. **Optional — test the segment:**
+1. Create this segment:
 
 ```
-   Run a quick report with this segment to see how many visitors qualify over the last 30 days.
+   Create a demo segment for visitors who viewed the Collections page and then made a purchase within 2 days.
 ```
 
-   The agent calls `runReport` with the new segment applied.
+<img src="assets\lesson-3\Screenshot 2026-04-20 023036.png">
 
-> 📖 **Sequential pattern reference:**
->
-> | Pattern                       | What it means                                                    |
-> | ----------------------------- | ---------------------------------------------------------------- |
-> | **THEN**                | `sequence` — checkpoint A happened, then checkpoint B         |
-> | **THEN within X days**  | `time-restriction` element between checkpoints in the sequence |
-> | **Everything before X** | `sequence-suffix` — "only before X occurred"                  |
-> | **Everything after X**  | `sequence-prefix` — "only after X occurred"                   |
-> | **A not followed by B** | `sequence` with `exclude-next-checkpoint` — A then "not B"  |
+<img src="assets\lesson-3\Screenshot 2026-04-20 022711.png">
 
-### 🏆 3.4 Exercise: Complex Segment Challenge
-
-Try building this segment on your own. It combines multiple concepts: a distinct count condition, scope nesting, and a date-based exclusion.
-
-**Prompt to try:**
+2. Try this request:
 
 ```
-Build a segment for hits during sessions where the visitor
-viewed at least 3 different product categories,
-but exclude sessions that happened on December 27, 2025.
+Build a demo segment for the 24 hours following any web purchase of a customer.
 ```
 
-What the agent will need to do:
+<img src="assets\lesson-3\Screenshot 2026-04-20 031828.png">
 
-- Apply a **distinct count modifier** (3 distinct values of Product Category) at the visit level
-- Apply a **visitor-level exclusion** for a specific date (Day = Dec 27, 2025, using its item ID)
-- Nest the conditions correctly: visit-level condition AND visitor-level exclusion
+This is an amazing use case for CJA, the study of the relative period before/after a point of interest for each person in the dataset. Even though each may purchase at a different time, we can study the next day of behaviors. If a segment builder can help with common scenarios like this, it enables strong analysis even without knowing all the technical details behind the segment definition.
 
-Watch how the agent breaks down the problem and what clarifying questions it asks.
+3. Ask for the data only:
 
-> 📝 **Note:** Building this segment manually in the CJA UI requires knowing about Distinct Count operators, correct container nesting, and how date dimensions are stored as item IDs. The agent handles all of this — your job is to describe the intent clearly.
+```
+How many people have touched web > app > poc in the same session, last month?
+```
+
+<img src="assets\lesson-3\Screenshot 2026-04-20 023801.png">
+
+This is handy because we can get a segment-based data point without having to build the segment and apply it on a table in CJA. It's just a prompt away.
 
 ### 💡 3.5 Checkpoint
 
 Reflect on what you built:
 
-- You just created three segments in 15 minutes — from plain language to live CJA segments. What would the same work look like without the MCP server?
-- Look at the sequential segment. The underlying JSON for a `sequence` with a `time-restriction` is about 40 lines of nested objects. How does the agent's plain-language summary help you verify correctness without reading the JSON?
+- You just created these segments in 15 minutes — from plain language to live CJA segments. What would the same work look like without the MCP server and skills?
+- Consider the sequential segments. They are not always intuitive, but with this approach you have a partner guiding your builds to accuracy.
 - Where else outside CJA could you use segment logic? *(Think: the same filtering logic you just described could describe a SQL WHERE clause or a BigQuery filter.)*
-
----
 
 ---
 
@@ -959,7 +888,17 @@ Pull the data live through the CJA MCP tools and render it in the browser.
 
 > 📝 **Note:** These prompts go beyond the structured exercises. They're meant to show what's possible when an agent has free access to 25 live CJA tools. Some may require follow-up clarifications.
 
-### 🆚 B.3 MCP vs. Digital Insights Agent
+### B.3 Visual component relationships
+
+Ask for a *component visualization*. This skill shows another way the LLM can take an idea and extend it outside of the CJA UI. The purpose of this skill was to explore web app creation and new ways to highlight the most important components (and how they typically should be used together).
+
+```
+Build a component visualization for the top 10 components in L611.
+```
+
+<img src="assets\bonus\Screenshot 2026-04-16 133204.png">
+
+### 🆚 B.4 MCP vs. Digital Insights Agent
 
 The CJA MCP Server and Adobe's Digital Insights Agent (DIA) are complementary — not competing.
 
@@ -1011,4 +950,5 @@ Open `.cursor/skills/` in this repository. Skills available include: `cja-projec
 **References**
 
 [1]: [Data Mirror Overview — Adobe Experience Platform XDM](https://experienceleague.adobe.com/en/docs/experience-platform/xdm/data-mirror/overview)
+
 [2]: [Change Data Capture — Adobe Experience Platform Sources](https://experienceleague.adobe.com/en/docs/experience-platform/sources/api-tutorials/change-data-capture#data-mirror-with-relational-schemas)

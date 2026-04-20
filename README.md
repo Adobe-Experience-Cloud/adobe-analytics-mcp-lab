@@ -924,6 +924,10 @@ Build a component visualization for the top 10 components in L611.
 
 <img src="assets\bonus\Screenshot 2026-04-16 133204.png">
 
+[Sample Result for 10 components](.cursor\skills\cja-component-visualizer\prebuilt\component_network_run_n10.html)
+
+[Sample Result for 30 components](.cursor\skills\cja-component-visualizer\prebuilt\component_network_run_30.html)
+
 ### B.4 MCP vs. Digital Insights Agent
 
 The CJA MCP Server and Adobe's Digital Insights Agent (DIA) are complementary — not competing.

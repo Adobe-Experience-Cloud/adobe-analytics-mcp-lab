@@ -698,8 +698,7 @@ We add *demo* to our request to bypass the *do-not-duplicate* caution that the s
 3. Create this segment:
 
 ```
-   Create a demo segment for mobile visitors who viewed a product
-   but didn't complete a purchase in the same session.
+   Create a demo segment for mobile visitors who viewed a product but didn't complete a purchase in the same session.
 ```
 
 <img src="assets\lesson-3\Screenshot 2026-04-20 015134.png">
@@ -714,43 +713,27 @@ Sequential segments use THEN logic — *"first X happened, then Y happened."* Th
    Create a demo segment for visitors who viewed the Collections page and then made a purchase within 2 days.
 ```
 
+<img src="assets\lesson-3\Screenshot 2026-04-20 023036.png">
 
-1. In the same or a new Agent chat (the skill is already loaded):
-2. **Prompt:**
+<img src="assets\lesson-3\Screenshot 2026-04-20 022711.png">
 
-```
-
-```
-
-3. The agent identifies this as a sequential segment. It proposes:
-
-- **Scope:** Visitor level
-- **Sequence:** Checkpoint 1 → Page Name contains "collections" → THEN within 2 days → Checkpoint 2 → Event Type = purchase
-- The underlying API structure uses `sequence` with a `time-restriction` element between checkpoints
-
-4. Review the logic, then confirm:
+2. Try this request:
 
 ```
-   Yes, create it.
+Build a demo segment for the 24 hours following any offline/poc purchase of a customer.
 ```
 
-5. **Optional — test the segment:**
+This is an amazing use case for CJA, the study of the relative period before/after a point of interest for each person in the dataset. Even though each may purchase at a different time, we can study the next day of behaviors. If a segment builder can help with common scenarios like this, it enables strong analysis even without knowing all the technical details behind the segment definition.
+
+3. Ask for the data only:
 
 ```
-   Run a quick report with this segment to see how many visitors qualify over the last 30 days.
+How many people have touched web > app > poc in the same session, last month?
 ```
 
-   The agent calls `runReport` with the new segment applied.
+<img src="assets\lesson-3\Screenshot 2026-04-20 023801.png">
 
-> 📖 **Sequential pattern reference:**
->
-> | Pattern                       | What it means                                                    |
-> | ----------------------------- | ---------------------------------------------------------------- |
-> | **THEN**                | `sequence` — checkpoint A happened, then checkpoint B         |
-> | **THEN within X days**  | `time-restriction` element between checkpoints in the sequence |
-> | **Everything before X** | `sequence-suffix` — "only before X occurred"                  |
-> | **Everything after X**  | `sequence-prefix` — "only after X occurred"                   |
-> | **A not followed by B** | `sequence` with `exclude-next-checkpoint` — A then "not B"  |
+This is handy because we can get a segment-based data point without having to build the segment and apply it on a table in CJA. It's just a prompt away.
 
 ### 🏆 3.4 Exercise: Complex Segment Challenge
 

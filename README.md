@@ -126,14 +126,13 @@ Now, Cursor should say some positive comments about being connected. If so, you 
 What data views can I access?
 ```
 
+<img width="461" height="151" src="assets/setup/Screenshot 2026-04-03 152418.png" />
+
 If Cursor returns a small list including the L611 data view, then you are ready! 
 
 > **Note:** On first runs of MCP tools, Cursor will prompt you to run each tool. This will happen frequently as we begin. Please click the dropdown and select *Run Everything* and then click *Run*. 
 
 <img src="assets\setup\Screenshot 2026-04-20 110004.png">
-
-<img width="461" height="151" src="assets/setup/Screenshot 2026-04-03 152418.png" />
-
 
 *You are done with MCP setup in! Leave the Cursor app alone until we get to the MCP tasks after Data Mirror.*
 
@@ -596,19 +595,23 @@ Hopefully, your result takes only a minute or two. The timing and result will va
 
 > **Tip:** Be specific in your prompts. Whenever possible, use clear time ranges ("last 30 days"), metric names ("orders", "revenue"), and dimensions ("product category") when you know them.
 
-7. Request a *component survey* project:
+7. Request a *component survey*:
+
+This prompt relies on a skill we have named `cja-dimension-survey`. It creates an organized project view of *n* dimensions, starting with the most frequently used components. It skips generic time or out-of-the-box dimensions and emphasizes non-null dimensions.
+
+> **Note:** This will take some minutes to run. Continue the hands-on lab by opening new agent chat windows when necessary.
 
 ```
 Build a survey for the top 9 dimensions in L611.
 ```
 
-> **Note:** This will take a few minutes to run. We will continue into the lab, so you may open a new agent chat while this runs.
+Frequently supporting new customers and unknown data views, I wanted a quick survey of the data environment. Doing this for many dimensions becomes tedious or impossible to recreate. I have successfully run this type of skill for up to 60 dimensions. On the CJA definition gets "large", it is harder to manage in a single skill / agent definition.
 
-This uses a skill named *dimension survey*. It creates an organized project view of n dimensions, starting with the most frequently used components. It skips generic time or out-of-the-box dimensions and emphasizes non-null dimensions.
+Here is a small [sample](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/workspace/edit/69e57488c9a2b873047b2591) built to study the top 8 dimensions. Some have no data in the recent date range, so they are listed in a separate panel at the bottom.
 
-Frequently supporting new customers and unknown data views, I wanted a quick survey of the data environment. Doing this for many dimensions becomes tedious or impossible to recreate. I have successfully run this skill for up to 60 dimensions.
+<img src="assets\lesson-2\Screenshot 2026-04-20 113101.png">
 
-> **Note:** This is a product of iterative conversations. Build a draft, request changes, update the skill, try again. As CJA projects grow in size and take more of the context window, it becomes harder for an MCP to stay on track. Keep skills thin and efficient for success.
+> **Note:** This is a product of *iterative conversations*. Build a draft, request changes, update the skill, try again. As CJA projects grow in size and take more of the context window, it becomes harder for an MCP to stay on track. Keep skills thin and efficient for success.
 
 ### 2.5 Checkpoint
 

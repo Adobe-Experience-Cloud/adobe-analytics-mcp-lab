@@ -49,13 +49,6 @@ Two capabilities, two data flows:
 
 To prepare our environment today using *Cursor* we have a few setup steps to follow. Begin these steps as soon as you arrive in the lab.
 
-One click Cursor Install
-
-`<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">`
-  `<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />`
-`</a>`
-
-If the above does not work on your lab machine, continue to the setup below.
 
 ### 🖥️ Setup 1: Open Cursor
 
@@ -91,19 +84,29 @@ Your screen should look similar to this, afterward:
 
 Now, we just need to tell Cursor how to reach CJA and help us connect.
 
-1. Open an agent chat via ______.
+1. Click on the following button to install the CJA MCP Server
+
+`<a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">`
+  `<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />`
+`</a>`
+
+This will open a browser window with a dialog asking you for permission to open Cursor. Click "Open Cursor.app" 
+
+<img width="870" height="356" src="/assets/setup/1776699275636.jpg" />
+
+then Cursor will open and show you a form with the CJA MCP server configuration filled in and ready for you to click "install"
+
+<img width="900" height="365" src="/assets/setup/1776698938320.jpg" />
+
+This should process quickly, taking only a few seconds. Instead of clicking through Settings menus, we are using Cursor to automate the setup.
+
+
+> 🔧 **Troubleshoot:** If the above does not work on your lab machine, continue to the manual setup below.
+
+
+1. Now we are going to try it. Open an agent chat by click on the top right corner icon shown below.
 
 *IMAGE:agent chat open button*
-
-2. Paste this prompt into chat so Cursor use the CJA MCP server info from our download.
-
-```
-Add my cja mcp server to the global Cursor settings.
-```
-
-<img width="479" height="89" src="assets/setup/Screenshot 2026-04-03 150605.png" />
-
-This should process quickly, taking only a few seconds. Instead of clicking through Settings menus, we are using the downloaded files and the Composer agent in Cursor to automate setup.
 
 3. Submit this prompt to open web authentication for CJA.
 
@@ -712,7 +715,7 @@ Reflect on what you built:
 
 ---
 
-## 🔌 Lesson 4 of 4 — Sneak Peek: The Analytics Plugin Marketplace
+## 🔌 Lesson 4 of 4 — Sneak Peek: The Analytics Plugins
 
 ⏱️ Est. completion: 15 min *(Hands-on in Cursor — preview two skills from the upcoming CJA plugin)*
 
@@ -724,7 +727,7 @@ All operations in this lesson are **read-only** — the skills report and analyz
 
 By the end of this lesson you will be able to:
 
-- Explain what the Analytics Plugin Marketplace is and how it bundles skills with MCP server configuration
+- Explain what the Analytics Plugins are and how they bundles skills with MCP server configuration
 - Describe the difference between skills in a Git repo and skills in an installable plugin
 - Deep-dive into a dimension's cardinality and data quality using the Dimension Analysis skill
 - Run a full component audit across segments and calculated metrics using the Component Audit skill

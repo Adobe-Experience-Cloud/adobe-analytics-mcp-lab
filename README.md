@@ -557,6 +557,8 @@ AI Assistant and Data Insights Agent in CJA:
 
 Skills are the sheet of notes that you give to an AI to help it replicate a scenario it doesn't know.
 
+<img src="assets\lesson-2\Screenshot 2026-04-20 011531.png">
+
 ### 🏗️ 2.4 The *Project builder* skill
 
 With the MCP server connected, you can describe what you want to analyze and let the agent build it. The server provides a minimal framework to the LLM that connects to it: pull reports like this, update projects like that, etc. No additional context is *required* - yet there are nuances an LLM might miss.
@@ -668,17 +670,26 @@ By the end of this lesson you will be able to:
 
 ### 🔨 3.2 The *Segment builder* skill
 
-This skill augments the LLM and MCP context of segmentation with expertise from an experienced practitioner. `cja-project-builder` is defined with segmentation 
+This skill augments the LLM and MCP context of segmentation with expertise from an experienced practitioner. `cja-project-builder` introduces business logic, common interpretations, translation to CJA segments, communication strategies, etc. It has been developed through material built by experienced practitioners.
 
-A general segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type.
+This skill is activated any time we ask to create or update a segment.
 
-1. Open a new Agent chat:
+> **Note:** Each segment creation also includes a summary with a *validation* step. This is not especially effective so far. I leave it in to show the aspiration of not only translating and honing a definition but going all the way through validation. It is a complex task that likely will become its own skill.
+
+
+### 3.3 Simple segments
+
+A basic segment uses AND/OR logic to filter visitors, visits, or hits based on dimensions and metrics. This is the most common segment type. It's not especially difficult to create, but let's start here.
+
+1. Open a new Agent chat.
+
+2. Create this simple segment:
 
 ```
-   @cja-segment-builder
+   Create a segment for mobile visitors.
 ```
 
-2. **Prompt:**
+The agent interprets the appropriate containers, components, logic. It also scans for similar segments. If there is little or no ambiguity, it creates the segment automatically. Otherwise, it asks first. In both cases, it provides a description with a text-based proposal of the segment definition.
 
 ```
    Create a segment for mobile visitors who viewed a product

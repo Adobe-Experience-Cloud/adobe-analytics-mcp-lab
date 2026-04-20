@@ -78,7 +78,7 @@ https://github.com/Adobe-Experience-Cloud/adobe-analytics-mcp-lab
 
 Now, we just need to tell Cursor how to reach CJA and help us connect.
 
-1. Click on the following button to install the CJA MCP Server
+1. Click on the following button to install the CJA MCP Server:
 
 <a href="https://cursor.com/en/install-mcp?name=cja-mcp&config=eyJ1cmwiOiJodHRwczovL21jcC1nYXRld2F5LmFkb2JlLmlvL2NqYS9tY3AifQ==" target="_blank" rel="noreferrer">
   <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" />
@@ -95,12 +95,12 @@ then Cursor will open and show you a form with the CJA MCP server configuration 
 This should process quickly, taking only a few seconds. Instead of clicking through Settings menus, we are using Cursor to automate the setup.
 
 
-> 🔧 **Troubleshoot:** If the above does not work on your lab machine, continue to the manual setup below.
+> 🔧 **Troubleshoot:** If the above does not work on your lab machine, continue to the *Manual Setup Instructions* below. 
 
 
-1. Now we are going to try it. Open an agent chat by click on the top right corner icon shown below.
+1. Now we are going to try it. Open an agent chat by click on the + icon for a new agent.
 
-*IMAGE:agent chat open button*
+<img src="assets\setup\Screenshot 2026-04-03 171218.png">
 
 3. Submit this prompt to open web authentication for CJA.
 
@@ -114,7 +114,7 @@ As before, this should only take a few seconds. Cursor will hopefully make a cal
 
 4. On web auth, select *Experience Showcase* (if asked) and click OK.
 
-*IMAGE: org choice*
+<img src="assets\setup\Screenshot 2026-04-20 095100.png">
 
 5. On the following screen, click *Allow access*:
 
@@ -126,9 +126,16 @@ Now, Cursor should say some positive comments about being connected. If so, you 
 What data views can I access?
 ```
 
-If Cursor returns a small list including the L611 data view, then you are ready! *Leave the Cursor app alone until we get to the MCP tasks in a few minutes.*
+If Cursor returns a small list including the L611 data view, then you are ready! 
+
+> **Note:** On first runs of MCP tools, Cursor will prompt you to run each tool. This will happen frequently as we begin. Please click the dropdown and select *Run Everything* and then click *Run*. 
+
+<img src="assets\setup\Screenshot 2026-04-20 110004.png">
 
 <img width="461" height="151" src="assets/setup/Screenshot 2026-04-03 152418.png" />
+
+
+*You are done with MCP setup in! Leave the Cursor app alone until we get to the MCP tasks after Data Mirror.*
 
 ### 🛠️ Manual setup instructions
 
@@ -929,6 +936,19 @@ Use DIA for structured guided analysis within Adobe's UI. Use the MCP Server whe
 
 **To connect the CJA MCP Server to your own org:**
 See the *Remote MCPs for Analytics and CJA — Getting Started Guide* in the lab materials. It covers Cursor, Claude.ai, ChatGPT, and non-OAuth (server-to-server) clients.
+
+**To set up Data Mirror for your warehouse:**
+See the Data Mirror setup walkthrough in `1 data mirror/` — it covers BigQuery, Azure Blob Storage, and Amazon S3, including schema creation, CDC enablement, and the AEP source connector configuration.
+
+**To explore more skills:**
+Open `.cursor/skills/` in this repository. Skills available include: `cja-project-builder`, `cja-segment-builder`, `cja-segment-audit`, `cja-component-audit`, `cja-dimension-analysis`, `cja-component-find-replace`, and `cja-mcp-connectivity`.
+
+**Both capabilities are currently in beta.** Your feedback matters 🙏 — share it with your Adobe team contact or submit it through the lab feedback form.
+
+---
+
+*🔴 Adobe Summit 2026 — Lab L611 — Data Mirror and MCP: Modern Connectivity for Customer Journey Analytics*
+r Analytics and CJA — Getting Started Guide* in the lab materials. It covers Cursor, Claude.ai, ChatGPT, and non-OAuth (server-to-server) clients.
 
 **To set up Data Mirror for your warehouse:**
 See the Data Mirror setup walkthrough in `1 data mirror/` — it covers BigQuery, Azure Blob Storage, and Amazon S3, including schema creation, CDC enablement, and the AEP source connector configuration.

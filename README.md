@@ -6,7 +6,7 @@
 
 ## 📖 Introduction
 
-This lab explores two Adobe capabilities that change how data gets into Customer Journey Analytics and how you interact with it once it's there.
+This lab explores two Adobe capabilities that change how data gets into Customer Journey Analytics and how you interact with it once it's there. Today should deliver inspiration and application for new methods of engagement with your CJA data!
 
 **Data Mirror** keeps CJA in sync with your external data warehouse — or cloud object storage that contains change data feed files — automatically, at the row level, using Change Data Capture (CDC). When a record is inserted, updated, or deleted at the source, the change propagates through the Adobe Experience Platform data lake and into CJA without any export scripts, batch jobs, or manual refresh.
 
@@ -21,43 +21,9 @@ Together, these two capabilities address the two most common friction points in 
 After completing this lab, you will walk away with the following knowledge:
 
 - What Data Mirror is, how CDC-based ingestion works, and when to use it over batch or incremental connectors
-- How to recognize the three relational schema descriptor fields required for Data Mirror
-- Follow a complete Data Mirror pipeline end-to-end: source data → schema → dataflow → CJA
-- How relational datasets map to CJA dataset types (event, summary, profile, lookup)
-- What the Model Context Protocol (MCP) is and how it connects AI clients to live analytics data
-- How to connect Cursor to the CJA MCP Server and verify the connection
-- What skills are and how they enable repeatable AI workflows
-- How to create CJA Analysis Workspace projects using only natural language prompts
+- What the Model Context Protocol (MCP) is and how the CJA MCP server connects AI clients to live data in CJA/AA
+- What skills are and how they enable new, creative, and repeatable AI workflows
 - What the Analytics Plugin Marketplace is and how it packages skills into installable plugins alongside the MCP servers
-- How to deep-dive into a dimension's cardinality and data quality
-- How to audit your CJA component library for health, waste, and duplicate segments at scale
-- How to build simple and sequential segments through conversation — including complex THEN logic with time restrictions
-- How the CJA MCP Server compares to Digital Insights Agent in CJA
-
----
-
-### ✅ Prerequisites
-
-Before starting this lab, confirm you have the following:
-
-- Basic familiarity with CJA — you know what a data view, workspace, and segment are
-- Cursor installed and running on your lab computer
-- Your Adobe IMS credentials (Experience Cloud login) available
-- CJA access provisioned for the lab sandbox (your lab setup confirms this)
-- No coding experience required — all exercises use natural language prompts
-
----
-
-### 🛍️ Customer Scenario
-
-The lab is built around **Luma**, a fictional multi-channel retail brand selling apparel and accessories online and in stores.
-
-Your role: you are a CJA analyst at Luma. Your team is responsible for maintaining accurate customer journey data and delivering timely insights to the marketing and e-commerce teams. You face two persistent challenges:
-
-1. 📉 **Data freshness** — Luma's product catalog and campaign data live in external cloud systems (BigQuery, Azure Blob, S3). Every time a product price changes or a campaign window closes, someone has to manually export a file and re-upload it. Reports go stale between refreshes.
-2. ⏳ **Analysis speed** — Building a workspace from scratch takes 30+ minutes. Your team spends more time assembling panels than interpreting results.
-
-This lab shows you how to solve both.
 
 ---
 
@@ -720,8 +686,10 @@ Sequential segments use THEN logic — *"first X happened, then Y happened."* Th
 2. Try this request:
 
 ```
-Build a demo segment for the 24 hours following any offline/poc purchase of a customer.
+Build a demo segment for the 24 hours following any web purchase of a customer.
 ```
+
+<img src="assets\lesson-3\Screenshot 2026-04-20 031828.png">
 
 This is an amazing use case for CJA, the study of the relative period before/after a point of interest for each person in the dataset. Even though each may purchase at a different time, we can study the next day of behaviors. If a segment builder can help with common scenarios like this, it enables strong analysis even without knowing all the technical details behind the segment definition.
 
@@ -735,37 +703,13 @@ How many people have touched web > app > poc in the same session, last month?
 
 This is handy because we can get a segment-based data point without having to build the segment and apply it on a table in CJA. It's just a prompt away.
 
-### 🏆 3.4 Exercise: Complex Segment Challenge
-
-Try building this segment on your own. It combines multiple concepts: a distinct count condition, scope nesting, and a date-based exclusion.
-
-**Prompt to try:**
-
-```
-Build a segment for hits during sessions where the visitor
-viewed at least 3 different product categories,
-but exclude sessions that happened on December 27, 2025.
-```
-
-What the agent will need to do:
-
-- Apply a **distinct count modifier** (3 distinct values of Product Category) at the visit level
-- Apply a **visitor-level exclusion** for a specific date (Day = Dec 27, 2025, using its item ID)
-- Nest the conditions correctly: visit-level condition AND visitor-level exclusion
-
-Watch how the agent breaks down the problem and what clarifying questions it asks.
-
-> 📝 **Note:** Building this segment manually in the CJA UI requires knowing about Distinct Count operators, correct container nesting, and how date dimensions are stored as item IDs. The agent handles all of this — your job is to describe the intent clearly.
-
 ### 💡 3.5 Checkpoint
 
 Reflect on what you built:
 
-- You just created three segments in 15 minutes — from plain language to live CJA segments. What would the same work look like without the MCP server?
-- Look at the sequential segment. The underlying JSON for a `sequence` with a `time-restriction` is about 40 lines of nested objects. How does the agent's plain-language summary help you verify correctness without reading the JSON?
+- You just created these segments in 15 minutes — from plain language to live CJA segments. What would the same work look like without the MCP server and skills?
+- Consider the sequential segments. They are not always intuitive, but with this approach you have a partner guiding your builds to accuracy.
 - Where else outside CJA could you use segment logic? *(Think: the same filtering logic you just described could describe a SQL WHERE clause or a BigQuery filter.)*
-
----
 
 ---
 
@@ -945,7 +889,17 @@ Pull the data live through the CJA MCP tools and render it in the browser.
 
 > 📝 **Note:** These prompts go beyond the structured exercises. They're meant to show what's possible when an agent has free access to 25 live CJA tools. Some may require follow-up clarifications.
 
-### 🆚 B.3 MCP vs. Digital Insights Agent
+### B.3 Visual component relationships
+
+Ask for a *component visualization*. This skill shows another way the LLM can take an idea and extend it outside of the CJA UI. The purpose of this skill was to explore web app creation and new ways to highlight the most important components (and how they typically should be used together).
+
+```
+Build a component visualization for the top 10 components in L611.
+```
+
+<img src="assets\bonus\Screenshot 2026-04-16 133204.png">
+
+### 🆚 B.4 MCP vs. Digital Insights Agent
 
 The CJA MCP Server and Adobe's Digital Insights Agent (DIA) are complementary — not competing.
 
@@ -997,4 +951,5 @@ Open `.cursor/skills/` in this repository. Skills available include: `cja-projec
 **References**
 
 [1]: [Data Mirror Overview — Adobe Experience Platform XDM](https://experienceleague.adobe.com/en/docs/experience-platform/xdm/data-mirror/overview)
+
 [2]: [Change Data Capture — Adobe Experience Platform Sources](https://experienceleague.adobe.com/en/docs/experience-platform/sources/api-tutorials/change-data-capture#data-mirror-with-relational-schemas)

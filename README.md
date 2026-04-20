@@ -102,7 +102,7 @@ This should process quickly, taking only a few seconds. Instead of clicking thro
 
 <img src="assets\setup\Screenshot 2026-04-03 171218.png">
 
-3. Submit this prompt to open web authentication for CJA.
+2. Submit this prompt to open web authentication for CJA.
 
 ```
 Authenticate to CJA using mcp_auth.
@@ -112,11 +112,11 @@ As before, this should only take a few seconds. Cursor will hopefully make a cal
 
 <img width="478" height="207" src="/assets/setup/Screenshot 2026-04-03 145833.png" />
 
-4. On web auth, select *Experience Showcase* (if asked) and click OK.
+3. On web auth, select *Experience Showcase* (if asked) and click OK.
 
 <img src="assets\setup\Screenshot 2026-04-20 095100.png">
 
-5. On the following screen, click *Allow access*:
+4. On the following screen, click *Allow access*:
 
 <img width="415" height="581" src="assets/setup/Screenshot 2026-04-03 145533.png" />
 
@@ -557,9 +557,11 @@ Make a simple CJA project.
 
 <img width="786" height="199" src="assets/lesson-2/Screenshot 2026-04-03 173214.png" />
 
-> **Note:** This uses the `project builder` skill. A skill is used by the AI based on its headers (or you may invoke it explicitly). In our Cursor environment, if we use phrases like *make/build a CJA project* or reference `@cja-project-builder`, the agent will follow the skill to address the prompt.
+> **Note:** This uses the *project builder* skill. A skill is used by the AI based on its headers (or you may invoke it explicitly). In our Cursor environment, if we use phrases like *make/build a CJA project* or reference `@cja-project-builder`, the agent will follow the skill to address the prompt.
 
 The skill provides a basic project definition to the LLM, which creates the project and return its link.
+
+[Sample CJA project](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/workspace/edit/69e567f7e0f5e2045efb2c09)
 
 4. Ask a data question:
 
@@ -583,6 +585,8 @@ Save this in a project and give me the link.
 
 <img width="1074" height="565" src="assets/lesson-2/Screenshot 2026-04-03 170356.png" />
 
+[Sample CJA result](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/workspace/edit/69e5682d653dbd2327b0eade)
+
 6. Try a more interesting CJA project:
 
 ```
@@ -592,6 +596,8 @@ Create an e-commerce performance dashboard for the Luma retail data. Show revenu
 The agent responds with a proposed structure and builds it. It uses context from your skills, chat, common reporting and ecommerce knowledge, and existing components in CJA. Panels, visualizations, dimensions, metrics are all driven through that lens.
 
 Hopefully, your result takes only a minute or two. The timing and result will vary with AI. If something looks wrong or you want a change, you would continue the conversation. Even skills require iterations to reach your exact goal, sometimes.
+
+[Sample CJA result](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/workspace/edit/69e568bee0f5e2045efb2c13)
 
 > **Tip:** Be specific in your prompts. Whenever possible, use clear time ranges ("last 30 days"), metric names ("orders", "revenue"), and dimensions ("product category") when you know them.
 
@@ -607,7 +613,7 @@ Build a survey for the top 9 dimensions in L611.
 
 Frequently supporting new customers and unknown data views, I wanted a quick survey of the data environment. Doing this for many dimensions becomes tedious or impossible to recreate. I have successfully run this type of skill for up to 60 dimensions. On the CJA definition gets "large", it is harder to manage in a single skill / agent definition.
 
-Here is a small [sample](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/workspace/edit/69e57488c9a2b873047b2591) built to study the top 8 dimensions. Some have no data in the recent date range, so they are listed in a separate panel at the bottom.
+Here is a [sample](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/workspace/edit/69e57488c9a2b873047b2591) built to study the top 8 dimensions. Some have no data in the recent date range, so they are listed in a separate panel at the bottom.
 
 <img src="assets\lesson-2\Screenshot 2026-04-20 113101.png">
 
@@ -642,11 +648,11 @@ By the end of this lesson you will be able to:
 
 ### 3.2 The *Segment builder* skill
 
-This skill augments the LLM and MCP context of segmentation with expertise from an experienced practitioner. `cja-project-builder` introduces business logic, common interpretations, translation to CJA segments, communication strategies, etc. It has been developed through material built by experienced practitioners.
+This skill augments the LLM and MCP context of segmentation with expertise from an experienced practitioner. `cja-segment-builder` introduces business logic, common interpretations, translation to CJA segments, communication strategies, etc. It has been developed through material built by experienced practitioners.
 
-This skill is activated any time we ask to create or update a segment.
+This skill is activated any time we ask to *create or update a segment*.
 
-> **Note:** Each segment creation also includes a summary with a *validation* step. This is not especially effective so far. I leave it in to show the aspiration of not only translating and honing a definition but going all the way through validation. It is a complex task that likely will become its own skill.
+> **Note:** Each segment creation also includes a summary with a *validation* step. This is not especially effective so far. I leave it in to show the aspiration of not only translating and honing a definition but going all the way through validation. It is a complex task that likely must become its own skill.
 
 
 ### 3.3 Simple segments
@@ -667,13 +673,18 @@ We add *demo* to our request to bypass the *do-not-duplicate* caution that the s
 
 <img src="assets\lesson-3\Screenshot 2026-04-20 013613.png">
 
+[Sample CJA segment](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/components/segments/edit/s331621C069661E8F0A495CD7@AdobeOrg_69e5b7bc7b269b7bef710774)
+
 3. Create this segment:
 
 ```
    Create a demo segment for mobile visitors who viewed a product but didn't complete a purchase in the same session.
 ```
+<img src="assets\lesson-3\Screenshot 2026-04-20 120345.png">
 
 <img src="assets\lesson-3\Screenshot 2026-04-20 015134.png">
+
+[Sample CJA segment](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/components/segments/edit/s331621C069661E8F0A495CD7@AdobeOrg_69e6787b017daf4e4ca63300)
 
 ### 3.4 Complex segments
 

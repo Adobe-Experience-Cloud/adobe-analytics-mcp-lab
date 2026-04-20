@@ -700,6 +700,8 @@ Sequential segments use THEN logic — *"first X happened, then Y happened."* Th
 
 <img src="assets\lesson-3\Screenshot 2026-04-20 022711.png">
 
+[Sample CJA segment](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/components/segments/edit/s331621C069661E8F0A495CD7@AdobeOrg_69e5c6da0629302ea3fd8918)
+
 2. Try this request:
 
 ```
@@ -710,6 +712,8 @@ Build a demo segment for the 24 hours following any web purchase of a customer.
 
 This is an amazing use case for CJA, the study of the relative period before/after a point of interest for each person in the dataset. Even though each may purchase at a different time, we can study the next day of behaviors. If a segment builder can help with common scenarios like this, it enables strong analysis even without knowing all the technical details behind the segment definition.
 
+[Sample CJA Segment](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/components/segments/edit/s331621C069661E8F0A495CD7@AdobeOrg_69e5d3077b269b7bef71078a)
+
 3. Ask for the data only:
 
 ```
@@ -719,6 +723,10 @@ How many people have touched web > app > poc in the same session, last month?
 <img src="assets\lesson-3\Screenshot 2026-04-20 023801.png">
 
 This is handy because we can get a segment-based data point without having to build the segment and apply it on a table in CJA. It's just a prompt away.
+
+After the result, we can ask the LLM to save the segment so we can validate. That might be a good option to add to the skill, except that having it use an *ad hoc* segment (without saving anything) is also helpful.
+
+[Sample CJA Segment](https://experience.adobe.com/#/@experienceshowcase/platform/analytics/#/components/segments/edit/s331621C069661E8F0A495CD7@AdobeOrg_69e67cfcafc94a494b46e426)
 
 ### 3.5 Checkpoint
 

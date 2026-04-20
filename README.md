@@ -882,7 +882,9 @@ Est. completion: 10 min *(Optional — try what interests you)*
 - Experience ad-hoc analysis and app generation through conversation
 - Understand where the CJA MCP Server fits relative to Digital Insights Agent
 
-### B.2 Exercise: Try One of These
+### B.2 Additional Ideas
+
+> **Note:** These prompts go beyond the structured exercises. They're meant to show what's possible when an agent has free access to 25 live CJA tools. Some may require follow-up clarifications.
 
 **Option A — Comparative Analysis**
 
@@ -893,28 +895,7 @@ Compare revenue and conversion rate between mobile and desktop visitors
 for the last 30 days. Then show me how this compares to the same period last month.
 ```
 
-**Option B — Metric Dependency Mapper**
-
-Find out which of your calculated metrics depend on a specific base metric:
-
-```
-Show me which calculated metrics use the Orders metric as a component.
-If you can, create a simple text map showing their dependencies.
-```
-
-**Option C — Build a Single-Page Dashboard App**
-
-Go beyond the CJA UI entirely:
-
-```
-Using the Luma data, build a single-page HTML app that shows
-the top 10 products by revenue with a bar chart.
-Pull the data live through the CJA MCP tools and render it in the browser.
-```
-
-> **Note:** These prompts go beyond the structured exercises. They're meant to show what's possible when an agent has free access to 25 live CJA tools. Some may require follow-up clarifications.
-
-### B.3 Visual component relationships
+**Option B - Visual component relationships**
 
 Ask for a *component visualization*. This skill shows another way the LLM can take an idea and extend it outside of the CJA UI. The purpose of this skill was to explore web app creation and new ways to highlight the most important components (and how they typically should be used together).
 
@@ -924,7 +905,7 @@ Build a component visualization for the top 10 components in L611.
 
 <img src="assets\bonus\Screenshot 2026-04-16 133204.png">
 
-### B.4 MCP vs. Digital Insights Agent
+### B.3 MCP vs. Digital Insights Agent
 
 The CJA MCP Server and Adobe's Digital Insights Agent (DIA) are complementary — not competing.
 
